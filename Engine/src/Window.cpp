@@ -68,6 +68,23 @@ void Window::pollEvents()
 			case SDL_QUIT:
 				mIsOpen = false;
 				break;
+
+			case SDL_KEYDOWN:				
+				for (auto& keydownlistener : mKeydownListeners)
+					keydownlistener(event.key.keysym.scancode);
+				break;
+
+			case SDL_MOUSEMOTION: 
+				{
+					int x, y;
+					SDL_GetRelativeMouseState(&x, &y);
+					for (auto& mousemovelistener : mMouseMoveListeners) {
+						mousemovelistener(x, y);
+					}
+				}
+				
+				break;
+
 			default:
 				break;
 		}
@@ -77,4 +94,15 @@ void Window::pollEvents()
 bool Window::isOpen()
 {
 	return mIsOpen;
+}
+
+
+void Window::onKeydown(const std::function<void(uint key)>& keydownListener)
+{
+	mKeydownListeners.push_back(keydownListener);
+}
+
+void Window::onMouseMove(const std::function<void(int x, int y)>& mousemoveListener)
+{
+	mMouseMoveListeners.push_back(mousemoveListener);
 }

@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameLoop.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Particle.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Time.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderProgram.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vbo.cpp">
+      <Filter>Sources\VertexObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Attribute.cpp">
+      <Filter>Sources\VertexObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleMaster.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleRenderer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RawModel.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Camera.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LinearMath.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OSExport.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Particle.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParticleSystem.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Rect.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Time.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Window.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderProgram.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Typedefs.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GLErrorHandling.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Vbo.h">
+      <Filter>Headers\VertexObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Attribute.h">
+      <Filter>Headers\VertexObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParticleRenderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParticleMaster.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GameLoop.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Transform.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RawModel.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Loader.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{e93cd8d3-ac8c-4837-b84d-e7073af1739a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources">
+      <UniqueIdentifier>{f1a625c7-3e9e-47e9-8295-9e448e1c48fc}</UniqueIdentifier>
+      <Extensions>.cpp;.c</Extensions>
+    </Filter>
+    <Filter Include="Headers\VertexObjects">
+      <UniqueIdentifier>{cf3af14b-85f4-412b-8353-7c8bb3e9e251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\VertexObjects">
+      <UniqueIdentifier>{5630a29e-c02b-4adf-b1ef-bfcf2541819d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{db7795a5-59bd-4fd2-a23c-ae50c89bfbfd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
