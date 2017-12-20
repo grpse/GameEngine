@@ -1,6 +1,7 @@
 #include <GameLoop.h>
 #include <iostream>
 
-void main() {
+int main() {
 	GameLoop::start();
+	return 0;
 }

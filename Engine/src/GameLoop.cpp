@@ -61,7 +61,7 @@ void GameLoop::start()
 
 	float fov = 45.0f;
 	float aspectRatio = viewport.width / viewport.height;
-	float nearPlane = .01;
+	float nearPlane = .001;
 	float farPlane = 1000.0;
 	mProjectionMatrix = Math::perspective(fov, aspectRatio, nearPlane, farPlane);
 
@@ -70,7 +70,7 @@ void GameLoop::start()
 	const char* basicShader = R"(
 	#BEGIN VERTEXSHADER
 	void main() {
-		gl_Position = WorldViewProjection * vec4(VertexPosition_ModelSpace, 1);
+		gl_Position = WorldView * vec4(VertexPosition_ModelSpace, 1);
 	}	
 	#END VERTEXSHADER
 
@@ -92,7 +92,7 @@ void GameLoop::start()
 
 	ShaderProgram mShader;
 	mShader.useVertexAttribute();
-	mShader.useWorldViewProjectionMatrix();
+	mShader.useWorldViewMatrix();
 
 	mShader.buildShadersFromSource(basicShader);
 
@@ -230,13 +230,13 @@ void update(ParticleMaster& particleMaster, ShaderProgram& shader)
 
 		
 		Matrix4 view = mCamera.createViewMatrix();
-		Matrix4 worldViewProjection = world * view * mProjectionMatrix;
+		Matrix4 worldView = view * world;
 
 		/*
 		std::cout << "WVP Matrix:: " << std::endl;
 		std::cout << Math::to_string(worldViewProjection) << std::endl;
 		*/
-		shader.setWorldViewProjectionMatrix(worldViewProjection);
+		shader.setWorldViewMatrix(worldView);
 		//shader.setWorldViewProjectionMatrix(Matrix4(1));
 
 		vbo.bind();

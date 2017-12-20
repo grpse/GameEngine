@@ -9,8 +9,8 @@
 ShaderProgram::ShaderProgram() 
 {
 	GLCall(mShaderProgram = glCreateProgram());
-	PRECODE_VERTEX = STRINGIFY(#version 140\n);
-	PRECODE_FRAGMENT = STRINGIFY(#version 140\n);
+	PRECODE_VERTEX = STRINGIFY(#version 130\n);
+	PRECODE_FRAGMENT = STRINGIFY(#version 130\n);
 
 	mUniformsUse = { -1, -1, -1, -1, -1 };
 	mAttributesUse = { -1, -1, -1, -1, -1 };
