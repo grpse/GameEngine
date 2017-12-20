@@ -70,7 +70,7 @@ void GameLoop::start()
 	const char* basicShader = R"(
 	#BEGIN VERTEXSHADER
 	void main() {
-		gl_Position = WorldView * vec4(VertexPosition_ModelSpace, 1);
+		gl_Position = Projection * WorldView * vec4(VertexPosition_ModelSpace, 1);
 	}	
 	#END VERTEXSHADER
 
@@ -93,6 +93,7 @@ void GameLoop::start()
 	ShaderProgram mShader;
 	mShader.useVertexAttribute();
 	mShader.useWorldViewMatrix();
+	mShader.useProjectionMatrix();
 
 	mShader.buildShadersFromSource(basicShader);
 
@@ -179,17 +180,17 @@ void GameLoop::start()
 	mWindow.onMouseMove([&](int x, int y) {
 
 		// Compute new orientation
-		horizontalAngle += mouseSpeed * float(viewport.width / 2.0f - x);
-		verticalAngle += mouseSpeed * float(viewport.height / 2.0f - y);
+		// horizontalAngle += mouseSpeed * float(viewport.width / 2.0f - x);
+		// verticalAngle += mouseSpeed * float(viewport.height / 2.0f - y);
 
-		Vector3 direction(
-			cos(verticalAngle) * sin(horizontalAngle),
-			sin(verticalAngle),
-			cos(verticalAngle) * cos(horizontalAngle)
-		);
+		// Vector3 direction(
+		// 	cos(verticalAngle) * sin(horizontalAngle),
+		// 	sin(verticalAngle),
+		// 	cos(verticalAngle) * cos(horizontalAngle)
+		// );
 
-		mCamera.transform.setLocalRotation(Quaternion(direction));
-		mCamera.transform.getWorldMatrix();
+		// mCamera.transform.setLocalRotation(Quaternion(direction));
+		// mCamera.transform.getWorldMatrix();
 	});
 
 	while (mWindow.isOpen()) {
@@ -237,7 +238,7 @@ void update(ParticleMaster& particleMaster, ShaderProgram& shader)
 		std::cout << Math::to_string(worldViewProjection) << std::endl;
 		*/
 		shader.setWorldViewMatrix(worldView);
-		//shader.setWorldViewProjectionMatrix(Matrix4(1));
+		shader.setProjectionMatrix(mProjectionMatrix);
 
 		vbo.bind();
 
