@@ -5,11 +5,11 @@ Matrix4 Camera::createViewMatrix() const
 {
 	const Vector3 position = transform.getLocalPosition();
 	const Vector3 front = transform.getFront();
-	const Vector3 target = position + front;
+	const Vector3 target = Math::normalize(position + front);
 
 	return Math::lookAt(
 		position,
-		position + target,
+		target,
 		Vector3(0, 1, 0)
 	);
 }

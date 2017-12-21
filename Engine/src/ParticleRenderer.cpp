@@ -3,59 +3,27 @@
 #include <iostream>
 #include "ParticleRenderer.h"
 #include "GLErrorHandling.h"
+#include "ParticleBasicShader.h"
 
-#define STRINGIFICATOR(value) (#value)
+static Vector3 quadVertices[] = {
+	Vector3(-0.5, -0.5, 0),
+	Vector3( 0.5, -0.5, 0),
+	Vector3( 0.5, 0.5, 0),
+	Vector3(-0.5, 0.5, 0),
+};
 
 ParticleRenderer::ParticleRenderer()
 {
-	static Vector3 quadVertices[] = {
-		Vector3(-0.5, -0.5, 0),
-		Vector3(0.5, -0.5, 0),
-		Vector3(0.5, 0.5, 0),
-		Vector3(-0.5, 0.5, 0),
-	};
-
-	
-	//mQuad = Vbo::create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-	//mQuad.bind();
-	//mQuad.allocate(sizeof(quadVertices));
-	//mQuad.storeData(&quadVertices[0], sizeof(quadVertices), 0);
-	
-
-	GLCall(glGenVertexArrays(1, &mQuadVAO));
-	GLCall(glBindVertexArray(mQuadVAO));
-	
-	GLCall(glGenBuffers(1, &mQuadBuffer));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mQuadBuffer));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW));
-
-
-
-
 	mShader.useVertexAttribute();
-	//mShader.useNormalAttribute();
-	//mShader.useTextureCoord0Attribute();
 
-	mShader.useWorldViewMatrix();
 	mShader.useProjectionMatrix();
-
-
-	const char* ParticleShaderStr = R"(
-		#BEGIN VERTEXSHADER																		
-		void main() {																			
-			gl_Position = Projection * WorldView * vec4(VertexPosition_ModelSpace, 1); 			
-			//gl_Position = vec4(VertexPosition_ModelSpace, 1); 			
-		}																						
-		#END VERTEXSHADER
-																	
-		#BEGIN FRAGMENTSHADER																	
-		void main() {																			
-			gl_FragColor = vec4(1); 														
-		}																						
-		#END FRAGMENTSHADER																	
-	)";
+	mShader.useWorldViewMatrix();
 
 	mShader.buildShadersFromSource(ParticleShaderStr);
+
+	GLCall(glGenBuffers(1, &mBuffer));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW));
 }
 
 ParticleRenderer::~ParticleRenderer()
@@ -69,54 +37,27 @@ void ParticleRenderer::init(const Matrix4 & projection)
 
 	mShader.start();
 	mShader.setProjectionMatrix(mProjection);
-
-	GLCall(glBindVertexArray(mQuadVAO));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mQuadBuffer));
-
-	uint vertexAttribute = mShader.getAttributeLocation("VertexPosition_ModelSpace");
-	mQuadVertAttributeLocation = vertexAttribute;
-	//mQuadAttributes = Attribute(vertexAttribute, GL_FLOAT, 2);
-
-	// 1rst attribute buffer : vertices
-	GLCall(glEnableVertexAttribArray(mQuadVertAttributeLocation));
-	GLCall(glVertexAttribPointer(
-		mQuadVertAttributeLocation,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-		3,                  // size
-		GL_FLOAT,           // type
-		GL_FALSE,           // normalized?
-		0,                  // stride
-		(void*)0            // array buffer offset
-	));
-	
-	GLCall(glDisableVertexAttribArray(vertexAttribute));
-
 	mShader.stop();
 }
 
 void ParticleRenderer::render(const Particle particles[], uint particleCount, const Camera & camera)
 {
-	Matrix4 view = Matrix4(1);// camera.createViewMatrix();
+	Matrix4 view = camera.createViewMatrix();
 	prepare();
-
+	mShader.setProjectionMatrix(mProjection);
 	while(particleCount--) {
-		Particle particle = particles[particleCount];
-		updateModelViewMatrix(particle.getPosition(), particle.getRotation(), particle.getScale(), view);
+		//Particle particle = particles[particleCount];
+		Vector3 position = particles[particleCount].getPosition();
+		float rotation = particles[particleCount].getRotation();
+		float scale = particles[particleCount].getScale();
+		updateModelViewMatrix(position, rotation, scale, view);
 
-		// 1rst attribute buffer : vertices
-		GLCall(glEnableVertexAttribArray(mQuadVertAttributeLocation));
-		GLCall(glBindBuffer(GL_ARRAY_BUFFER, mQuadBuffer));
-		GLCall(glVertexAttribPointer(
-			mQuadVertAttributeLocation,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
-			3,                  // size
-			GL_FLOAT,           // type
-			GL_FALSE,           // normalized?
-			0,                  // stride
-			(void*)0            // array buffer offset
-		));
+		//uint attributeLocation = mShader.getAttributeLocation("VertexPosition_ModelSpace");
+		GLCall(glEnableVertexAttribArray(0));
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
+        GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0));
 
 		GLCall(glDrawArrays(GL_QUADS, 0, 4));
-
-		GLCall(glDisableVertexAttribArray(mQuadVertAttributeLocation));
 	}
 
 	finishRendering();
@@ -139,12 +80,13 @@ void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rota
 	world[1][2] = view[2][1];
 	world[2][2] = view[2][2];
 
+	// get world view matrix
+	Matrix4 worldView = view * world;
+
 	// rotate (camera facing) only in z
 	world = Math::rotate(world, Math::radians(rotation), Vector3(0, 0, 1));
 	world = Math::scale(world, Vector3(scale, scale, scale));
 
-	// get world view matrix
-	Matrix4 worldView = view * world;
 
 	mShader.setWorldViewMatrix(worldView);
 }
@@ -153,16 +95,18 @@ void ParticleRenderer::prepare()
 {
 	mShader.start();
 	
-	GLCall(glBindVertexArray(mQuadVAO));
-	GLCall(glEnable(GL_BLEND));
-	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-	GLCall(glDepthMask(GL_FALSE));
+	//GLCall(glEnable(GL_BLEND));
+	//GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	//GLCall(glDepthMask(GL_FALSE));
+	
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
 }
 
 void ParticleRenderer::finishRendering()
 {
-	GLCall(glDepthMask(GL_TRUE));
-	GLCall(glDisable(GL_BLEND));
-	GLCall(glBindVertexArray(0));	
+	//GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	
+	//GLCall(glDepthMask(GL_TRUE));
+	//GLCall(glDisable(GL_BLEND));
 	mShader.stop();
 }

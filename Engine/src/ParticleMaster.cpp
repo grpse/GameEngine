@@ -3,7 +3,7 @@
 
 ParticleMaster::ParticleMaster() 
 {
-
+	mParticleRenderer = new ParticleRenderer();
 }
 
 ParticleMaster::ParticleMaster(const ParticleMaster & other)
@@ -27,7 +27,7 @@ const ParticleMaster& ParticleMaster::operator=(const ParticleMaster& particleMa
 void ParticleMaster::init(const Matrix4 & projection)
 {
 	mParticles = new Particle[kMaxParticles];
-	mParticleRenderer.init(projection);
+	mParticleRenderer->init(projection);
 }
 
 void ParticleMaster::update()
@@ -45,7 +45,7 @@ void ParticleMaster::update()
 
 void ParticleMaster::render(const Camera& camera)
 {
-	mParticleRenderer.render(mParticles, kMaxParticles, camera);
+	mParticleRenderer->render(mParticles, kMaxParticles, camera);
 }
 
 void ParticleMaster::instantiate(uint numberOfParticles, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect)

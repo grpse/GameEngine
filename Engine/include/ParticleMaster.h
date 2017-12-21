@@ -21,7 +21,7 @@ public:
 
 private:
 	Particle* mParticles;
-	ParticleRenderer mParticleRenderer;
+	ParticleRenderer* mParticleRenderer;
 
 	const uint kMaxParticles = 100;
 };

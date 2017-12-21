@@ -2,10 +2,11 @@
 #include "LinearMath.h"
 #include "ShaderProgram.h"
 #include "Particle.h"
-#include "Vbo.h"
 #include "Camera.h"
-#include "Attribute.h"
-#include "Loader.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+
 
 class ParticleRenderer {
 
@@ -19,11 +20,10 @@ public:
 private:
 	ShaderProgram mShader;
 	Matrix4 mProjection;
-	//Vbo mQuad;
-	//Attribute mQuadAttributes;
-	uint mQuadVAO;
-	uint mQuadBuffer;
-	uint mQuadVertAttributeLocation;
+	VertexArray mVA;
+	VertexBuffer mVB;
+	uint mBuffer;
+
 
 	void updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view);
 	void prepare();

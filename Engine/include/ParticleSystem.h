@@ -15,7 +15,7 @@ public:
 	void generateParticles(Vector3 systemCenter);
 	void emitParticle(Vector3 center);
 
-	void setParticleMaster(const ParticleMaster& particleMaster);
+	void setParticleMaster(ParticleMaster* particleMaster);
 
 private:
 	float mPps;
@@ -23,7 +23,7 @@ private:
 	float mGravityComplient;
 	float mLifeLength;
 	
-	ParticleMaster mParticleMaster;
+	ParticleMaster* mParticleMaster;
 
 	float random();
 };

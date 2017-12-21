@@ -36,10 +36,10 @@ void ParticleSystem::emitParticle(Vector3 center) {
 	velocity = Math::normalize(velocity);
 	velocity *= mSpeed;
 
-	mParticleMaster.instantiateOne(Vector3(center), velocity, mGravityComplient, mLifeLength, 0, 1);
+	mParticleMaster->instantiateOne(Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
 }
 
-void ParticleSystem::setParticleMaster(const ParticleMaster& particleMaster) {
+void ParticleSystem::setParticleMaster(ParticleMaster* particleMaster) {
 	mParticleMaster = particleMaster;
 }
 

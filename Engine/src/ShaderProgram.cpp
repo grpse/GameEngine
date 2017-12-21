@@ -8,7 +8,7 @@
 
 ShaderProgram::ShaderProgram() 
 {
-	GLCall(mShaderProgram = glCreateProgram());
+	
 	PRECODE_VERTEX = STRINGIFY(#version 130\n);
 	PRECODE_FRAGMENT = STRINGIFY(#version 130\n);
 
@@ -97,7 +97,7 @@ void ShaderProgram::setWorldViewProjectionMatrix(const Matrix4& worldViewProject
 uint ShaderProgram::getUniformLocation(const char* uniform)
 {
 	GLCall(uint uniformLocation = glGetUniformLocation(mShaderProgram, uniform));
-	std::cout << "Uniform location: " << uniform << " " << uniformLocation << std::endl;
+	//std::cout << "Uniform location: " << uniform << " " << uniformLocation << std::endl;
 	return uniformLocation;
 }
 
@@ -167,7 +167,8 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	//TODO: Generalize BEGIN/END codes to remove get from shader source resource the distinction
 	//		on what shader is going to be compiled and linked.
 	//TODO: Link method should also be able to receive multiples shaders to link to shader program
-
+	GLCall(mShaderProgram = glCreateProgram());
+	
 	std::string source;
 	source.assign(shaderSource.c_str(), shaderSource.length());
 
@@ -191,6 +192,7 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	uint endFragShaderPosition = source.find(END_FRAGMENTSHADER);
 	uint fragSourcePositionsCount = endFragShaderPosition - beginFragShaderPosition;
 	std::string fragShaderSource = PRECODE_FRAGMENT + STRINGIFY(\n) + source.substr(beginFragShaderPosition, fragSourcePositionsCount);
+	
 	std::cout << fragShaderSource << std::endl;
 	const char* fragShaderSourceStr = fragShaderSource.c_str();
 	buildFragShaderFromSource(fragShaderSourceStr);
