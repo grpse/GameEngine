@@ -21,6 +21,11 @@ ShaderProgram::~ShaderProgram()
 	GLCall(glDeleteShader(mShaderProgram));
 }
 
+void ShaderProgram::setUniform(uint uniform, uint i)
+{
+	GLCall(glUniform1i(uniform, i));
+}
+
 void ShaderProgram::setUniform(uint uniform, const Vector3& v)
 {
 	GLCall(glUniform3fv(uniform, 1, Math::value_ptr(v)));
@@ -34,6 +39,12 @@ void ShaderProgram::setUniform(uint uniform, const Vector2& v)
 void ShaderProgram::setUniform(uint uniform, const Matrix4& m)
 {
 	GLCall(glUniformMatrix4fv(uniform, 1, GL_FALSE, Math::value_ptr(m)));
+}
+
+void ShaderProgram::setUniform(const char * uniform, uint i)
+{
+	uint uniformLocation = getUniformLocation(uniform);
+	setUniform(uniformLocation, i);
 }
 
 void ShaderProgram::setUniform(const char * uniform, const Vector3& v)

@@ -11,6 +11,7 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include <SOIL.h>
 
 #define RC_INVOKED 1
 
@@ -78,8 +79,9 @@ void GameLoop::start()
 
 	//glFrontFace(GL_CCW);
 	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glEnable(GL_CULL_FACE));
-	GLCall(glClearColor(.9, 0, .7, 1));
+	//GLCall(glEnable(GL_CULL_FACE));
+	GLCall(glCullFace(GL_FRONT));
+	GLCall(glClearColor(0, 0, .0, 1));
 
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
@@ -98,6 +100,7 @@ void GameLoop::start()
 	mParticleMaster.init(mProjectionMatrix);
 
 	ParticleSystem mParticleSystem(50.0, 25, 1, 4);	
+	mParticleSystem.loadTexture("start.png");
 	mParticleSystem.setParticleMaster(&mParticleMaster);
 
 	Vector3 position = mCamera.transform.getLocalPosition();
@@ -150,9 +153,9 @@ void GameLoop::start()
 		
 		mCamera.printPositionAndTarget();
 
-		if (Space == key) {
-			mParticleMaster.instantiateOne({ 0, 0, 0 }, Vector3(0, 20, 0), 10, 1, 5, 1);
-		}
+		// if (Space == key) {
+		// 	mParticleMaster.instantiateOne({ 0, 0, 0 }, Vector3(0, 20, 0), 10, 1, 5, 1);
+		// }
 		
 		std::cout << "Rotation Euler: " << Math::to_string(rotation) << std::endl;
 

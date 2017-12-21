@@ -4,6 +4,8 @@
 #include "Typedefs.h"
 #include "Particle.h"
 #include "ParticleRenderer.h"
+#include "ParticleTexture.h"
+
 class ParticleMaster {
 
 public:
@@ -17,11 +19,11 @@ public:
 	void update();
 	void render(const Camera& camera);
 	void instantiate(uint numberOfParticles, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
-	void instantiateOne(const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
+	void instantiateOne(ParticleTexture texture, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
 
 private:
 	Particle* mParticles;
 	ParticleRenderer* mParticleRenderer;
 
-	const uint kMaxParticles = 100;
+	const uint kMaxParticles = 1000;
 };

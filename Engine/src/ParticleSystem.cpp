@@ -36,7 +36,7 @@ void ParticleSystem::emitParticle(Vector3 center) {
 	velocity = Math::normalize(velocity);
 	velocity *= mSpeed;
 
-	mParticleMaster->instantiateOne(Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
+	mParticleMaster->instantiateOne(particleTexture, Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
 }
 
 void ParticleSystem::setParticleMaster(ParticleMaster* particleMaster) {

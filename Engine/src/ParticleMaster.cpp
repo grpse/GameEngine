@@ -1,4 +1,5 @@
 #include "ParticleMaster.h"
+
 #include <iostream>
 
 ParticleMaster::ParticleMaster() 
@@ -60,13 +61,14 @@ void ParticleMaster::instantiate(uint numberOfParticles, const Vector3& position
 	// TODO: Make it mark dead particles found in the loop to avoid reinstantiating recently revived ones
 }
 
-void ParticleMaster::instantiateOne(const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect)
+void ParticleMaster::instantiateOne(ParticleTexture texture, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect)
 {
 	bool noDeadParticlesFound = true;
 
 	// find dead one dead particles and revive
 	for (uint i = 0; i < kMaxParticles; i++)
 		if (!mParticles[i].isAlive()) {
+			mParticles[i].setTexture(texture);
 			mParticles[i].setup(position, velocity, rotation, scale, lifeLength, gravityEffect);
 			noDeadParticlesFound = false;
 			break;

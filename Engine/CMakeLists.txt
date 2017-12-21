@@ -19,6 +19,7 @@ include_directories(${SDL2_SOURCE_DIR}/include)
 include_directories(${SDL2_BINARY_DIR}/include)
 include_directories(${glew_SOURCE_DIR}/../../include)
 include_directories(${glm_SOURCE_DIR})
+include_directories(${SOIL_SOURCE_DIR}/src)
 
 # LINK GLEW STATICALLY
 #target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC=1)
@@ -54,4 +55,4 @@ message("Project Name: " ${PROJECT_NAME})
 message("CPP FILES: " ${Engine_SOURCES})
 
 add_library(Engine SHARED ${Engine_SOURCES})
-target_link_libraries(Engine ${SDL2_LIBRARIES} glew)
+target_link_libraries(Engine ${SDL2_LIBRARIES} glew SOIL)

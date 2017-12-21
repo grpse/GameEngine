@@ -12,10 +12,17 @@ static Vector3 quadVertices[] = {
 	Vector3(-0.5, 0.5, 0),
 };
 
+static Vector2 uvs[] = {
+	Vector2(0, 0),
+	Vector2(1, 0),
+	Vector2(1, 1),
+	Vector2(0, 1)
+};
+
 ParticleRenderer::ParticleRenderer()
 {
 	mShader.useVertexAttribute();
-
+	mShader.useTextureCoord0Attribute();
 	mShader.useProjectionMatrix();
 	mShader.useWorldViewMatrix();
 
@@ -45,8 +52,22 @@ void ParticleRenderer::render(const Particle particles[], uint particleCount, co
 	Matrix4 view = camera.createViewMatrix();
 	prepare();
 	mShader.setProjectionMatrix(mProjection);
+
+	uint texUniform = mShader.getUniformLocation("tex");
 	while(particleCount--) {
-		//Particle particle = particles[particleCount];
+		Particle particle = particles[particleCount];
+		ParticleTexture texture = particle.getTexture();
+
+		mShader.start();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
+		mShader.setUniform(texUniform, 0);
+
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		Vector3 position = particles[particleCount].getPosition();
 		float rotation = particles[particleCount].getRotation();
 		float scale = particles[particleCount].getScale();
@@ -95,18 +116,18 @@ void ParticleRenderer::prepare()
 {
 	mShader.start();
 	
-	//GLCall(glEnable(GL_BLEND));
-	//GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-	//GLCall(glDepthMask(GL_FALSE));
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
+	GLCall(glDepthMask(GL_FALSE));
 	
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
 }
 
 void ParticleRenderer::finishRendering()
 {
-	//GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	
-	//GLCall(glDepthMask(GL_TRUE));
-	//GLCall(glDisable(GL_BLEND));
+	GLCall(glDepthMask(GL_TRUE));
+	GLCall(glDisable(GL_BLEND));
 	mShader.stop();
 }

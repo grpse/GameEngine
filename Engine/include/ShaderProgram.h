@@ -10,10 +10,12 @@ public:
 	ShaderProgram();
 	~ShaderProgram();
 
+	void setUniform(uint uniform, uint i);
 	void setUniform(uint uniform, const Vector3& v);
 	void setUniform(uint uniform, const Vector2& v);
 	void setUniform(uint uniform, const Matrix4& m);
 
+	void setUniform(const char* uniform, uint i);
 	void setUniform(const char* uniform, const Vector3& v);
 	void setUniform(const char* uniform, const Vector2& v);
 	void setUniform(const char* uniform, const Matrix4& m);

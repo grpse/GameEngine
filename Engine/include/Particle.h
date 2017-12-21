@@ -1,5 +1,6 @@
 #pragma once
 #include "LinearMath.h"
+#include "ParticleTexture.h"
 
 class Particle {
 
@@ -19,12 +20,20 @@ public:
 		return mScale;
 	}
 
+	void setTexture(ParticleTexture& texture);
+
+	ParticleTexture getTexture() {
+		return texture;
+	}
+
 	void update();
 	bool isAlive();
 	void revive();
 
 private:
 	bool mIsAlive;
+
+	 ParticleTexture texture;
 
 	Vector3 mPosition;
 	Vector3 mVelocity;
