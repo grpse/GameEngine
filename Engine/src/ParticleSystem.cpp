@@ -1,5 +1,6 @@
 #include "ParticleSystem.h"
 #include "Time.h"
+#include "SOIL.h"
 #include <cstdlib>
 
 const float ParticleSystem::GRAVITY = -9.8f;
@@ -13,6 +14,22 @@ ParticleSystem::ParticleSystem(float pps, float speed, float gravityComplient, f
 
 void ParticleSystem::start() {
 	
+}
+
+void ParticleSystem::loadTexture(const char* filepath) {
+	int width, height, channels;
+	byte* imageData = SOIL_load_image(filepath, &width, &height, &channels, SOIL_LOAD_RGBA);
+
+	GLuint tex;
+	glGenTextures(1, &tex);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,  GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+
+	particleTexture.setup(tex, 1);
 }
 
 void ParticleSystem::generateParticles(Vector3 systemCenter) {

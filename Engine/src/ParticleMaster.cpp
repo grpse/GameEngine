@@ -4,7 +4,7 @@
 
 ParticleMaster::ParticleMaster() 
 {
-	mParticleRenderer = new ParticleRenderer();
+	
 }
 
 ParticleMaster::ParticleMaster(const ParticleMaster & other)
@@ -28,7 +28,7 @@ const ParticleMaster& ParticleMaster::operator=(const ParticleMaster& particleMa
 void ParticleMaster::init(const Matrix4 & projection)
 {
 	mParticles = new Particle[kMaxParticles];
-	mParticleRenderer->init(projection);
+	mParticleRenderer.init(projection);
 }
 
 void ParticleMaster::update()
@@ -37,7 +37,6 @@ void ParticleMaster::update()
 	{
 		Particle& particle = mParticles[i];
 		if (particle.isAlive()) {
-			//std::cout << "Particle (" << i << "): " << Math::to_string(particle.getPosition()) << std::endl;
 			particle.update();
 		}
 		// else TODO: mark death buffer if it is dead to let particle be available on next requirement
@@ -46,7 +45,7 @@ void ParticleMaster::update()
 
 void ParticleMaster::render(const Camera& camera)
 {
-	mParticleRenderer->render(mParticles, kMaxParticles, camera);
+	mParticleRenderer.render(mParticles, kMaxParticles, camera);
 }
 
 void ParticleMaster::instantiate(uint numberOfParticles, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect)
