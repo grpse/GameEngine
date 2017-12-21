@@ -77,60 +77,11 @@ void GameLoop::start()
 
 	NOW = SDL_GetPerformanceCounter();
 
-<<<<<<< HEAD
 	//glFrontFace(GL_CCW);
 	GLCall(glEnable(GL_DEPTH_TEST));
 	//GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_FRONT));
 	GLCall(glClearColor(0, 0, .0, 1));
-=======
-	const char* basicShader = R"(
-	#BEGIN VERTEXSHADER
-	void main() {
-		gl_Position = Projection * WorldView * vec4(VertexPosition_ModelSpace, 1);
-	}	
-	#END VERTEXSHADER
-
-	#BEGIN FRAGMENTSHADER
-	void main() {
-		gl_FragColor = vec4(0, 1, 0, 1);
-	}
-	#END FRAGMENTSHADER
-	)";
-
-
-	Vbo vbo = Vbo::create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
-	Vector3 quad[] = {
-		Vector3(-0.5, -0.5, 0),
-		Vector3( 0.5, -0.5, 0),
-		Vector3( 0.5,  0.5, 0),
-		Vector3(-0.5,  0.5, 0)
-	};
-
-	ShaderProgram mShader;
-	mShader.useVertexAttribute();
-	mShader.useWorldViewMatrix();
-	mShader.useProjectionMatrix();
-
-	mShader.buildShadersFromSource(basicShader);
-
-	mShader.start();
-
-	vbo.allocate(sizeof(quad));
-	vbo.storeData(quad, sizeof(quad), 0);
-
-	objects.push_back(vbo);
-
-	uint VertexPosition_ModelSpace = mShader.getAttributeLocation("VertexPosition_ModelSpace");
-
-	Attribute attrib(VertexPosition_ModelSpace, GL_FLOAT, 3);
-
-	attributes.push_back(attrib);
-
-	mShader.stop();
-
-
->>>>>>> 4e3d7754a962e18aa78187ab77eae32fdee73ef5
 
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
