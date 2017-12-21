@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <cstring>
 #include <vector>
 #include <iostream>
 #include "GLErrorHandling.h"
@@ -12,8 +13,10 @@ ShaderProgram::ShaderProgram()
 	PRECODE_VERTEX = STRINGIFY(#version 130\n);
 	PRECODE_FRAGMENT = STRINGIFY(#version 130\n);
 
-	mUniformsUse = { -1, -1, -1, -1, -1 };
-	mAttributesUse = { -1, -1, -1, -1, -1 };
+	//mUniformsUse = { -1, -1, -1, -1, -1 };
+	memset(&mUniformsUse, -1, sizeof(mUniformsUse));
+	//mAttributesUse = { -1, -1, -1, -1, -1 };
+	memset(&mAttributesUse, -1, sizeof(mAttributesUse));
 }
 
 ShaderProgram::~ShaderProgram() 

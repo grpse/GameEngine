@@ -77,11 +77,60 @@ void GameLoop::start()
 
 	NOW = SDL_GetPerformanceCounter();
 
+<<<<<<< HEAD
 	//glFrontFace(GL_CCW);
 	GLCall(glEnable(GL_DEPTH_TEST));
 	//GLCall(glEnable(GL_CULL_FACE));
 	GLCall(glCullFace(GL_FRONT));
 	GLCall(glClearColor(0, 0, .0, 1));
+=======
+	const char* basicShader = R"(
+	#BEGIN VERTEXSHADER
+	void main() {
+		gl_Position = Projection * WorldView * vec4(VertexPosition_ModelSpace, 1);
+	}	
+	#END VERTEXSHADER
+
+	#BEGIN FRAGMENTSHADER
+	void main() {
+		gl_FragColor = vec4(0, 1, 0, 1);
+	}
+	#END FRAGMENTSHADER
+	)";
+
+
+	Vbo vbo = Vbo::create(GL_ARRAY_BUFFER, GL_STATIC_DRAW);
+	Vector3 quad[] = {
+		Vector3(-0.5, -0.5, 0),
+		Vector3( 0.5, -0.5, 0),
+		Vector3( 0.5,  0.5, 0),
+		Vector3(-0.5,  0.5, 0)
+	};
+
+	ShaderProgram mShader;
+	mShader.useVertexAttribute();
+	mShader.useWorldViewMatrix();
+	mShader.useProjectionMatrix();
+
+	mShader.buildShadersFromSource(basicShader);
+
+	mShader.start();
+
+	vbo.allocate(sizeof(quad));
+	vbo.storeData(quad, sizeof(quad), 0);
+
+	objects.push_back(vbo);
+
+	uint VertexPosition_ModelSpace = mShader.getAttributeLocation("VertexPosition_ModelSpace");
+
+	Attribute attrib(VertexPosition_ModelSpace, GL_FLOAT, 3);
+
+	attributes.push_back(attrib);
+
+	mShader.stop();
+
+
+>>>>>>> 4e3d7754a962e18aa78187ab77eae32fdee73ef5
 
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
@@ -165,6 +214,25 @@ void GameLoop::start()
 
 
 
+<<<<<<< HEAD
+=======
+	mWindow.onMouseMove([&](int x, int y) {
+
+		// Compute new orientation
+		// horizontalAngle += mouseSpeed * float(viewport.width / 2.0f - x);
+		// verticalAngle += mouseSpeed * float(viewport.height / 2.0f - y);
+
+		// Vector3 direction(
+		// 	cos(verticalAngle) * sin(horizontalAngle),
+		// 	sin(verticalAngle),
+		// 	cos(verticalAngle) * cos(horizontalAngle)
+		// );
+
+		// mCamera.transform.setLocalRotation(Quaternion(direction));
+		// mCamera.transform.getWorldMatrix();
+	});
+
+>>>>>>> 4e3d7754a962e18aa78187ab77eae32fdee73ef5
 	while (mWindow.isOpen()) {
 		
 		mParticleSystem.emitParticle(Vector3(0, 0, 0));
@@ -186,6 +254,32 @@ void update(ParticleMaster& particleMaster)
 	// RENDERING
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+<<<<<<< HEAD
+=======
+	particleMaster.update();
+
+	// 3d stuff
+
+
+	for (uint i = 0; i < objects.size(); i++) 
+	{
+
+		auto& attrib = attributes[i];
+		auto& vbo = objects[i];
+
+		shader.start();
+
+		
+		Matrix4 view = mCamera.createViewMatrix();
+		Matrix4 worldView = view * world;
+
+		/*
+		std::cout << "WVP Matrix:: " << std::endl;
+		std::cout << Math::to_string(worldViewProjection) << std::endl;
+		*/
+		shader.setWorldViewMatrix(worldView);
+		shader.setProjectionMatrix(mProjectionMatrix);
+>>>>>>> 4e3d7754a962e18aa78187ab77eae32fdee73ef5
 
 	shader.start();
 
