@@ -12,24 +12,20 @@ ParticleSystem::ParticleSystem(float pps, float speed, float gravityComplient, f
 	mLifeLength = lifeLength;
 }
 
-void ParticleSystem::start() {
-	
-}
-
 void ParticleSystem::loadTexture(const char* filepath) {
 	int width, height, channels;
 	byte* imageData = SOIL_load_image(filepath, &width, &height, &channels, SOIL_LOAD_RGBA);
 
-	GLuint tex;
-	glGenTextures(1, &tex);
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,  GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+	mTexture.start();
+	mTexture.setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	mTexture.setParameter(GL_TEXTURE_WRAP_T,  GL_CLAMP_TO_BORDER);
+	mTexture.setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	mTexture.setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	mTexture.setFormat(GL_RGBA);
+	mTexture.loadData(imageData, width, height);
+	mTexture.stop();
 
-	particleTexture.setup(tex, 1);
+	SOIL_free_image_data(imageData);
 }
 
 void ParticleSystem::generateParticles(Vector3 systemCenter) {
@@ -53,7 +49,7 @@ void ParticleSystem::emitParticle(Vector3 center) {
 	velocity = Math::normalize(velocity);
 	velocity *= mSpeed;
 
-	mParticleMaster->instantiateOne(particleTexture, Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
+	mParticleMaster->instantiateOne(mTexture, Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
 }
 
 void ParticleSystem::setParticleMaster(ParticleMaster* particleMaster) {

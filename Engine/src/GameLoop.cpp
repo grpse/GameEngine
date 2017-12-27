@@ -165,8 +165,6 @@ void GameLoop::start()
 
 
 
-<<<<<<< HEAD
-=======
 	mWindow.onMouseMove([&](int x, int y) {
 
 		// Compute new orientation
@@ -183,7 +181,6 @@ void GameLoop::start()
 		// mCamera.transform.getWorldMatrix();
 	});
 
->>>>>>> 4e3d7754a962e18aa78187ab77eae32fdee73ef5
 	while (mWindow.isOpen()) {
 		
 		mParticleSystem.emitParticle(Vector3(0, 0, 0));
@@ -205,32 +202,6 @@ void update(ParticleMaster& particleMaster)
 	// RENDERING
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-<<<<<<< HEAD
-=======
-	particleMaster.update();
-
-	// 3d stuff
-
-
-	for (uint i = 0; i < objects.size(); i++) 
-	{
-
-		auto& attrib = attributes[i];
-		auto& vbo = objects[i];
-
-		shader.start();
-
-		
-		Matrix4 view = mCamera.createViewMatrix();
-		Matrix4 worldView = view * world;
-
-		/*
-		std::cout << "WVP Matrix:: " << std::endl;
-		std::cout << Math::to_string(worldViewProjection) << std::endl;
-		*/
-		shader.setWorldViewMatrix(worldView);
-		shader.setProjectionMatrix(mProjectionMatrix);
->>>>>>> 4e3d7754a962e18aa78187ab77eae32fdee73ef5
 
 	shader.start();
 

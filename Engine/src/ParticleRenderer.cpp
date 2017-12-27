@@ -56,17 +56,9 @@ void ParticleRenderer::render(const Particle particles[], uint particleCount, co
 	uint texUniform = mShader.getUniformLocation("tex");
 	while(particleCount--) {
 		Particle particle = particles[particleCount];
-		ParticleTexture texture = particle.getTexture();
-
 		mShader.start();
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texture.getTextureID());
+		particle.getTexture().start();
 		mShader.setUniform(texUniform, 0);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		Vector3 position = particles[particleCount].getPosition();
 		float rotation = particles[particleCount].getRotation();
@@ -79,6 +71,8 @@ void ParticleRenderer::render(const Particle particles[], uint particleCount, co
         GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0));
 
 		GLCall(glDrawArrays(GL_QUADS, 0, 4));
+
+		particle.getTexture().stop();
 	}
 
 	finishRendering();

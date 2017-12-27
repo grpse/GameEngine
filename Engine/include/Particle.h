@@ -1,6 +1,6 @@
 #pragma once
 #include "LinearMath.h"
-#include "ParticleTexture.h"
+#include "Texture2D.h"
 
 class Particle {
 
@@ -20,10 +20,10 @@ public:
 		return mScale;
 	}
 
-	void setTexture(ParticleTexture& texture);
+	void setTexture(Texture2D& texture);
 
-	ParticleTexture getTexture() {
-		return texture;
+	Texture2D getTexture() const {
+		return mTexture;
 	}
 
 	void update();
@@ -33,7 +33,7 @@ public:
 private:
 	bool mIsAlive;
 
-	 ParticleTexture texture;
+	Texture2D mTexture;
 
 	Vector3 mPosition;
 	Vector3 mVelocity;
