@@ -163,24 +163,6 @@ void GameLoop::start()
 		mCamera.transform.getWorldMatrix();
 	});
 
-
-
-	mWindow.onMouseMove([&](int x, int y) {
-
-		// Compute new orientation
-		// horizontalAngle += mouseSpeed * float(viewport.width / 2.0f - x);
-		// verticalAngle += mouseSpeed * float(viewport.height / 2.0f - y);
-
-		// Vector3 direction(
-		// 	cos(verticalAngle) * sin(horizontalAngle),
-		// 	sin(verticalAngle),
-		// 	cos(verticalAngle) * cos(horizontalAngle)
-		// );
-
-		// mCamera.transform.setLocalRotation(Quaternion(direction));
-		// mCamera.transform.getWorldMatrix();
-	});
-
 	while (mWindow.isOpen()) {
 		
 		mParticleSystem.emitParticle(Vector3(0, 0, 0));
@@ -202,15 +184,6 @@ void update(ParticleMaster& particleMaster)
 	// RENDERING
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-
-	shader.start();
-
-
-	// GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
-	// GLCall(glEnableVertexAttribArray(0));
-	// GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0));
-
-	// GLCall(glDrawArrays(GL_QUADS, 0, 4));
 	//3d stuff
 	particleMaster.update();
 	particleMaster.render(mCamera);

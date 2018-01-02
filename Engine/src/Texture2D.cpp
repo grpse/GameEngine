@@ -1,8 +1,10 @@
 #include "Texture2D.h"
+#include "GLErrorHandling.h"
+#include <iostream>
 
 Texture2D::Texture2D()
 {
-    glGenTextures(1, &mID);
+    GLCall(glGenTextures(1, &mID));
     setupDefaults();
 }
 
@@ -19,6 +21,17 @@ Texture2D::Texture2D(const Texture2D& other)
     mWidth = other.mWidth;
     mHeight = other.mHeight;
     mFormat = other.mFormat;
+    std::cout << "Copy Texture ID: " << mID << " from Texture ID " << other.mID << std::endl;
+}
+
+Texture2D& Texture2D::operator=(const Texture2D& other)
+{
+    mID = other.mID;
+    mIndex = other.mIndex;
+    mWidth = other.mWidth;
+    mHeight = other.mHeight;
+    mFormat = other.mFormat;
+    std::cout << "Copy Texture ID: " << mID << " from Texture ID " << other.mID << std::endl;
 }
 
 void Texture2D::setIndex(uint index)
@@ -43,14 +56,14 @@ uint Texture2D::getFormat() const
 
 void Texture2D::setParameter(uint name, uint value)
 {
-    glTexParameteri(GL_TEXTURE_2D, name, value);
+    GLCall(glTexParameteri(GL_TEXTURE_2D, name, value));
 }
 
 void Texture2D::loadData(const void* data, uint width, uint height)
 {
     mWidth = width;
     mHeight = height;
-    glTexImage2D(
+    GLCall(glTexImage2D(
         GL_TEXTURE_2D, 
         0, 
         GL_RGBA, 
@@ -60,23 +73,25 @@ void Texture2D::loadData(const void* data, uint width, uint height)
         mFormat, 
         GL_UNSIGNED_BYTE, 
         data
-    );
+    ));
 }
 
 void Texture2D::generateMipMaps()
 {
-    glGenerateMipmap(GL_TEXTURE_2D);
+    GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 }
 
 void Texture2D::start() 
 {
-    glActiveTexture(GL_TEXTURE0 + mIndex);
-    glBindTexture(GL_TEXTURE_2D, mID);
+    // std::cout << "Texture Index: " << GL_TEXTURE0 + mIndex << std::endl;
+    // std::cout << "Texture ID: " << mID << std::endl;
+    GLCall(glActiveTexture(GL_TEXTURE0 + mIndex));
+    GLCall(glBindTexture(GL_TEXTURE_2D, mID));
 }
 
 void Texture2D::stop()
 {
-    glBindTexture(GL_TEXTURE_2D, 0);
+    GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }
 
 uint Texture2D::getWidth() const 

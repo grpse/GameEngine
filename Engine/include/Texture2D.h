@@ -23,6 +23,7 @@ public:
     uint getWidth() const;
     uint getHeight() const;
 
+    Texture2D& operator=(const Texture2D& other);
 private:
     uint mID;
     uint mIndex;

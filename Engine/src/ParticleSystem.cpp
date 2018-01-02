@@ -16,14 +16,17 @@ void ParticleSystem::loadTexture(const char* filepath) {
 	int width, height, channels;
 	byte* imageData = SOIL_load_image(filepath, &width, &height, &channels, SOIL_LOAD_RGBA);
 
-	mTexture.start();
-	mTexture.setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	mTexture.setParameter(GL_TEXTURE_WRAP_T,  GL_CLAMP_TO_BORDER);
-	mTexture.setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	mTexture.setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	mTexture.setFormat(GL_RGBA);
-	mTexture.loadData(imageData, width, height);
-	mTexture.stop();
+	Texture2D texture;
+	texture.start();
+	texture.setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	texture.setParameter(GL_TEXTURE_WRAP_T,  GL_CLAMP_TO_BORDER);
+	texture.setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	texture.setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	texture.setFormat(GL_RGBA);
+	texture.loadData(imageData, width, height);
+	texture.stop();
+
+	mParticleMaster->setTexture2D(texture);
 
 	SOIL_free_image_data(imageData);
 }
@@ -49,7 +52,7 @@ void ParticleSystem::emitParticle(Vector3 center) {
 	velocity = Math::normalize(velocity);
 	velocity *= mSpeed;
 
-	mParticleMaster->instantiateOne(mTexture, Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
+	mParticleMaster->instantiateOne(Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
 }
 
 void ParticleSystem::setParticleMaster(ParticleMaster* particleMaster) {

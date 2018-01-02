@@ -19,8 +19,9 @@ public:
 	void update();
 	void render(const Camera& camera);
 	void instantiate(uint numberOfParticles, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
-	void instantiateOne(Texture2D& texture, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
-
+	void instantiateOne(const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
+	void setTexture2D(const Texture2D& texture);
+	
 private:
 	Particle* mParticles;
 	ParticleRenderer mParticleRenderer;

@@ -51,13 +51,14 @@ void ParticleRenderer::render(const Particle particles[], uint particleCount, co
 {
 	Matrix4 view = camera.createViewMatrix();
 	prepare();
+
 	mShader.setProjectionMatrix(mProjection);
 
 	uint texUniform = mShader.getUniformLocation("tex");
 	while(particleCount--) {
 		Particle particle = particles[particleCount];
-		mShader.start();
-		particle.getTexture().start();
+		//mShader.start();
+		mTexture.start();
 		mShader.setUniform(texUniform, 0);
 
 		Vector3 position = particles[particleCount].getPosition();
@@ -71,11 +72,15 @@ void ParticleRenderer::render(const Particle particles[], uint particleCount, co
         GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0));
 
 		GLCall(glDrawArrays(GL_QUADS, 0, 4));
-
-		particle.getTexture().stop();
+		mTexture.stop();
 	}
 
 	finishRendering();
+}
+
+void ParticleRenderer::setTexture2D(const Texture2D& texture)
+{
+	mTexture = texture;
 }
 
 void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view)

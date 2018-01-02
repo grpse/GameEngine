@@ -1,6 +1,5 @@
 #pragma once
 #include "LinearMath.h"
-#include "Texture2D.h"
 
 class Particle {
 
@@ -20,10 +19,8 @@ public:
 		return mScale;
 	}
 
-	void setTexture(Texture2D& texture);
-
-	Texture2D getTexture() const {
-		return mTexture;
+	inline float lifePercentage() const {
+		return mElapsedTime / mLifeLength;
 	}
 
 	void update();
@@ -32,8 +29,6 @@ public:
 
 private:
 	bool mIsAlive;
-
-	Texture2D mTexture;
 
 	Vector3 mPosition;
 	Vector3 mVelocity;

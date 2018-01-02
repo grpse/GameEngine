@@ -193,7 +193,7 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	uint endVertShaderPosition = source.find(END_VERTEXSHADER);
 	uint vertSourcePositionsCount = endVertShaderPosition - beginVertShaderPosition;
 	std::string vertShaderSource = PRECODE_VERTEX + STRINGIFY(\n) + source.substr(beginVertShaderPosition, vertSourcePositionsCount);
-	std::cout << vertShaderSource << std::endl;
+	// std::cout << vertShaderSource << std::endl;
 	const char* vertShaderSourceStr = vertShaderSource.c_str();
 	buildVertShaderFromSource(vertShaderSourceStr);
 
@@ -207,7 +207,7 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	uint fragSourcePositionsCount = endFragShaderPosition - beginFragShaderPosition;
 	std::string fragShaderSource = PRECODE_FRAGMENT + STRINGIFY(\n) + source.substr(beginFragShaderPosition, fragSourcePositionsCount);
 	
-	std::cout << fragShaderSource << std::endl;
+	// std::cout << fragShaderSource << std::endl;
 	const char* fragShaderSourceStr = fragShaderSource.c_str();
 	buildFragShaderFromSource(fragShaderSourceStr);
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "LinearMath.h"
 #include "ParticleMaster.h"
-#include "Texture2D.h"
 #include "Typedefs.h"
 
 class ParticleSystem {
@@ -22,7 +21,6 @@ private:
 	float mSpeed;
 	float mGravityComplient;
 	float mLifeLength;
-	Texture2D mTexture;
 	
 	ParticleMaster* mParticleMaster;
 
