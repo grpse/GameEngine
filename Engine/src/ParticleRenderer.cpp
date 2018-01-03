@@ -52,11 +52,11 @@ void ParticleRenderer::render(const Particle particles[], uint particleCount, co
 	Matrix4 view = camera.createViewMatrix();
 	prepare();
 	mShader.setProjectionMatrix(mProjection);
+	//mShader.start();
 
 	uint texUniform = mShader.getUniformLocation("tex");
 	while(particleCount--) {
 		Particle particle = particles[particleCount];
-		mShader.start();
 		particle.getTexture().start();
 		mShader.setUniform(texUniform, 0);
 

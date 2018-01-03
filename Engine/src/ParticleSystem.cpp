@@ -28,6 +28,21 @@ void ParticleSystem::loadTexture(const char* filepath) {
 	SOIL_free_image_data(imageData);
 }
 
+void ParticleSystem::update()
+{
+	mParticleMaster.update();
+}
+
+void ParticleSystem::render(const Camera& camera)
+{
+	mParticleMaster.render(camera);
+}
+
+void ParticleSystem::setProjectionMatrix(const Matrix4& projection)
+{
+	mParticleMaster.init(projection);
+}
+
 void ParticleSystem::generateParticles(Vector3 systemCenter) {
 	float delta = (float)Time::getDeltaTime();
 	float particlesToCreate = mPps * delta;
@@ -49,11 +64,7 @@ void ParticleSystem::emitParticle(Vector3 center) {
 	velocity = Math::normalize(velocity);
 	velocity *= mSpeed;
 
-	mParticleMaster->instantiateOne(mTexture, Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
-}
-
-void ParticleSystem::setParticleMaster(ParticleMaster* particleMaster) {
-	mParticleMaster = particleMaster;
+	mParticleMaster.instantiateOne(mTexture, Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
 }
 
 float ParticleSystem::random() 

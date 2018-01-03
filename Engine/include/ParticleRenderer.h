@@ -6,6 +6,7 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "Texture2D.h"
 
 
 class ParticleRenderer {
@@ -22,8 +23,8 @@ private:
 	Matrix4 mProjection;
 	VertexArray mVA;
 	VertexBuffer mVB;
+	Texture2D mTexture;
 	uint mBuffer;
-
 
 	void updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view);
 	void prepare();

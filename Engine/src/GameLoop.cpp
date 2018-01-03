@@ -24,7 +24,7 @@ Window mWindow;
 Camera mCamera;
 Matrix4 mProjectionMatrix;
 
-void update(ParticleMaster& particleMaster);
+void update();
 
 const uint ArrowUp = 82;
 const uint ArrowDown = 81;
@@ -96,12 +96,9 @@ void GameLoop::start()
 
 	mCamera.transform.setLocalPosition({ 0, 0, 10 });
 
-	ParticleMaster mParticleMaster;
-	mParticleMaster.init(mProjectionMatrix);
-
 	ParticleSystem mParticleSystem(50.0, 25, 1, 4);	
+	mParticleSystem.setProjectionMatrix(mProjectionMatrix);
 	mParticleSystem.loadTexture("start.png");
-	mParticleSystem.setParticleMaster(&mParticleMaster);
 
 	Vector3 position = mCamera.transform.getLocalPosition();
 	Vector3 rotation = Math::eulerAngles(mCamera.transform.getLocalRotation()) * 3.14159f / 180.f;
@@ -182,10 +179,13 @@ void GameLoop::start()
 	});
 
 	while (mWindow.isOpen()) {
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));	
 		
 		mParticleSystem.emitParticle(Vector3(0, 0, 0));
-
-		update(mParticleMaster);
+		mParticleSystem.update();
+		mParticleSystem.render(mCamera);
+		
+		update();
 
 		LAST = NOW;
 		NOW = SDL_GetPerformanceCounter();
@@ -197,23 +197,10 @@ void GameLoop::start()
 	mWindow.finish();
 }
 
-void update(ParticleMaster& particleMaster)
+void update()
 {
-	// RENDERING
-	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
-
-	shader.start();
-
-
-	// GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
-	// GLCall(glEnableVertexAttribArray(0));
-	// GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0));
-
-	// GLCall(glDrawArrays(GL_QUADS, 0, 4));
 	//3d stuff
-	particleMaster.update();
-	particleMaster.render(mCamera);
+
 
 	// 2d stuff
 
