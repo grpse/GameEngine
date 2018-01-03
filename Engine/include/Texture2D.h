@@ -18,8 +18,8 @@ public:
     void setParameter(uint name, uint value);
     void loadData(const void* data, uint width, uint height);
     void generateMipMaps();
-    void start();
-    void stop();
+    void start() const;
+    void stop() const;
     uint getWidth() const;
     uint getHeight() const;
 

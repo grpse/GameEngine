@@ -15,7 +15,7 @@ public:
 	void setProjectionMatrix(const Matrix4& projection);
 	void generateParticles(Vector3 systemCenter);
 	void emitParticle(Vector3 center);
-	void loadTexture(const char* filepath);
+	void loadTexture(const Texture2D& texture2d);
 	void update();
 	void render(const Camera& camera);
 

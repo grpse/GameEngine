@@ -13,6 +13,12 @@ ShaderProgram::ShaderProgram()
 	PRECODE_VERTEX = STRINGIFY(#version 130\n);
 	PRECODE_FRAGMENT = STRINGIFY(#version 130\n);
 
+	ATTRIBUTE_VERTEX_POSITION = "";
+	ATTRIBUTE_NORMAL_POSITION = "";
+	ATTRIBUTE_TEXTURECOORD0 = "";
+	ATTRIBUTE_TEXTURECOORD1 = "";
+	ATTRIBUTE_TEXTURECOORD2 = "";
+
 	//mUniformsUse = { -1, -1, -1, -1, -1 };
 	memset(&mUniformsUse, -1, sizeof(mUniformsUse));
 	//mAttributesUse = { -1, -1, -1, -1, -1 };
@@ -148,27 +154,27 @@ void ShaderProgram::useWorldViewProjectionMatrix()
 
 void ShaderProgram::useVertexAttribute() 
 {
-	PRECODE_VERTEX += STRINGIFY(in vec3 VertexPosition_ModelSpace;\n);
+	ATTRIBUTE_VERTEX_POSITION += STRINGIFY(in vec3 VertexPosition_ModelSpace;\n);
 }
 
 void ShaderProgram::useNormalAttribute() 
 {
-	PRECODE_VERTEX += STRINGIFY(in vec3 NormalPosition_ModelSpace;\n);
+	ATTRIBUTE_NORMAL_POSITION += STRINGIFY(in vec3 NormalPosition_ModelSpace;\n);
 }
 
 void ShaderProgram::useTextureCoord0Attribute()
 {
-	PRECODE_VERTEX += STRINGIFY(in vec2 TextureCoord0;\n);
+	ATTRIBUTE_TEXTURECOORD0 += STRINGIFY(in vec2 TextureCoord0;\n);
 }
 
 void ShaderProgram::useTextureCoord1Attribute()
 {
-	PRECODE_VERTEX += STRINGIFY(in vec2 TextureCoord1;\n);
+	ATTRIBUTE_TEXTURECOORD1 += STRINGIFY(in vec2 TextureCoord1;\n);
 }
 
 void ShaderProgram::useTextureCoord2Attribute()
 {
-	PRECODE_VERTEX += STRINGIFY(in vec2 TextureCoord2;\n);
+	ATTRIBUTE_TEXTURECOORD2 += STRINGIFY(in vec2 TextureCoord2;\n);
 }
 
 void ShaderProgram::setCustomUniform(std::string customUniform)
@@ -192,7 +198,15 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	uint beginVertShaderPosition = source.find(BEGIN_VERTEXSHADER) + BEGIN_VERTEXSHADER.length();
 	uint endVertShaderPosition = source.find(END_VERTEXSHADER);
 	uint vertSourcePositionsCount = endVertShaderPosition - beginVertShaderPosition;
-	std::string vertShaderSource = PRECODE_VERTEX + STRINGIFY(\n) + source.substr(beginVertShaderPosition, vertSourcePositionsCount);
+	std::string vertShaderSource = 
+		PRECODE_VERTEX + 
+		ATTRIBUTE_VERTEX_POSITION +
+		ATTRIBUTE_NORMAL_POSITION +
+		ATTRIBUTE_TEXTURECOORD0 +
+		ATTRIBUTE_TEXTURECOORD1 +
+		ATTRIBUTE_TEXTURECOORD2 +
+		STRINGIFY(\n) + source.substr(beginVertShaderPosition, vertSourcePositionsCount);
+		
 	std::cout << vertShaderSource << std::endl;
 	const char* vertShaderSourceStr = vertShaderSource.c_str();
 	buildVertShaderFromSource(vertShaderSourceStr);

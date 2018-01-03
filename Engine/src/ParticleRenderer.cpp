@@ -22,7 +22,6 @@ static Vector2 uvs[] = {
 ParticleRenderer::ParticleRenderer()
 {
 	mShader.useVertexAttribute();
-	mShader.useTextureCoord0Attribute();
 	mShader.useProjectionMatrix();
 	mShader.useWorldViewMatrix();
 
@@ -47,17 +46,16 @@ void ParticleRenderer::init(const Matrix4 & projection)
 	mShader.stop();
 }
 
-void ParticleRenderer::render(const Particle particles[], uint particleCount, const Camera & camera)
+void ParticleRenderer::render(const Texture2D& texture2d, const Particle particles[], uint particleCount, const Camera & camera)
 {
 	Matrix4 view = camera.createViewMatrix();
 	prepare();
-	mShader.setProjectionMatrix(mProjection);
-	//mShader.start();
-
+	
+	texture2d.start();
 	uint texUniform = mShader.getUniformLocation("tex");
+
 	while(particleCount--) {
 		Particle particle = particles[particleCount];
-		particle.getTexture().start();
 		mShader.setUniform(texUniform, 0);
 
 		Vector3 position = particles[particleCount].getPosition();
@@ -65,16 +63,14 @@ void ParticleRenderer::render(const Particle particles[], uint particleCount, co
 		float scale = particles[particleCount].getScale();
 		updateModelViewMatrix(position, rotation, scale, view);
 
-		//uint attributeLocation = mShader.getAttributeLocation("VertexPosition_ModelSpace");
 		GLCall(glEnableVertexAttribArray(0));
 		GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
         GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (const void*)0));
 
 		GLCall(glDrawArrays(GL_QUADS, 0, 4));
-
-		particle.getTexture().stop();
 	}
-
+	
+	texture2d.stop();
 	finishRendering();
 }
 
@@ -101,15 +97,14 @@ void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rota
 	// rotate (camera facing) only in z
 	world = Math::rotate(world, Math::radians(rotation), Vector3(0, 0, 1));
 	world = Math::scale(world, Vector3(scale, scale, scale));
-
-
+	
 	mShader.setWorldViewMatrix(worldView);
 }
 
 void ParticleRenderer::prepare()
 {
 	mShader.start();
-	
+	mShader.setProjectionMatrix(mProjection);
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
 	GLCall(glDepthMask(GL_FALSE));

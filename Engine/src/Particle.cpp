@@ -7,11 +7,6 @@ Particle::Particle()
 	mIsAlive = false;
 }
 
-void Particle::setTexture(Texture2D& texture)
-{
-	mTexture = texture;
-}
-
 void Particle::setup(Vector3 position, Vector3 velocity, float rotation, float scale, float life, float gravityEffect)
 {
 	mOriginalPosition = mPosition  = position;

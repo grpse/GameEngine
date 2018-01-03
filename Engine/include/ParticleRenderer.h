@@ -16,14 +16,13 @@ public:
 	~ParticleRenderer();
 
 	void init(const Matrix4 & projection);
-	void render(const Particle particles[], uint particleCount, const Camera& camera);
+	void render(const Texture2D& texture2d, const Particle particles[], uint particleCount, const Camera& camera);
 
 private:
 	ShaderProgram mShader;
 	Matrix4 mProjection;
 	VertexArray mVA;
 	VertexBuffer mVB;
-	Texture2D mTexture;
 	uint mBuffer;
 
 	void updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view);

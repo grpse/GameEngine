@@ -1,6 +1,5 @@
 #include "ParticleSystem.h"
 #include "Time.h"
-#include "SOIL.h"
 #include <cstdlib>
 
 const float ParticleSystem::GRAVITY = -9.8f;
@@ -12,20 +11,15 @@ ParticleSystem::ParticleSystem(float pps, float speed, float gravityComplient, f
 	mLifeLength = lifeLength;
 }
 
-void ParticleSystem::loadTexture(const char* filepath) {
-	int width, height, channels;
-	byte* imageData = SOIL_load_image(filepath, &width, &height, &channels, SOIL_LOAD_RGBA);
-
+void ParticleSystem::loadTexture(const Texture2D& texture2d)
+{
+	mTexture = texture2d;
 	mTexture.start();
 	mTexture.setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	mTexture.setParameter(GL_TEXTURE_WRAP_T,  GL_CLAMP_TO_BORDER);
 	mTexture.setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	mTexture.setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	mTexture.setFormat(GL_RGBA);
-	mTexture.loadData(imageData, width, height);
 	mTexture.stop();
-
-	SOIL_free_image_data(imageData);
 }
 
 void ParticleSystem::update()
@@ -35,7 +29,7 @@ void ParticleSystem::update()
 
 void ParticleSystem::render(const Camera& camera)
 {
-	mParticleMaster.render(camera);
+	mParticleMaster.render(mTexture, camera);
 }
 
 void ParticleSystem::setProjectionMatrix(const Matrix4& projection)
@@ -64,7 +58,7 @@ void ParticleSystem::emitParticle(Vector3 center) {
 	velocity = Math::normalize(velocity);
 	velocity *= mSpeed;
 
-	mParticleMaster.instantiateOne(mTexture, Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
+	mParticleMaster.instantiateOne(Vector3(center), velocity, 0, 1, mLifeLength, mGravityComplient);
 }
 
 float ParticleSystem::random() 

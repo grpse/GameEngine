@@ -69,13 +69,13 @@ void Texture2D::generateMipMaps()
     GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 }
 
-void Texture2D::start() 
+void Texture2D::start() const
 {
     GLCall(glActiveTexture(GL_TEXTURE0 + mIndex));
     GLCall(glBindTexture(GL_TEXTURE_2D, mID));
 }
 
-void Texture2D::stop()
+void Texture2D::stop() const
 {
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }
