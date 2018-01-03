@@ -21,7 +21,6 @@ Texture2D::Texture2D(const Texture2D& other)
     mWidth = other.mWidth;
     mHeight = other.mHeight;
     mFormat = other.mFormat;
-    std::cout << "Copy Texture ID: " << mID << " from Texture ID " << other.mID << std::endl;
 }
 
 Texture2D& Texture2D::operator=(const Texture2D& other)
@@ -31,7 +30,7 @@ Texture2D& Texture2D::operator=(const Texture2D& other)
     mWidth = other.mWidth;
     mHeight = other.mHeight;
     mFormat = other.mFormat;
-    std::cout << "Copy Texture ID: " << mID << " from Texture ID " << other.mID << std::endl;
+    return *this;
 }
 
 void Texture2D::setIndex(uint index)
