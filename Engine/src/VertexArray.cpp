@@ -15,15 +15,28 @@ VertexArray::~VertexArray()
 void VertexArray::bind() const
 {
     GLCall(glBindVertexArray(mID));
+    const auto& elements = mVertexBufferLayout.getElements();
+    for (uint i = 0; i < elements.size(); i++) 
+    {
+        GLCall(glEnableVertexAttribArray(i));
+    }
+
 }
 
 void VertexArray::unbind() const
 {
+    const auto& elements = mVertexBufferLayout.getElements();
+    for (uint i = 0; i < elements.size(); i++) 
+    {
+        GLCall(glDisableVertexAttribArray(i));
+    }
     GLCall(glBindVertexArray(0));
 }
 
-void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
+void VertexArray::setVertexBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
 {
+    mVertexBufferLayout = layout;
+
     bind();
     vb.bind();
 
@@ -39,11 +52,16 @@ void VertexArray::addBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
             i, 
             element.count, 
             element.type, 
-            element.normalized, 
+            element.normalized ? GL_TRUE : GL_FALSE, 
             layout.getStride(),
-            (const void*)offset         
+            (const void*)offset
         ));
 
         offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
+
+        GLCall(glDisableVertexAttribArray(i));
     }
+
+    vb.unbind();
+    unbind();
 }

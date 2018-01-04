@@ -3,10 +3,8 @@
 #include "ShaderProgram.h"
 #include "Particle.h"
 #include "Camera.h"
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
 #include "Texture2D.h"
+#include "VertexArray.h"
 
 
 class ParticleRenderer {
@@ -21,9 +19,8 @@ public:
 private:
 	ShaderProgram mShader;
 	Matrix4 mProjection;
-	VertexArray mVA;
-	VertexBuffer mVB;
-	uint mBuffer;
+	VertexArray mVertexArray;
+	uint mTextureUniformLocation;
 
 	void updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view);
 	void prepare();
