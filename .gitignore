@@ -11,7 +11,7 @@
 *.userprefs
 
 # Build results
-[Bb]uild/
+#[Bb]uild/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
@@ -30,7 +30,7 @@ bld/
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+#[Bb]uild[Ll]og.*
 
 # NUNIT
 *.VisualState.xml

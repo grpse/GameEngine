@@ -14,7 +14,7 @@
 #include "Loader.h"
 #include <SOIL.h>
 
-#define RC_INVOKED 1
+
 
 Uint64 NOW = 0;
 Uint64 LAST = 0;

@@ -27,7 +27,8 @@ include_directories(${SOIL_SOURCE_DIR}/src)
 # LINK LIBRARIES
 if (WIN32)
     # SETUP EXPORT DLL FOR WINDOWS
-    target_compile_definitions(RenderEngine PRIVATE ENGINE_EXPORTING=1)
+    #target_compile_definitions(Engine PRIVATE ENGINE_EXPORTING)
+    add_definitions(-DENGINE_EXPORTING)
     set(SDL2_LIBRARIES 
         SDL2-static
         SDL2main

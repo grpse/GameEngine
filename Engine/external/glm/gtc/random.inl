@@ -4,7 +4,7 @@
 #include "../geometric.hpp"
 #include "../exponential.hpp"
 #include <cstdlib>
-#include <ctime>
+#include <time.h>
 #include <cassert>
 
 namespace glm{
