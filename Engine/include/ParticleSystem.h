@@ -2,6 +2,7 @@
 #include "LinearMath.h"
 #include "ParticleMaster.h"
 #include "Typedefs.h"
+#include "Texture2D.h"
 
 class ParticleSystem {
 
@@ -23,7 +24,7 @@ private:
 	float mSpeed;
 	float mGravityComplient;
 	float mLifeLength;
-	
+	Texture2D mTexture;
 	ParticleMaster mParticleMaster;
 
 	float random();

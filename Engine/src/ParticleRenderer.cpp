@@ -76,11 +76,6 @@ void ParticleRenderer::render(const Texture2D& texture2d, const Particle particl
 	finishRendering();
 }
 
-void ParticleRenderer::setTexture2D(const Texture2D& texture)
-{
-	mTexture = texture;
-}
-
 void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view)
 {
 	Matrix4 world = Math::translate(position);

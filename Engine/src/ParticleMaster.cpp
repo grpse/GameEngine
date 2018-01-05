@@ -77,8 +77,3 @@ void ParticleMaster::instantiateOne(const Vector3& position, const Vector3& velo
 		mParticles[0].setup(position, velocity, rotation, scale, lifeLength, gravityEffect);
 	}
 }
-
-void ParticleMaster::setTexture2D(const Texture2D& texture)
-{
-	mParticleRenderer.setTexture2D(texture);
-}

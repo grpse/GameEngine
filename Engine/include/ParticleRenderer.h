@@ -16,8 +16,7 @@ public:
 	~ParticleRenderer();
 
 	void init(const Matrix4 & projection);
-	void render(const Particle particles[], uint particleCount, const Camera& camera);
-	void setTexture2D(const Texture2D& texture);
+	void render(const Texture2D& texture, const Particle particles[], uint particleCount, const Camera& camera);
 
 private:
 	ShaderProgram mShader;
