@@ -7,8 +7,12 @@ class IndexBuffer {
 
 public:
     IndexBuffer();
+	IndexBuffer(const IndexBuffer& other);
     IndexBuffer(const uint* data, uint count);
     ~IndexBuffer();
+
+	void generateBuffer();
+	void deleteBuffer();
 
     void load(const uint* data, uint count);
 
@@ -22,4 +26,6 @@ public:
 private:
     uint mID;
     uint mCount;
+
+	bool mWasGenerated;
 };

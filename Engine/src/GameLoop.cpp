@@ -13,7 +13,9 @@
 #include "VertexBufferLayout.h"
 #include "Loader.h"
 #include <SOIL.h>
-
+#include "Mesh.h"
+#include "MeshRenderer.h"
+#include "Transform.h"
 
 
 Uint64 NOW = 0;
@@ -91,7 +93,7 @@ void GameLoop::start()
 		std::cout << "Foi " << key << std::endl;
 	
 		float moveDiff = (float)(50.0 * Time::getDeltaTime());
-		float rotationDiff = (float) (50.0 * Time::getDeltaTime());
+		float rotationDiff = (float) (1.0 * Time::getDeltaTime());
 		Vector3 front = mCamera.transform.getFront();
 		Vector3 right = mCamera.transform.getRight();
 		switch(key) {
@@ -130,18 +132,19 @@ void GameLoop::start()
 		
 		mCamera.transform.setLocalPosition(position);
 		mCamera.transform.setLocalRotation(Quaternion(rotation));
-		
-		mCamera.printPositionAndTarget();
-
-		// if (Space == key) {
-		// 	mParticleMaster.instantiateOne({ 0, 0, 0 }, Vector3(0, 20, 0), 10, 1, 5, 1);
-		// }
-		
-		std::cout << "Rotation Euler: " << Math::to_string(rotation) << std::endl;
 
 		// UPDATE FRONT AND RIGHT VECTORS
 		mCamera.transform.getWorldMatrix();
 	});
+
+	MeshRenderer meshRenderer;
+	meshRenderer.setProjection(mProjectionMatrix);
+	Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
+	Transform suzanneTransform;
+
+	suzanneTransform.setLocalPosition({ 0, 0, 0 });
+	suzanneTransform.setLocalScale({ 1, 1, 1 });
+	suzanneTransform.setLocalRotation(Vector3(0, 0, 0));
 
 	while (mWindow.isOpen()) {
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));	
@@ -149,6 +152,8 @@ void GameLoop::start()
 		mParticleSystem.emitParticle(Vector3(0, 0, 0));
 		mParticleSystem.update();
 		mParticleSystem.render(mCamera);
+		
+		meshRenderer.render(mCamera, suzanne, suzanneTransform);
 		
 		update();
 

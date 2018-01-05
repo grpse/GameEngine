@@ -165,6 +165,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\objloader\objloader.hpp" />
+    <ClInclude Include="external\objloader\tangentspace.hpp" />
+    <ClInclude Include="external\objloader\vboindexer.hpp" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\GameLoop.h" />
     <ClInclude Include="include\GLErrorHandling.h" />
@@ -173,6 +176,7 @@
     <ClInclude Include="include\Loader.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshRenderer.h" />
+    <ClInclude Include="include\MeshShaderSource.h" />
     <ClInclude Include="include\OSExport.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\ParticleBasicShader.h" />
@@ -192,6 +196,9 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="external\objloader\objloader.cpp" />
+    <ClCompile Include="external\objloader\tangentspace.cpp" />
+    <ClCompile Include="external\objloader\vboindexer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\GameLoop.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />

@@ -6,20 +6,36 @@ IndexBuffer::IndexBuffer()
 
 }
 
+IndexBuffer::IndexBuffer(const IndexBuffer& other)
+{
+	mID = other.mID;
+	mCount = other.mCount;
+}
+
 IndexBuffer::IndexBuffer(const uint* data, uint count)
-    : mCount(count)
 {
     load(data, count);
 }
 
 IndexBuffer::~IndexBuffer()
 {
+
+}
+
+void IndexBuffer::generateBuffer()
+{
+    GLCall(glGenBuffers(1, &mID));
+}
+
+void IndexBuffer::deleteBuffer()
+{
     GLCall(glDeleteBuffers(1, &mID));
 }
 
 void IndexBuffer::load(const uint* data, uint count)
 {
-    GLCall(glGenBuffers(1, &mID));
+	mCount = count;
+	generateBuffer();
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mID));
     GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint), data, GL_STATIC_DRAW));
 }

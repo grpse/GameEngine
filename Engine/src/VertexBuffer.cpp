@@ -20,7 +20,8 @@ void VertexBuffer::load(const void* data, uint size)
 
 VertexBuffer::~VertexBuffer()
 {
-    GLCall(glDeleteBuffers(1, &mID));
+	//TODO: Discover if deleting Vertex Array Object, deletes the Vertex Buffer Object
+    //GLCall(glDeleteBuffers(1, &mID));
 }
 
 void VertexBuffer::bind() const

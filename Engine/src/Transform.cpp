@@ -7,6 +7,10 @@ Transform::Transform() {
     mLocalPosition = Vector3(0, 0, 0);
     mLocalScale = Vector3(1, 1, 1);
     mLocalRotation = Quaternion(0, 0, 0, 0);
+	mMaxChildren = 64;
+	mChildCount = 0;
+
+	mChildren = new Transform*[mMaxChildren];
 }
 
 Transform::~Transform() {
@@ -37,18 +41,37 @@ void Transform::setParent(Transform* parent) {
 }
 
 void Transform::addChild(Transform* child) {
-    if (child != nullptr) mChildren.push_back(child);
+	if (child != nullptr) {
+		if (mChildCount >= mMaxChildren) {
+			mMaxChildren *= 2;
+			Transform** tempChildrenContainer;
+			tempChildrenContainer = new Transform*[mMaxChildren];
+
+			memcpy(tempChildrenContainer, mChildren, mMaxChildren);
+			
+			delete mChildren;
+
+			mChildren = tempChildrenContainer;
+		}
+
+		uint childNumber = mChildCount;
+		mChildren[childNumber] = child;
+		mChildCount++;
+	}
 }
 
 void Transform::removeChild(Transform* child) {
-    unsigned int childToRemoveIndex = -1;
-    while (childToRemoveIndex + 1 < mChildren.size()) {
+    uint childToRemoveIndex = -1;
+    while (childToRemoveIndex + 1 < mChildCount) {
         childToRemoveIndex++;
         if (mChildren[childToRemoveIndex] == child) break;
     }
 
     if (childToRemoveIndex >= 0) {
-        mChildren.erase(mChildren.begin() + childToRemoveIndex);
+
+		// Copy next to current location
+		for (uint i = childToRemoveIndex; i < mChildCount - 1; i++)
+			mChildren[i] = mChildren[i + 1];
     }
 }
 
@@ -85,12 +108,12 @@ const Transform* const Transform::getParent() const {
     return mParent;
 }
 
-Transform* Transform::getChildren() {
+Transform* Transform::getChildren() const {
     return mChildren[0];
 }
 
-unsigned int Transform::getChildrenCount() {
-    return (unsigned int)mChildren.size();
+uint Transform::getChildrenCount() const {
+	return mChildCount;
 }
 
 Vector3 Transform::getFront() const {

@@ -32,12 +32,13 @@ ParticleRenderer::ParticleRenderer()
 	VertexBuffer vertexBuffer(quadVertices, sizeof(quadVertices));
 	VertexBufferLayout layout;
 	layout.pushFloat(3);
+	mVertexArray.generateBuffer();
 	mVertexArray.setVertexBuffer(vertexBuffer, layout);
 }
 
 ParticleRenderer::~ParticleRenderer()
 {
-
+	mVertexArray.deleteBuffer();
 }
 
 void ParticleRenderer::init(const Matrix4 & projection)

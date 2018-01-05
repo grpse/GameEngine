@@ -11,6 +11,9 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{db7795a5-59bd-4fd2-a23c-ae50c89bfbfd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\objloader">
+      <UniqueIdentifier>{bb9bae6d-53cd-4709-8eb9-15fa686d5c21}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h">
@@ -86,6 +89,18 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="resource.h" />
+    <ClInclude Include="include\MeshShaderSource.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="external\objloader\objloader.hpp">
+      <Filter>Headers\objloader</Filter>
+    </ClInclude>
+    <ClInclude Include="external\objloader\tangentspace.hpp">
+      <Filter>Headers\objloader</Filter>
+    </ClInclude>
+    <ClInclude Include="external\objloader\vboindexer.hpp">
+      <Filter>Headers\objloader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">
@@ -132,6 +147,15 @@
     </ClCompile>
     <ClCompile Include="src\Window.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="external\objloader\objloader.cpp">
+      <Filter>Headers\objloader</Filter>
+    </ClCompile>
+    <ClCompile Include="external\objloader\tangentspace.cpp">
+      <Filter>Headers\objloader</Filter>
+    </ClCompile>
+    <ClCompile Include="external\objloader\vboindexer.cpp">
+      <Filter>Headers\objloader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

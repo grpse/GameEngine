@@ -13,10 +13,17 @@ struct Vertex {
 class Mesh {
 
 public:
-    Mesh() 
+	Mesh()
+		: mMarkedAsCopy(false)
     {
 
     }
+
+	Mesh(const Mesh& other)
+	{
+		mVertexArray = other.mVertexArray;
+		mIndexBuffer = other.mIndexBuffer;
+	}
 
     Mesh(VertexArray& vertexArray, IndexBuffer& indexBuffer)
     {
@@ -25,7 +32,11 @@ public:
 
     ~Mesh()
     {
-
+		if (!mMarkedAsCopy)
+		{
+			mVertexArray.deleteBuffer();
+			mIndexBuffer.deleteBuffer();
+		}
     }
 
     void load(VertexArray& vertexArray, IndexBuffer& indexBuffer)
@@ -33,6 +44,11 @@ public:
         mVertexArray = vertexArray;
         mIndexBuffer = indexBuffer;
     }
+
+	void markAsCopy()
+	{
+		mMarkedAsCopy = true;
+	}
 
     const VertexArray& getVertexArray() const
     {
@@ -47,6 +63,6 @@ public:
 private:
     IndexBuffer mIndexBuffer;
     VertexArray mVertexArray;
-
+	bool mMarkedAsCopy;
 };
 

@@ -3,13 +3,20 @@
 #include "GLErrorHandling.h"
 
 VertexArray::VertexArray() 
+	: mWasGenerated(false)
 {
-    GLCall(glGenVertexArrays(1, &mID));
+
+}
+
+VertexArray::VertexArray(const VertexArray & other)
+{
+	mID = other.mID;
+	mWasGenerated = false;
 }
 
 VertexArray::~VertexArray() 
 {
-    GLCall(glDeleteVertexArrays(1, &mID));
+
 }
 
 void VertexArray::bind() const
@@ -64,4 +71,18 @@ void VertexArray::setVertexBuffer(const VertexBuffer& vb, const VertexBufferLayo
 
     vb.unbind();
     unbind();
+}
+
+void VertexArray::generateBuffer()
+{
+	if (!mWasGenerated)
+	{
+		mWasGenerated = true;
+		GLCall(glGenVertexArrays(1, &mID));
+	}
+}
+
+void VertexArray::deleteBuffer()
+{
+	GLCall(glDeleteVertexArrays(1, &mID));
 }

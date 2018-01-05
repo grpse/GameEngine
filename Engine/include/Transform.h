@@ -3,7 +3,7 @@
 
 #include "OSExport.h"
 #include "LinearMath.h"
-#include <vector>
+#include "Typedefs.h"
 
 class ENGINE_API Transform {
 
@@ -24,8 +24,8 @@ public:
     const Vector3& getLocalScale() const;
     const Matrix4& getWorldMatrix() const;
     const Transform* const getParent() const;
-    Transform* getChildren();
-    unsigned int getChildrenCount();
+    Transform* getChildren() const;
+    uint getChildrenCount() const;
     
     Vector3 getFront() const;
     Vector3 getUp() const;
@@ -34,12 +34,15 @@ public:
 private:
     /* DON'T DEALLOCATE ON EXIT, IT'S NOT OWNED */
     Transform* mParent = nullptr;
-    std::vector<Transform*> mChildren;
+    Transform** mChildren;
     Vector3 mLocalPosition;
     Quaternion mLocalRotation;
     Vector3 mLocalScale;
     mutable Matrix4 mWorldMatrix;
     mutable bool mValidCalcCachedMatrix;
+
+	uint mMaxChildren;
+	uint mChildCount;
 };
 
 #endif /*TRANSFORM_H*/
