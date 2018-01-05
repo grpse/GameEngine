@@ -10,6 +10,9 @@
             "linux": {
                 "command": "sh build.sh",
             },
+            "windows": {
+                "command": "./build.bat"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true,

@@ -20,5 +20,5 @@ SET(SOIL_SHARED OFF CACHE BOOL "Disabling SOIL shared" FORCE)
 SET(SOIL_STATIC ON CACHE BOOL "Enabling SOIL static" FORCE)
 
 add_subdirectory(SDL2)
-add_subdirectory(glew/build/cmake)
+add_subdirectory(glew)
 add_subdirectory(SOIL)

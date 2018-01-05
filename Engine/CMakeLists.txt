@@ -17,12 +17,12 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_SOURCE_DIR}/external)
 include_directories(${SDL2_SOURCE_DIR}/include)
 include_directories(${SDL2_BINARY_DIR}/include)
-include_directories(${glew_SOURCE_DIR}/../../include)
+include_directories(${glew_SOURCE_DIR}/include)
 include_directories(${glm_SOURCE_DIR})
 include_directories(${SOIL_SOURCE_DIR}/src)
 
 # LINK GLEW STATICALLY
-#target_compile_definitions(${PROJECT_NAME} PRIVATE GLEW_STATIC=1)
+add_definitions(-DGLEW_STATIC)
 
 # LINK LIBRARIES
 if (WIN32)
@@ -32,13 +32,13 @@ if (WIN32)
     set(SDL2_LIBRARIES 
         SDL2-static
         SDL2main
-        winmm
-        imm32
-        version
         gdi32
-		kernel32
-		user32
+		Kernel32
+        user32
+        opengl32
     )
+    add_definitions("-std=c++14")
+    add_definitions("-ggdb")
 endif (WIN32)
 
 if (UNIX)
