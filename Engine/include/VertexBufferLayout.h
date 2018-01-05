@@ -9,7 +9,7 @@ struct VertexBufferElement
 {
     uint type;
     uint count;
-    uint normalized;
+    bool normalized;
 
     inline static uint GetSizeOfType(unsigned int type)
     {
@@ -28,16 +28,21 @@ class VertexBufferLayout
 public:
     VertexBufferLayout() : mStride(0) {}
 
-    template<uint type, uint normalized>
-    void push(uint count)
+    void pushUint(uint count, bool normalized = false)
     {
-        mElements.push_back({type, count, normalized});
+        mElements.push_back({GL_UNSIGNED_INT, count, normalized});
+        mStride += count * VertexBufferElement::GetSizeOfType(GL_INT);
+    }
+
+    void pushFloat(uint count, bool normalized = false)
+    {
+        mElements.push_back({GL_FLOAT, count, normalized});
         mStride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
     }
 
     inline const std::vector<VertexBufferElement>& getElements() const  { return mElements; }
     inline uint getStride() const { return mStride; }
-
+    
 private:
     std::vector<VertexBufferElement> mElements;
     uint mStride;

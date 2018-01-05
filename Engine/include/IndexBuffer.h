@@ -6,8 +6,11 @@
 class IndexBuffer {
 
 public:
+    IndexBuffer();
     IndexBuffer(const uint* data, uint count);
     ~IndexBuffer();
+
+    void load(const uint* data, uint count);
 
     void bind() const;
     void unbind() const;

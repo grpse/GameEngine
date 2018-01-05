@@ -60,7 +60,13 @@
             "name": "Win32",
             "includePath": [
                 "C:/Program Files (x86)/Microsoft Visual Studio 14.0/VC/include",
-                "${workspaceRoot}"
+                "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.12.25827/include",
+                "${workspaceRoot}",
+                "${workspaceRoot}/Engine/include",
+                "${workspaceRoot}/Engine/external",
+                "${workspaceRoot}/Dependencies/glew/include",
+                "${workspaceRoot}/Dependencies/SDL2/include",
+                "${workspaceRoot}/Dependencies/SOIL/src"
             ],
             "defines": [
                 "_DEBUG",

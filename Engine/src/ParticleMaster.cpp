@@ -43,9 +43,9 @@ void ParticleMaster::update()
 	}
 }
 
-void ParticleMaster::render(const Camera& camera)
+void ParticleMaster::render(const Texture2D& texture2d, const Camera& camera)
 {
-	mParticleRenderer.render(mParticles, kMaxParticles, camera);
+	mParticleRenderer.render(texture2d, mParticles, kMaxParticles, camera);
 }
 
 void ParticleMaster::instantiate(uint numberOfParticles, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect)

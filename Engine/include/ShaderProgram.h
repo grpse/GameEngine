@@ -75,8 +75,13 @@ private:
 
 	std::string PRECODE_VERTEX;
 	std::string PRECODE_FRAGMENT;
+	
+	std::string ATTRIBUTE_VERTEX_POSITION;
+	std::string ATTRIBUTE_NORMAL_POSITION;
+	std::string ATTRIBUTE_TEXTURECOORD0;
+	std::string ATTRIBUTE_TEXTURECOORD1;
+	std::string ATTRIBUTE_TEXTURECOORD2;
 
-		
 	UniformsUse mUniformsUse;
 	AttributesUse mAttributesUse;
 };

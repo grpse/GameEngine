@@ -1,6 +1,5 @@
 #include "Texture2D.h"
 #include "GLErrorHandling.h"
-#include <iostream>
 
 Texture2D::Texture2D()
 {
@@ -80,15 +79,13 @@ void Texture2D::generateMipMaps()
     GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 }
 
-void Texture2D::start() 
+void Texture2D::start() const
 {
-    // std::cout << "Texture Index: " << GL_TEXTURE0 + mIndex << std::endl;
-    // std::cout << "Texture ID: " << mID << std::endl;
     GLCall(glActiveTexture(GL_TEXTURE0 + mIndex));
     GLCall(glBindTexture(GL_TEXTURE_2D, mID));
 }
 
-void Texture2D::stop()
+void Texture2D::stop() const
 {
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }

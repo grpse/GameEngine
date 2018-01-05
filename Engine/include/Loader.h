@@ -1,23 +1,17 @@
 #pragma once
 #include <vector>
 #include "Typedefs.h"
-#include "RawModel.h"
 #include "LinearMath.h"
+#include "Texture2D.h"
 
 class Loader {
 
 public:
 	Loader();
 	~Loader();
-	RawModel loadToVAO(void* data, uint itemSizeInBytes, uint itemCount);
+
+	static Texture2D loadRGBATexture2D(const char* filepath);
 
 private:
-	std::vector<uint> mLoadedVAOS;
-	std::vector<uint> mLoadedVBOs;
-
-	uint createVAO();
-	void storeDataInAttributeList(int attributeNumber, void* data, uint sizeInBytes);
-
-	void unbindVAO();
 
 };

@@ -11,9 +11,10 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "Loader.h"
 #include <SOIL.h>
 
-#define RC_INVOKED 1
+
 
 Uint64 NOW = 0;
 Uint64 LAST = 0;
@@ -24,7 +25,7 @@ Window mWindow;
 Camera mCamera;
 Matrix4 mProjectionMatrix;
 
-void update(ParticleMaster& particleMaster);
+void update();
 
 const uint ArrowUp = 82;
 const uint ArrowDown = 81;
@@ -46,24 +47,8 @@ static Vector3 quadVertices[] = {
 	Vector3(-0.5, 0.5, 0),
 };
 
-ShaderProgram shader;
-
 void GameLoop::start()
 {
-	const char* BasicShaderStr = R"(
-		#BEGIN VERTEXSHADER																		
-		void main() {																			
-			//gl_Position = WorldView * Projection * vec4(VertexPosition_ModelSpace, 1); 			
-			gl_Position = vec4(VertexPosition_ModelSpace, 1); 			
-		}																						
-		#END VERTEXSHADER
-																	
-		#BEGIN FRAGMENTSHADER																	
-		void main() {																			
-			gl_FragColor = vec4(1); 														
-		}																						
-		#END FRAGMENTSHADER																	
-	)";
 
 	Rect viewport = { 0, 0, 640, 480 };
 	mWindow.setViewport(viewport);
@@ -86,22 +71,17 @@ void GameLoop::start()
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
 
-	shader.useVertexAttribute();
-	shader.buildShadersFromSource(BasicShaderStr);
-	
-	shader.start();
 	GLCall(glGenBuffers(1, &mBuffer));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
 	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW));
 
 	mCamera.transform.setLocalPosition({ 0, 0, 10 });
 
-	ParticleMaster mParticleMaster;
-	mParticleMaster.init(mProjectionMatrix);
+	Texture2D particleTexture = Loader::loadRGBATexture2D("start.png");
 
 	ParticleSystem mParticleSystem(50.0, 25, 1, 4);	
-	mParticleSystem.loadTexture("start.png");
-	mParticleSystem.setParticleMaster(&mParticleMaster);
+	mParticleSystem.setProjectionMatrix(mProjectionMatrix);
+	mParticleSystem.loadTexture(particleTexture);
 
 	Vector3 position = mCamera.transform.getLocalPosition();
 	Vector3 rotation = Math::eulerAngles(mCamera.transform.getLocalRotation()) * 3.14159f / 180.f;
@@ -164,10 +144,13 @@ void GameLoop::start()
 	});
 
 	while (mWindow.isOpen()) {
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));	
 		
 		mParticleSystem.emitParticle(Vector3(0, 0, 0));
-
-		update(mParticleMaster);
+		mParticleSystem.update();
+		mParticleSystem.render(mCamera);
+		
+		update();
 
 		LAST = NOW;
 		NOW = SDL_GetPerformanceCounter();
@@ -179,14 +162,10 @@ void GameLoop::start()
 	mWindow.finish();
 }
 
-void update(ParticleMaster& particleMaster)
+void update()
 {
-	// RENDERING
-	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
-
 	//3d stuff
-	particleMaster.update();
-	particleMaster.render(mCamera);
+
 
 	// 2d stuff
 

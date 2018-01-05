@@ -2,6 +2,7 @@
 #include <iostream>
 
 int main() {
-	GameLoop::start();
+	GameLoop loop;
+	loop.start();
 	return 0;
 }

@@ -11,8 +11,7 @@
     #else  
         #define ENGINE_API    __declspec(dllimport)  
     #endif
-
-    #include <Windows.h>
+    
 #else
     #define ENGINE_API
 #endif
