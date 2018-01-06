@@ -27,8 +27,6 @@ Window mWindow;
 Camera mCamera;
 Matrix4 mProjectionMatrix;
 
-void update();
-
 const uint ArrowUp = 82;
 const uint ArrowDown = 81;
 const uint ArrowLeft = 80;
@@ -38,9 +36,6 @@ const uint W = 26;
 const uint S = 22;
 const uint D = 7;
 const uint A = 4;
-
-uint mBuffer;
-
 
 static Vector3 quadVertices[] = {
 	Vector3(-0.5, -0.5, 0),
@@ -67,23 +62,20 @@ void GameLoop::start()
 	//glFrontFace(GL_CCW);
 	GLCall(glEnable(GL_DEPTH_TEST));
 	//GLCall(glEnable(GL_CULL_FACE));
-	GLCall(glCullFace(GL_FRONT));
+	//GLCall(glCullFace(GL_FRONT));
 	GLCall(glClearColor(0, 0, .0, 1));
 
 	// Accept fragment if it closer to the camera than the former one
 	glDepthFunc(GL_LESS);
 
-	GLCall(glGenBuffers(1, &mBuffer));
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mBuffer));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW));
-
 	mCamera.transform.setLocalPosition({ 0, 0, 10 });
 
+	// particle system setup
 	Texture2D particleTexture = Loader::loadRGBATexture2D("start.png");
-
 	ParticleSystem mParticleSystem(50.0, 25, 1, 4);	
 	mParticleSystem.setProjectionMatrix(mProjectionMatrix);
 	mParticleSystem.loadTexture(particleTexture);
+
 
 	Vector3 position = mCamera.transform.getLocalPosition();
 	Vector3 rotation = Math::eulerAngles(mCamera.transform.getLocalRotation()) * 3.14159f / 180.f;
@@ -142,6 +134,11 @@ void GameLoop::start()
 	Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
 	Transform suzanneTransform;
 
+	Mesh quad = Mesh::createQuad();
+	Transform quadTransform;
+	quadTransform.setLocalPosition({ 0, -5, 0 });
+	quadTransform.setLocalScale({ 10, 10, 10 });
+
 	suzanneTransform.setLocalPosition({ 0, 0, 0 });
 	suzanneTransform.setLocalScale({ 1, 1, 1 });
 	suzanneTransform.setLocalRotation(Vector3(0, 0, 0));
@@ -154,8 +151,10 @@ void GameLoop::start()
 		mParticleSystem.render(mCamera);
 		
 		meshRenderer.render(mCamera, suzanne, suzanneTransform);
+		meshRenderer.render(mCamera, quad, quadTransform);
 		
-		update();
+		mWindow.swapBuffers();
+		mWindow.pollEvents();
 
 		LAST = NOW;
 		NOW = SDL_GetPerformanceCounter();
@@ -166,18 +165,6 @@ void GameLoop::start()
 
 	mWindow.finish();
 }
-
-void update()
-{
-	//3d stuff
-
-
-	// 2d stuff
-
-	mWindow.swapBuffers();
-	mWindow.pollEvents();
-}
-
 
 const float GameLoop::Gravity()
 {

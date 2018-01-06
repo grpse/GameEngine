@@ -20,6 +20,8 @@ public:
 
 		mShader.useProjectionMatrix();
 		mShader.useWorldViewMatrix();
+		mShader.useWorldMatrix();
+		mShader.useViewMatrix();
 
 		mShader.buildShadersFromSource(MeshShaderSource);
 	}
@@ -40,10 +42,14 @@ public:
 		const auto& vao = mesh.getVertexArray();
 		const auto& ibo = mesh.getIndexBuffer();
 
-
-		const Matrix4 WorldView = camera.createViewMatrix() * transform.getWorldMatrix();
+		const Matrix4& World = transform.getWorldMatrix();
+		const Matrix4 View = camera.createViewMatrix();
+		const Matrix4 WorldView = View * World;
 
 		mShader.setWorldViewMatrix(WorldView);
+		mShader.setWorldMatrix(World);
+		mShader.setViewMatrix(View);
+
 		vao.bind();
 		ibo.bind();
 
@@ -61,15 +67,16 @@ private:
 	{
 		mShader.start();
 		mShader.setProjectionMatrix(mProjection);
-		GLCall(glEnable(GL_BLEND));
+		//GLCall(glEnable(GL_BLEND));
 		GLCall(glEnable(GL_DEPTH_TEST));
-		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
+		//GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
+		
 	}
 
 	void finishRendering()
 	{
 		GLCall(glDisable(GL_DEPTH_TEST));
-		GLCall(glDisable(GL_BLEND));
+		//GLCall(glDisable(GL_BLEND));
 		mShader.stop();
 	}
 };

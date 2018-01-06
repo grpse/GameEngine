@@ -60,6 +60,46 @@ public:
         return mIndexBuffer;
     }
 
+	static Mesh createQuad() {
+		Mesh quad;
+		quad.markAsCopy();
+
+		VertexArray vao;
+		VertexBuffer vbo;
+		VertexBufferLayout layout;
+		IndexBuffer ibo;
+
+		Vertex v1, v2, v3, v4;
+
+		v1.position = v1.normal = { -1, 0, -1 }; v1.texturecoord0 = { 0, 0 };
+		v2.position = v2.normal = {  1, 0, -1 }; v2.texturecoord0 = { 1, 0 };
+		v3.position = v3.normal = {  1, 0,  1 }; v3.texturecoord0 = { 1, 1 };
+		v4.position = v4.normal = { -1, 0,  1 }; v4.texturecoord0 = { 0, 1 };
+
+		Vertex description[] = {
+			v1, v2, v3, v4
+		};
+
+		uint indices[] = {
+			0, 1, 2, 0, 2, 3
+		};
+
+		vbo.load(description, sizeof(description));
+
+		layout.pushFloat(3);
+		layout.pushFloat(3);
+		layout.pushFloat(2);
+
+		vao.generateBuffer();
+		vao.setVertexBuffer(vbo, layout);
+
+		ibo.load(indices, 6);
+
+		quad.load(vao, ibo);
+
+		return quad;
+	}
+
 private:
     IndexBuffer mIndexBuffer;
     VertexArray mVertexArray;

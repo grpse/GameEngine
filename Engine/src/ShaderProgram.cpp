@@ -159,7 +159,7 @@ void ShaderProgram::useVertexAttribute()
 
 void ShaderProgram::useNormalAttribute() 
 {
-	ATTRIBUTE_NORMAL_POSITION += STRINGIFY(in vec3 NormalPosition_ModelSpace;\n);
+	ATTRIBUTE_NORMAL_POSITION += STRINGIFY(in vec3 VertexNormal_ModelSpace;\n);
 }
 
 void ShaderProgram::useTextureCoord0Attribute()
