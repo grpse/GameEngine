@@ -101,6 +101,9 @@
     <ClInclude Include="external\objloader\vboindexer.hpp">
       <Filter>Headers\objloader</Filter>
     </ClInclude>
+    <ClInclude Include="include\Light.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">

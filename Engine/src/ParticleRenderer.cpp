@@ -53,7 +53,7 @@ void ParticleRenderer::init(const Matrix4 & projection)
 
 void ParticleRenderer::render(const Texture2D& texture2d, const Particle particles[], uint particleCount, const Camera & camera)
 {
-	Matrix4 view = camera.createViewMatrix();
+	const Matrix4& view = camera.getViewMatrix();
 	prepare();
 	
 	texture2d.start();
@@ -109,6 +109,7 @@ void ParticleRenderer::prepare()
 	mShader.start();
 	mShader.setProjectionMatrix(mProjection);
 	GLCall(glEnable(GL_BLEND));
+	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
 	GLCall(glDepthMask(GL_FALSE));
 }
@@ -116,6 +117,7 @@ void ParticleRenderer::prepare()
 void ParticleRenderer::finishRendering()
 {	
 	GLCall(glDepthMask(GL_TRUE));
+	GLCall(glDisable(GL_DEPTH_TEST));
 	GLCall(glDisable(GL_BLEND));
 	mShader.stop();
 }

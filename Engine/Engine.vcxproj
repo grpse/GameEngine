@@ -172,6 +172,7 @@
     <ClInclude Include="include\GameLoop.h" />
     <ClInclude Include="include\GLErrorHandling.h" />
     <ClInclude Include="include\IndexBuffer.h" />
+    <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\LinearMath.h" />
     <ClInclude Include="include\Loader.h" />
     <ClInclude Include="include\Mesh.h" />

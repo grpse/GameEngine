@@ -31,6 +31,8 @@ public:
     Vector3 getUp() const;
     Vector3 getRight() const;
 
+	bool isDirty() const;
+
 private:
     /* DON'T DEALLOCATE ON EXIT, IT'S NOT OWNED */
     Transform* mParent = nullptr;

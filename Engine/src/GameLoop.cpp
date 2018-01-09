@@ -138,20 +138,31 @@ void GameLoop::start()
 	Transform quadTransform;
 	quadTransform.setLocalPosition({ 0, -5, 0 });
 	quadTransform.setLocalScale({ 10, 10, 10 });
+	quadTransform.setLocalRotation(Vector3(Math::radians(180.0), 0, 0));
 
 	suzanneTransform.setLocalPosition({ 0, 0, 0 });
 	suzanneTransform.setLocalScale({ 1, 1, 1 });
 	suzanneTransform.setLocalRotation(Vector3(0, 0, 0));
 
+	float particlePosX = Math::cos(0);
+	float particlePosZ = Math::sin(0);
+	float angles = 0;
+
+
 	while (mWindow.isOpen()) {
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));	
 		
-		mParticleSystem.emitParticle(Vector3(0, 0, 0));
-		mParticleSystem.update();
-		mParticleSystem.render(mCamera);
+		particlePosX = Math::cos(angles) * 10;
+		particlePosZ = Math::sin(angles) * 10;
+
+		angles += (float)(1 * Time::getDeltaTime());
 		
 		meshRenderer.render(mCamera, suzanne, suzanneTransform);
 		meshRenderer.render(mCamera, quad, quadTransform);
+
+		mParticleSystem.emitParticle(Vector3(particlePosX, -5, particlePosZ));
+		mParticleSystem.update();
+		mParticleSystem.render(mCamera);
 		
 		mWindow.swapBuffers();
 		mWindow.pollEvents();

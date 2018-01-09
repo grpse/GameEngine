@@ -4,8 +4,10 @@
 
 class Camera {
 public:
+	Camera();
 	Transform transform;
-	Matrix4 createViewMatrix() const;
+	const Matrix4 getViewMatrix() const;
 
-	void printPositionAndTarget();
+private:
+	mutable Matrix4 mViewMatrix;
 };
