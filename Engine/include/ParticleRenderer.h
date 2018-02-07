@@ -9,22 +9,25 @@
 #include "VertexBufferLayout.h"
 #include "Texture2D.h"
 
+class Renderer;
+class ParticleSystem;
+
 class ParticleRenderer {
 
 public:
 	ParticleRenderer();
 	~ParticleRenderer();
 
-	void init(const Matrix4 & projection);
-	void render(const Texture2D& texture, const Particle particles[], uint particleCount, const Camera& camera);
+	void setProjectionMatrix(const Matrix4 & projection);
+	void render(const ParticleSystem& particleSystem, const Camera & camera, const Renderer& renderer) const;
 
 private:
-	ShaderProgram mShader;
+	mutable ShaderProgram mShader;
 	Matrix4 mProjection;
 	VertexArray mVertexArray;
 	uint mTextureUniformLocation;
 
-	void updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view);
-	void prepare();
-	void finishRendering();
+	void updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view) const;
+	void prepare(const Renderer& renderer) const;
+	void finishRendering(const Renderer& renderer) const;
 };

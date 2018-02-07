@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "Typedefs.h"
 #include "Particle.h"
-#include "ParticleRenderer.h"
 #include "Texture2D.h"
 
 class ParticleMaster {
@@ -15,15 +14,14 @@ public:
 
 	const ParticleMaster& operator=(const ParticleMaster& particleMaster);
 
-	void init(const Matrix4 & projection);
+	void init();
 	void update();
-	void render(const Texture2D& texture2d, const Camera& camera);
 	void instantiate(uint numberOfParticles, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
 	void instantiateOne(const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect);
-	
+	const Particle* getParticles() const;
+	uint getParticlesCount() const;
+
 private:
 	Particle* mParticles;
-	ParticleRenderer mParticleRenderer;
-
 	const uint kMaxParticles = 1000;
 };

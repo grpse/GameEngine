@@ -185,6 +185,8 @@
     <ClInclude Include="include\ParticleRenderer.h" />
     <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\Rect.h" />
+    <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\RendererOpenGL.h" />
     <ClInclude Include="include\ShaderProgram.h" />
     <ClInclude Include="include\Texture2D.h" />
     <ClInclude Include="include\Time.h" />
@@ -208,6 +210,8 @@
     <ClCompile Include="src\ParticleMaster.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\RendererOpenGL.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\Time.cpp" />

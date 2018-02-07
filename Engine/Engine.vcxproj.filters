@@ -104,6 +104,12 @@
     <ClInclude Include="include\Light.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\RendererOpenGL.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Renderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">
@@ -159,6 +165,12 @@
     </ClCompile>
     <ClCompile Include="external\objloader\vboindexer.cpp">
       <Filter>Headers\objloader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RendererOpenGL.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

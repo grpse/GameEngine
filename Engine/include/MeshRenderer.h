@@ -1,5 +1,6 @@
 #pragma once
 #include <GL/glew.h>
+#include "Renderer.h"
 #include "LinearMath.h"
 #include "Mesh.h"
 #include "Camera.h"
@@ -36,9 +37,10 @@ public:
 		mProjection = projection;
 	}
 
-    void render(const Camera& camera, const Mesh& mesh, const Transform& transform)
+    void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Renderer& renderer)
     {
-		prepare();
+		prepare(renderer);
+
 		const auto& vao = mesh.getVertexArray();
 		const auto& ibo = mesh.getIndexBuffer();
 
@@ -49,37 +51,29 @@ public:
 		mShader.setWorldViewMatrix(WorldView);
 		mShader.setWorldMatrix(World);
 		mShader.setViewMatrix(View);
+		
+		renderer.render(vao, ibo);
 
-		vao.bind();
-		ibo.bind();
-
-		GLCall(glDrawElements(GL_TRIANGLES, ibo.getElementCount(), GL_UNSIGNED_INT, (const void*)0));
-
-		vao.unbind();
-		finishRendering();
+		finishRendering(renderer);
     }
 
 private:
 	Matrix4 mProjection;
 	ShaderProgram mShader;
 
-	void prepare()
+	void prepare(const Renderer& renderer)
 	{
 		mShader.start();
 		mShader.setProjectionMatrix(mProjection);
-		//GLCall(glEnable(GL_BLEND));
-		GLCall(glEnable(GL_DEPTH_TEST));
-		GLCall(glEnable(GL_CULL_FACE));
-		GLCall(glCullFace(GL_BACK));
-		//GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
-		
+		renderer.enableDepthTest();
+		renderer.enableCullFace();
+		renderer.cullBackFace();
 	}
 
-	void finishRendering()
+	void finishRendering(const Renderer& renderer)
 	{
-		GLCall(glDisable(GL_CULL_FACE));
-		GLCall(glDisable(GL_DEPTH_TEST));
-		//GLCall(glDisable(GL_BLEND));
+		renderer.disableCullFace();
+		renderer.disableDepthTest();
 		mShader.stop();
 	}
 };

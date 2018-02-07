@@ -1,7 +1,5 @@
 #include "ParticleMaster.h"
 
-#include <iostream>
-
 ParticleMaster::ParticleMaster() 
 {
 	
@@ -10,7 +8,6 @@ ParticleMaster::ParticleMaster()
 ParticleMaster::ParticleMaster(const ParticleMaster & other)
 {
 	mParticles = other.mParticles;
-	mParticleRenderer = other.mParticleRenderer;
 }
 
 ParticleMaster::~ParticleMaster()
@@ -21,14 +18,12 @@ ParticleMaster::~ParticleMaster()
 const ParticleMaster& ParticleMaster::operator=(const ParticleMaster& particleMaster)
 {
 	mParticles = particleMaster.mParticles;
-	mParticleRenderer = particleMaster.mParticleRenderer;
 	return *this;
 }
 
-void ParticleMaster::init(const Matrix4 & projection)
+void ParticleMaster::init()
 {
 	mParticles = new Particle[kMaxParticles];
-	mParticleRenderer.init(projection);
 }
 
 void ParticleMaster::update()
@@ -41,11 +36,6 @@ void ParticleMaster::update()
 		}
 		// else TODO: mark death buffer if it is dead to let particle be available on next requirement
 	}
-}
-
-void ParticleMaster::render(const Texture2D& texture2d, const Camera& camera)
-{
-	mParticleRenderer.render(texture2d, mParticles, kMaxParticles, camera);
 }
 
 void ParticleMaster::instantiate(uint numberOfParticles, const Vector3& position, const Vector3& velocity, float rotation, float scale, float lifeLength, float gravityEffect)
@@ -76,4 +66,14 @@ void ParticleMaster::instantiateOne(const Vector3& position, const Vector3& velo
 	if (noDeadParticlesFound) {
 		mParticles[0].setup(position, velocity, rotation, scale, lifeLength, gravityEffect);
 	}
+}
+
+const Particle * ParticleMaster::getParticles() const
+{
+	return mParticles;
+}
+
+uint ParticleMaster::getParticlesCount() const
+{
+	return kMaxParticles;
 }

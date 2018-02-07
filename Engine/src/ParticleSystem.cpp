@@ -9,6 +9,8 @@ ParticleSystem::ParticleSystem(float pps, float speed, float gravityComplient, f
 	mSpeed = speed;
 	mGravityComplient = gravityComplient;
 	mLifeLength = lifeLength;
+
+	mParticleMaster.init();
 }
 
 void ParticleSystem::loadTexture(const Texture2D& texture2d)
@@ -27,14 +29,19 @@ void ParticleSystem::update()
 	mParticleMaster.update();
 }
 
-void ParticleSystem::render(const Camera& camera)
+const Particle * ParticleSystem::getParticles() const
 {
-	mParticleMaster.render(mTexture, camera);
+	return mParticleMaster.getParticles();
 }
 
-void ParticleSystem::setProjectionMatrix(const Matrix4& projection)
+uint ParticleSystem::getParticlesCount() const
 {
-	mParticleMaster.init(projection);
+	return mParticleMaster.getParticlesCount();
+}
+
+const Texture2D & ParticleSystem::getTexture2D() const
+{
+	return mTexture;
 }
 
 void ParticleSystem::generateParticles(Vector3 systemCenter) {

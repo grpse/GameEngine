@@ -1,4 +1,5 @@
-#include <GL/glew.h>
+#include "Renderer.h"
+#include "ParticleSystem.h"
 #include <vector>
 #include <iostream>
 #include "ParticleRenderer.h"
@@ -41,7 +42,7 @@ ParticleRenderer::~ParticleRenderer()
 	mVertexArray.deleteBuffer();
 }
 
-void ParticleRenderer::init(const Matrix4 & projection)
+void ParticleRenderer::setProjectionMatrix(const Matrix4 & projection)
 {
 	mProjection = projection;
 
@@ -51,10 +52,14 @@ void ParticleRenderer::init(const Matrix4 & projection)
 	mShader.stop();
 }
 
-void ParticleRenderer::render(const Texture2D& texture2d, const Particle particles[], uint particleCount, const Camera & camera)
+void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera & camera, const Renderer& renderer) const
 {
+	const Texture2D& texture2d = particleSystem.getTexture2D();
 	const Matrix4& view = camera.getViewMatrix();
-	prepare();
+	uint particleCount = particleSystem.getParticlesCount();
+	const Particle* particles = particleSystem.getParticles();
+
+	prepare(renderer);
 	
 	texture2d.start();
 	mVertexArray.bind();
@@ -68,16 +73,15 @@ void ParticleRenderer::render(const Texture2D& texture2d, const Particle particl
 		float scale = particles[particleCount].getScale();
 		updateModelViewMatrix(position, rotation, scale, view);
 
-
-		GLCall(glDrawArrays(GL_QUADS, 0, 4));
+		renderer.renderQuad(0, 4);
 	}
 	
 	mVertexArray.unbind();	
 	texture2d.stop();
-	finishRendering();
+	finishRendering(renderer);
 }
 
-void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view)
+void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rotation, float scale, const Matrix4& view) const
 {
 	Matrix4 world = Math::translate(position);
 	
@@ -104,20 +108,20 @@ void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rota
 	mShader.setWorldViewMatrix(worldView);
 }
 
-void ParticleRenderer::prepare()
+void ParticleRenderer::prepare(const Renderer& renderer) const
 {
 	mShader.start();
 	mShader.setProjectionMatrix(mProjection);
-	GLCall(glEnable(GL_BLEND));
-	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
-	GLCall(glDepthMask(GL_FALSE));
+	renderer.enableBlend();
+	renderer.enableDepthTest();
+	renderer.setBlendSrcAlpha_OneMinusSrcColor();
+	renderer.unsetDepthMask();
 }
 
-void ParticleRenderer::finishRendering()
+void ParticleRenderer::finishRendering(const Renderer& renderer) const
 {	
-	GLCall(glDepthMask(GL_TRUE));
-	GLCall(glDisable(GL_DEPTH_TEST));
-	GLCall(glDisable(GL_BLEND));
+	renderer.setDepthMask();
+	renderer.disableDepthTest();
+	renderer.disableBlend();
 	mShader.stop();
 }

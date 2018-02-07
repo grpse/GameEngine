@@ -6,7 +6,6 @@
 #include "Time.h"
 #include "ParticleSystem.h"
 #include "Camera.h"
-#include "ParticleMaster.h"
 #include "GLErrorHandling.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
@@ -16,7 +15,8 @@
 #include "Mesh.h"
 #include "MeshRenderer.h"
 #include "Transform.h"
-
+#include "Renderer.h"
+#include "ParticleRenderer.h"
 
 Uint64 NOW = 0;
 Uint64 LAST = 0;
@@ -72,8 +72,7 @@ void GameLoop::start()
 
 	// particle system setup
 	Texture2D particleTexture = Loader::loadRGBATexture2D("start.png");
-	ParticleSystem mParticleSystem(50.0, 25, 1, 4);	
-	mParticleSystem.setProjectionMatrix(mProjectionMatrix);
+	ParticleSystem mParticleSystem(50.0, 25, 1, 4);
 	mParticleSystem.loadTexture(particleTexture);
 
 
@@ -88,38 +87,36 @@ void GameLoop::start()
 		float rotationDiff = (float) (1.0 * Time::getDeltaTime());
 		Vector3 front = mCamera.transform.getFront();
 		Vector3 right = mCamera.transform.getRight();
-		switch(key) {
-			case ArrowUp:
-				position -= Math::normalize(front) * moveDiff;
-				break;
+		if (key == ArrowUp) {
+			position += Math::normalize(front) * moveDiff;
+		}
 
-			case ArrowDown:
-				position += Math::normalize(front) * moveDiff;
-				break;
+		if (key == ArrowDown) {
+			position -= Math::normalize(front) * moveDiff;
+		}
 
-			case ArrowRight:
-				position -= Math::normalize(right) * moveDiff;
-				break;
+		if (key == ArrowRight) {
+			position += Math::normalize(right) * moveDiff;
+		}
+		
+		if (key == ArrowLeft) {
+			position -= Math::normalize(right) * moveDiff;
+		}
+	
+		if (key == W) {
+			rotation.x += rotationDiff;
+		}
 
-			case ArrowLeft:
-				position += Math::normalize(right) * moveDiff;
-				break;
+		if (key == S) {
+			rotation.x -= rotationDiff;
+		}
 
-			case W:
-				rotation.x += rotationDiff;
-				break;
+		if (key == A) {
+			rotation.y += rotationDiff;
+		}
 
-			case S:
-				rotation.x -= rotationDiff;
-				break;
-
-			case A:
-				rotation.y += rotationDiff;
-				break;
-
-			case D:
-				rotation.y -= rotationDiff;
-				break;
+		if (key == D) {
+			rotation.y -= rotationDiff;
 		}
 		
 		mCamera.transform.setLocalPosition(position);
@@ -128,6 +125,9 @@ void GameLoop::start()
 		// UPDATE FRONT AND RIGHT VECTORS
 		mCamera.transform.getWorldMatrix();
 	});
+
+	ParticleRenderer particleRenderer;
+	particleRenderer.setProjectionMatrix(mProjectionMatrix);
 
 	MeshRenderer meshRenderer;
 	meshRenderer.setProjection(mProjectionMatrix);
@@ -144,25 +144,18 @@ void GameLoop::start()
 	suzanneTransform.setLocalScale({ 1, 1, 1 });
 	suzanneTransform.setLocalRotation(Vector3(0, 0, 0));
 
-	float particlePosX = Math::cos(0);
-	float particlePosZ = Math::sin(0);
-	float angles = 0;
-
-
+	Renderer renderer;
+	
 	while (mWindow.isOpen()) {
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));	
+		renderer.clearColorAndDepth();
 		
-		particlePosX = Math::cos(angles) * 10;
-		particlePosZ = Math::sin(angles) * 10;
-
-		angles += (float)(1 * Time::getDeltaTime());
-		
-		meshRenderer.render(mCamera, suzanne, suzanneTransform);
-		meshRenderer.render(mCamera, quad, quadTransform);
-
-		mParticleSystem.emitParticle(Vector3(particlePosX, -5, particlePosZ));
+		mParticleSystem.emitParticle(Vector3(0, -5, 0));
 		mParticleSystem.update();
-		mParticleSystem.render(mCamera);
+
+		meshRenderer.render(mCamera, suzanne, suzanneTransform, renderer);
+		meshRenderer.render(mCamera, quad, quadTransform, renderer);
+
+		particleRenderer.render(mParticleSystem, mCamera, renderer);
 		
 		mWindow.swapBuffers();
 		mWindow.pollEvents();
