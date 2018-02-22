@@ -101,13 +101,25 @@
     <ClInclude Include="external\objloader\vboindexer.hpp">
       <Filter>Headers\objloader</Filter>
     </ClInclude>
-    <ClInclude Include="include\Light.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="include\RendererOpenGL.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Renderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FrameBuffer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BillboardRenderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DirectionalLight.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShadowRenderer.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,6 +182,9 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -17,18 +17,15 @@ Texture2D::Texture2D(const Texture2D& other)
 {
     mID = other.mID;
     mIndex = other.mIndex;
-    mWidth = other.mWidth;
-    mHeight = other.mHeight;
-    mFormat = other.mFormat;
+	mIndex = other.mIndex;
+	mLayout = other.mLayout;
 }
 
 Texture2D& Texture2D::operator=(const Texture2D& other)
 {
     mID = other.mID;
     mIndex = other.mIndex;
-    mWidth = other.mWidth;
-    mHeight = other.mHeight;
-    mFormat = other.mFormat;
+	mLayout = other.mLayout;
     return *this;
 }
 
@@ -42,41 +39,30 @@ uint Texture2D::getIndex() const
     return mIndex;
 }
 
-void Texture2D::setFormat(uint format)
-{
-    mFormat = format;
-}
-
-uint Texture2D::getFormat() const 
-{
-    return mFormat;
-}
-
 void Texture2D::setParameter(uint name, uint value)
 {
     GLCall(glTexParameteri(GL_TEXTURE_2D, name, value));
 }
 
-void Texture2D::loadData(const void* data, uint width, uint height)
+void Texture2D::loadData(const void* data, const Texture2DLayout& layout)
 {
-    mWidth = width;
-    mHeight = height;
+	mLayout = layout;
     GLCall(glTexImage2D(
-        GL_TEXTURE_2D, 
-        0, 
-        GL_RGBA, 
-        width, 
-        height, 
-        0, 
-        mFormat, 
-        GL_UNSIGNED_BYTE, 
+        mLayout.target, 
+        mLayout.level, 
+		mLayout.internalFormat,
+        mLayout.width, 
+        mLayout.height, 
+        mLayout.border, 
+        mLayout.format, 
+        mLayout.type, 
         data
     ));
 }
 
 void Texture2D::generateMipMaps()
 {
-    GLCall(glGenerateMipmap(GL_TEXTURE_2D));
+    GLCall(glGenerateMipmap(mLayout.target));
 }
 
 void Texture2D::start() const
@@ -92,16 +78,20 @@ void Texture2D::stop() const
 
 uint Texture2D::getWidth() const 
 {
-    return mWidth;
+    return mLayout.width;
 }
 
 uint Texture2D::getHeight() const 
 {
-    return mHeight;
+    return mLayout.height;
+}
+
+uint Texture2D::getId() const 
+{
+	return mID;
 }
 
 void Texture2D::setupDefaults()
 {
-    mFormat = GL_RGBA;
     mIndex = 0;
 }

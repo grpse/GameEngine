@@ -168,11 +168,14 @@
     <ClInclude Include="external\objloader\objloader.hpp" />
     <ClInclude Include="external\objloader\tangentspace.hpp" />
     <ClInclude Include="external\objloader\vboindexer.hpp" />
+    <ClInclude Include="include\BillboardRenderer.h" />
     <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\DirectionalLight.h" />
+    <ClInclude Include="include\FrameBuffer.h" />
     <ClInclude Include="include\GameLoop.h" />
     <ClInclude Include="include\GLErrorHandling.h" />
     <ClInclude Include="include\IndexBuffer.h" />
-    <ClInclude Include="include\Light.h" />
+    <ClInclude Include="include\Input.h" />
     <ClInclude Include="include\LinearMath.h" />
     <ClInclude Include="include\Loader.h" />
     <ClInclude Include="include\Mesh.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RendererOpenGL.h" />
     <ClInclude Include="include\ShaderProgram.h" />
+    <ClInclude Include="include\ShadowRenderer.h" />
     <ClInclude Include="include\Texture2D.h" />
     <ClInclude Include="include\Time.h" />
     <ClInclude Include="include\Transform.h" />
@@ -205,6 +209,7 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\GameLoop.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
+    <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Loader.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleMaster.cpp" />

@@ -3,6 +3,7 @@
 #include <SDL_opengl.h>
 #include <iostream>
 #include "Window.h"
+#include "Input.h"
 
 Window::Window()
 {
@@ -66,6 +67,8 @@ void Window::finish()
 
 void Window::pollEvents()
 {
+	Input::clearInputs();
+	SDL_SetRelativeMouseMode(SDL_FALSE);
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		switch (event.type) {
@@ -73,9 +76,8 @@ void Window::pollEvents()
 				mIsOpen = false;
 				break;
 
-			case SDL_KEYDOWN:				
-				for (auto& keydownlistener : mKeydownListeners)
-					keydownlistener(event.key.keysym.scancode);
+			case SDL_KEYDOWN:
+				Input::setPressedKey(event.key.keysym.scancode);
 				break;
 
 			case SDL_MOUSEMOTION: 

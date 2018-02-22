@@ -11,6 +11,7 @@ public:
 	~ShaderProgram();
 
 	void setUniform(uint uniform, uint i);
+	void setUniform(uint uniform, float v);
 	void setUniform(uint uniform, const Vector3& v);
 	void setUniform(uint uniform, const Vector2& v);
 	void setUniform(uint uniform, const Matrix4& m);

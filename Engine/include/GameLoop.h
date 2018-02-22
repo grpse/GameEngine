@@ -7,6 +7,5 @@ class ENGINE_API GameLoop {
 
 public:
 	void start();
-	static const float Gravity();
 		
 };

@@ -18,12 +18,10 @@ public:
 	ParticleRenderer();
 	~ParticleRenderer();
 
-	void setProjectionMatrix(const Matrix4 & projection);
 	void render(const ParticleSystem& particleSystem, const Camera & camera, const Renderer& renderer) const;
 
 private:
 	mutable ShaderProgram mShader;
-	Matrix4 mProjection;
 	VertexArray mVertexArray;
 	uint mTextureUniformLocation;
 

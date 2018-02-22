@@ -30,6 +30,10 @@ ParticleRenderer::ParticleRenderer()
 
 	mShader.buildShadersFromSource(ParticleShaderStr);
 
+	mShader.start();
+	mTextureUniformLocation = mShader.getUniformLocation("tex");
+	mShader.stop();
+
 	VertexBuffer vertexBuffer(quadVertices, sizeof(quadVertices));
 	VertexBufferLayout layout;
 	layout.pushFloat(3);
@@ -42,16 +46,6 @@ ParticleRenderer::~ParticleRenderer()
 	mVertexArray.deleteBuffer();
 }
 
-void ParticleRenderer::setProjectionMatrix(const Matrix4 & projection)
-{
-	mProjection = projection;
-
-	mShader.start();
-	mTextureUniformLocation = mShader.getUniformLocation("tex");
-	mShader.setProjectionMatrix(mProjection);
-	mShader.stop();
-}
-
 void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera & camera, const Renderer& renderer) const
 {
 	const Texture2D& texture2d = particleSystem.getTexture2D();
@@ -61,12 +55,14 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 
 	prepare(renderer);
 	
+	mShader.setProjectionMatrix(camera.getProjectionMatrix());
+
 	texture2d.start();
 	mVertexArray.bind();
 
 	while(particleCount--) {
 		Particle particle = particles[particleCount];
-		mShader.setUniform(mTextureUniformLocation, 0);
+		mShader.setUniform(mTextureUniformLocation, (uint)0);
 
 		Vector3 position = particles[particleCount].getPosition();
 		float rotation = particles[particleCount].getRotation();
@@ -111,7 +107,7 @@ void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rota
 void ParticleRenderer::prepare(const Renderer& renderer) const
 {
 	mShader.start();
-	mShader.setProjectionMatrix(mProjection);
+	
 	renderer.enableBlend();
 	renderer.enableDepthTest();
 	renderer.setBlendSrcAlpha_OneMinusSrcColor();

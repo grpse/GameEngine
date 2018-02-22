@@ -25,10 +25,19 @@ Texture2D Loader::loadRGBATexture2D(const char* filepath)
 	int width, height, channels;
 	byte* imageData = SOIL_load_image(filepath, &width, &height, &channels, SOIL_LOAD_RGBA);
 
+	Texture2DLayout textureLayout;
+	textureLayout.target = GL_TEXTURE_2D;
+	textureLayout.level = 0;
+	textureLayout.internalFormat = GL_RGBA;
+	textureLayout.border = 0;
+	textureLayout.format = GL_RGBA;
+	textureLayout.width = width;
+	textureLayout.height = height;
+	textureLayout.type = GL_UNSIGNED_BYTE;
+
 	Texture2D texture;
 	texture.start();
-	texture.setFormat(GL_RGBA);
-	texture.loadData(imageData, width, height);
+	texture.loadData(imageData, textureLayout);
 	texture.stop();
 
 	SOIL_free_image_data(imageData);

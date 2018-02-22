@@ -4,6 +4,11 @@
 #include "Renderer.h"
 #include "GLErrorHandling.h"
 
+void Renderer::setClearColor(Color32 color) const
+{
+	GLCall(glClearColor(color.r, color.g, color.b, color.a));
+}
+
 void Renderer::clearColorAndDepth() const
 {
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -27,6 +32,11 @@ void Renderer::renderQuad(uint startIndex, uint count) const
 void Renderer::cullBackFace() const
 {
 	GLCall(glCullFace(GL_BACK));
+}
+
+void Renderer::cullFrontFace() const
+{
+	GLCall(glCullFace(GL_FRONT));
 }
 
 void Renderer::enableCullFace() const
@@ -58,6 +68,11 @@ void Renderer::enableBlend() const
 void Renderer::disableBlend() const
 {
 	GLCall(glDisable(GL_BLEND));
+}
+
+void Renderer::setViewport(const Rect & viewport) const
+{
+	GLCall(glViewport(viewport.x, viewport.y, viewport.width, viewport.height));
 }
 
 void Renderer::setDepthMask() const

@@ -10,8 +10,8 @@
 ShaderProgram::ShaderProgram() 
 {
 	
-	PRECODE_VERTEX = STRINGIFY(#version 130\n);
-	PRECODE_FRAGMENT = STRINGIFY(#version 130\n);
+	PRECODE_VERTEX = STRINGIFY(#version 330\n);
+	PRECODE_FRAGMENT = STRINGIFY(#version 330\n);
 
 	ATTRIBUTE_VERTEX_POSITION = "";
 	ATTRIBUTE_NORMAL_POSITION = "";
@@ -33,6 +33,11 @@ ShaderProgram::~ShaderProgram()
 void ShaderProgram::setUniform(uint uniform, uint i)
 {
 	GLCall(glUniform1i(uniform, i));
+}
+
+void ShaderProgram::setUniform(uint uniform, float v)
+{
+	GLCall(glUniform1f(uniform, v));
 }
 
 void ShaderProgram::setUniform(uint uniform, const Vector3& v)
@@ -207,6 +212,7 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 		ATTRIBUTE_TEXTURECOORD2 +
 		STRINGIFY(\n) + source.substr(beginVertShaderPosition, vertSourcePositionsCount);
 		
+	std::cout << "VERTEX SHADER" << std::endl;
 	std::cout << vertShaderSource << std::endl;
 	const char* vertShaderSourceStr = vertShaderSource.c_str();
 	buildVertShaderFromSource(vertShaderSourceStr);
@@ -221,7 +227,8 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	uint fragSourcePositionsCount = endFragShaderPosition - beginFragShaderPosition;
 	std::string fragShaderSource = PRECODE_FRAGMENT + STRINGIFY(\n) + source.substr(beginFragShaderPosition, fragSourcePositionsCount);
 	
-	// std::cout << fragShaderSource << std::endl;
+	std::cout << "FRAGMENT SHADER" << std::endl;
+	std::cout << fragShaderSource << std::endl;
 	const char* fragShaderSourceStr = fragShaderSource.c_str();
 	buildFragShaderFromSource(fragShaderSourceStr);
 
