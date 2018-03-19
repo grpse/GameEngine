@@ -62,7 +62,7 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 
 	while(particleCount--) {
 		Particle particle = particles[particleCount];
-		mShader.setUniform(mTextureUniformLocation, (uint)0);
+		mShader.setUniform(mTextureUniformLocation, (int)0);
 
 		Vector3 position = particles[particleCount].getPosition();
 		float rotation = particles[particleCount].getRotation();

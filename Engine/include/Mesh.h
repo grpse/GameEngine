@@ -23,6 +23,7 @@ public:
 	{
 		mVertexArray = other.mVertexArray;
 		mIndexBuffer = other.mIndexBuffer;
+		other.mMarkedAsCopy = true;
 	}
 
     Mesh(VertexArray& vertexArray, IndexBuffer& indexBuffer)
@@ -71,10 +72,15 @@ public:
 
 		Vertex v1, v2, v3, v4;
 
-		v1.position = v1.normal = { -1, 0, -1 }; v1.texturecoord0 = { 0, 0 };
-		v2.position = v2.normal = {  1, 0, -1 }; v2.texturecoord0 = { 1, 0 };
-		v3.position = v3.normal = {  1, 0,  1 }; v3.texturecoord0 = { 1, 1 };
-		v4.position = v4.normal = { -1, 0,  1 }; v4.texturecoord0 = { 0, 1 };
+		v1.position = { -1, 0, -1 }; v1.texturecoord0 = { 0, 0 };
+		v2.position = {  1, 0, -1 }; v2.texturecoord0 = { 1, 0 };
+		v3.position = {  1, 0,  1 }; v3.texturecoord0 = { 1, 1 };
+		v4.position = { -1, 0,  1 }; v4.texturecoord0 = { 0, 1 };
+
+		v1.normal = { 0, 0, -1 };
+		v2.normal = { 0, 0, -1 };
+		v3.normal = { 0, 0, -1 };
+		v4.normal = { 0, 0, -1 };
 
 		Vertex description[] = {
 			v1, v2, v3, v4
@@ -103,6 +109,6 @@ public:
 private:
     IndexBuffer mIndexBuffer;
     VertexArray mVertexArray;
-	bool mMarkedAsCopy;
+	mutable bool mMarkedAsCopy;
 };
 

@@ -38,6 +38,7 @@ public:
     Texture2D();
     Texture2D(uint id);
     Texture2D(const Texture2D& other);
+	~Texture2D();
 
     void setIndex(uint index);
     uint getIndex() const;
@@ -56,6 +57,7 @@ private:
     uint mID;
     uint mIndex;
 	Texture2DLayout mLayout;
+	mutable uint mRefCount;
 
     void setupDefaults();
 };

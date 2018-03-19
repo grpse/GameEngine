@@ -24,6 +24,7 @@ public:
 
 	virtual void setDepthMask() const;
 	virtual void unsetDepthMask() const;
+	virtual void setBlendSrcAlpha_One() const;
 	virtual void setBlendSrcAlpha_OneMinusSrcColor() const;
 
 };

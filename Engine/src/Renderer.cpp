@@ -85,6 +85,11 @@ void Renderer::unsetDepthMask() const
 	GLCall(glDepthMask(GL_FALSE));
 }
 
+void Renderer::setBlendSrcAlpha_One() const
+{
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE));
+}
+
 void Renderer::setBlendSrcAlpha_OneMinusSrcColor() const
 {
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));

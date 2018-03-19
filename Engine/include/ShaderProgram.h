@@ -8,15 +8,19 @@ class ShaderProgram {
 
 public:
 	ShaderProgram();
+	ShaderProgram(const ShaderProgram& shaderProgram);
 	~ShaderProgram();
 
-	void setUniform(uint uniform, uint i);
+	void setUniform(uint uniform, int i);
 	void setUniform(uint uniform, float v);
+	void setUniform(uint uniform, const Vector4& v);
 	void setUniform(uint uniform, const Vector3& v);
 	void setUniform(uint uniform, const Vector2& v);
 	void setUniform(uint uniform, const Matrix4& m);
 
-	void setUniform(const char* uniform, uint i);
+	void setUniform(const char* uniform, int i);
+	void setUniform(const char* uniform, float v);
+	void setUniform(const char* uniform, const Vector4& v);
 	void setUniform(const char* uniform, const Vector3& v);
 	void setUniform(const char* uniform, const Vector2& v);
 	void setUniform(const char* uniform, const Matrix4& m);
@@ -70,6 +74,7 @@ private:
 	uint compileShaderFromSource(uint shaderType, const char* source);
 	void link();
 
+	mutable uint mRefCount;
 	uint mShaderProgram;
 	uint mVertShader;
 	uint mFragShader;

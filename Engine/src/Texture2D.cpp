@@ -3,6 +3,7 @@
 
 Texture2D::Texture2D()
 {
+	mRefCount = 0;
     GLCall(glGenTextures(1, &mID));
     setupDefaults();
 }
@@ -19,6 +20,15 @@ Texture2D::Texture2D(const Texture2D& other)
     mIndex = other.mIndex;
 	mIndex = other.mIndex;
 	mLayout = other.mLayout;
+	other.mRefCount++;
+}
+
+Texture2D::~Texture2D()
+{
+	if (mRefCount == 0)
+	{
+		GLCall(glDeleteTextures(1, &mID));
+	}
 }
 
 Texture2D& Texture2D::operator=(const Texture2D& other)
@@ -26,6 +36,7 @@ Texture2D& Texture2D::operator=(const Texture2D& other)
     mID = other.mID;
     mIndex = other.mIndex;
 	mLayout = other.mLayout;
+	other.mRefCount++;
     return *this;
 }
 

@@ -88,7 +88,7 @@ public:
 		texture.start();
 		mShader.start();
 
-		mShader.setUniform(mTextureLocation, (uint)0);
+		mShader.setUniform(mTextureLocation, (int)0);
 		mShader.setUniform(mDisplacementLocation, Vector2(rect.x, rect.y));
 		mShader.setUniform(mWidthHeightLocation, Vector2(rect.width, rect.height));
 

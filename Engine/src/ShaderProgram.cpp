@@ -9,7 +9,7 @@
 
 ShaderProgram::ShaderProgram() 
 {
-	
+	mRefCount = 0;
 	PRECODE_VERTEX = STRINGIFY(#version 330\n);
 	PRECODE_FRAGMENT = STRINGIFY(#version 330\n);
 
@@ -25,12 +25,32 @@ ShaderProgram::ShaderProgram()
 	memset(&mAttributesUse, -1, sizeof(mAttributesUse));
 }
 
-ShaderProgram::~ShaderProgram() 
+ShaderProgram::ShaderProgram(const ShaderProgram& shaderProgram)
 {
-	GLCall(glDeleteShader(mShaderProgram));
+	shaderProgram.mRefCount++;
+	mShaderProgram = shaderProgram.mShaderProgram;
+	mVertShader = shaderProgram.mVertShader;
+	mFragShader = shaderProgram.mFragShader;
+	PRECODE_VERTEX = shaderProgram.PRECODE_VERTEX;
+	PRECODE_FRAGMENT = shaderProgram.PRECODE_FRAGMENT;
+	
+	ATTRIBUTE_VERTEX_POSITION = shaderProgram.ATTRIBUTE_VERTEX_POSITION;
+	ATTRIBUTE_NORMAL_POSITION = shaderProgram.ATTRIBUTE_NORMAL_POSITION;
+	ATTRIBUTE_TEXTURECOORD0   = shaderProgram.ATTRIBUTE_TEXTURECOORD0;
+	ATTRIBUTE_TEXTURECOORD1   = shaderProgram.ATTRIBUTE_TEXTURECOORD1;
+	ATTRIBUTE_TEXTURECOORD2   = shaderProgram.ATTRIBUTE_TEXTURECOORD2;
+
+	mUniformsUse = shaderProgram.mUniformsUse;
+	mAttributesUse = shaderProgram.mAttributesUse;
 }
 
-void ShaderProgram::setUniform(uint uniform, uint i)
+ShaderProgram::~ShaderProgram() 
+{
+	if (mRefCount == 0)
+		GLCall(glDeleteShader(mShaderProgram));
+}
+
+void ShaderProgram::setUniform(uint uniform, int i)
 {
 	GLCall(glUniform1i(uniform, i));
 }
@@ -38,6 +58,11 @@ void ShaderProgram::setUniform(uint uniform, uint i)
 void ShaderProgram::setUniform(uint uniform, float v)
 {
 	GLCall(glUniform1f(uniform, v));
+}
+
+void ShaderProgram::setUniform(uint uniform, const Vector4 & v)
+{
+	GLCall(glUniform4fv(uniform, 1, Math::value_ptr(v)));
 }
 
 void ShaderProgram::setUniform(uint uniform, const Vector3& v)
@@ -55,10 +80,22 @@ void ShaderProgram::setUniform(uint uniform, const Matrix4& m)
 	GLCall(glUniformMatrix4fv(uniform, 1, GL_FALSE, Math::value_ptr(m)));
 }
 
-void ShaderProgram::setUniform(const char * uniform, uint i)
+void ShaderProgram::setUniform(const char * uniform, int i)
 {
 	uint uniformLocation = getUniformLocation(uniform);
 	setUniform(uniformLocation, i);
+}
+
+void ShaderProgram::setUniform(const char * uniform, float f)
+{
+	uint uniformLocation = getUniformLocation(uniform);
+	setUniform(uniformLocation, f);
+}
+
+void ShaderProgram::setUniform(const char * uniform, const Vector4 & v)
+{
+	uint uniformLocation = getUniformLocation(uniform);
+	setUniform(uniformLocation, v);
 }
 
 void ShaderProgram::setUniform(const char * uniform, const Vector3& v)

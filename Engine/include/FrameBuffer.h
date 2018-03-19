@@ -14,12 +14,8 @@ class FrameBuffer {
 
 public:
 
-	explicit FrameBuffer(uint attachment)
+	FrameBuffer()
 	{
-		GLCall(glGenFramebuffers(1, &mFBO));
-		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, mFBO));
-		GLCall(glDrawBuffer(attachment));
-
 		mRefCount = 0;
 	}
 
@@ -38,6 +34,13 @@ public:
 		{
 			GLCall(glDeleteFramebuffers(1, &mFBO));
 		}
+	}
+
+	void setDrawAttachment(uint attachment)
+	{
+		GLCall(glGenFramebuffers(1, &mFBO));
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, mFBO));
+		GLCall(glDrawBuffer(attachment));
 	}
 
 	Texture2D createTextureAttachment(const Texture2DLayout& layout, uint colorAttachmentUnit)
