@@ -1,8 +1,10 @@
 #include <GameLoop.h>
 #include <iostream>
 
+#undef main
+
 int main() {
-	std::cout << "OIJASODJI" << std::endl;
+	std::cout << "OIAJSODIJ";
 	GameLoop loop;
 	loop.start();
 	return 0;

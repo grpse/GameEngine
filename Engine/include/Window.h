@@ -21,6 +21,8 @@ public:
 
 	void onKeydown(const std::function<void(uint key)>& keydownListener);
 	void onMouseMove(const std::function<void(int x, int y)>& mousemoveListener);
+
+	static Window& getInstance();
 	
 private:
 	Rect mViewport;

@@ -1,9 +1,9 @@
 #include <algorithm>
-#include "GameLoop.h"
 #include "Scene.h"
 #include "Material.h"
 #include "FrameBuffer.h"
 #include "ShadowRenderer.h"
+#include "Window.h"
 
 void Scene::addChild(const Actor& actor)
 {
@@ -58,7 +58,7 @@ void Scene::updateComponents(float deltaTime)
 	// Reset viewport
 	mRenderer.clearColorAndDepth();
 
-	Rect ScreenRect = GameLoop::getWindow().getViewport();
+	Rect ScreenRect = Window::getInstance().getViewport();
 
 	// render on queue type order [Opaque, Cutoff, Transparent]
 	for (uint i = 0; i < RenderablesQueueTypesCount; i++)

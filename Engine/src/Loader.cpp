@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <SOIL.h>
+//#include <stb_image.h>
 #include <vector>
 #include <objloader/objloader.hpp>
 #include <objloader/vboindexer.hpp>
@@ -24,6 +25,7 @@ Texture2D Loader::loadRGBATexture2D(const char* filepath)
 {
 	int width, height, channels;
 	byte* imageData = SOIL_load_image(filepath, &width, &height, &channels, SOIL_LOAD_RGBA);
+	//byte* imageData = stbi_load(filepath, &width, &height, &channels, 4);
 
 	Texture2DLayout textureLayout;
 	textureLayout.target = GL_TEXTURE_2D;
@@ -41,6 +43,7 @@ Texture2D Loader::loadRGBATexture2D(const char* filepath)
 	texture.stop();
 
 	SOIL_free_image_data(imageData);
+	//stbi_image_free(imageData);
 
 	return texture;
 }

@@ -5,8 +5,11 @@
 #include "Window.h"
 #include "Input.h"
 
+static Window* mInstance = nullptr;
+
 Window::Window()
 {
+	mInstance = this;
 }
 
 void Window::start()
@@ -111,4 +114,9 @@ void Window::onKeydown(const std::function<void(uint key)>& keydownListener)
 void Window::onMouseMove(const std::function<void(int x, int y)>& mousemoveListener)
 {
 	mMouseMoveListeners.push_back(mousemoveListener);
+}
+
+Window& Window::getInstance()
+{
+	return *mInstance;
 }

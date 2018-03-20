@@ -181,6 +181,7 @@
     <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\LinearMath.h" />
     <ClInclude Include="include\Loader.h" />
+    <ClInclude Include="include\MainScene.h" />
     <ClInclude Include="include\Material.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshRenderer.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Loader.cpp" />
+    <ClCompile Include="src\MainScene.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\Particle.cpp" />

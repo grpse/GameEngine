@@ -26,6 +26,12 @@
     <Filter Include="Headers\renderables">
       <UniqueIdentifier>{6edda6d4-acac-4479-8cee-a9eb7098baaf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Headers\test_scenes">
+      <UniqueIdentifier>{bfe0602a-a89a-42a3-999b-3152cc27a1ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sources\test_scenes">
+      <UniqueIdentifier>{4dee115d-fb2d-426d-b2bb-db863481041a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h">
@@ -152,6 +158,9 @@
     <ClInclude Include="include\Material.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\MainScene.h">
+      <Filter>Headers\test_scenes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">
@@ -231,6 +240,9 @@
     </ClCompile>
     <ClCompile Include="src\ShadowRenderer.cpp">
       <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MainScene.cpp">
+      <Filter>Sources\test_scenes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
