@@ -1,20 +1,14 @@
 #pragma once
-#include <GL/glew.h>
 
 #include "Renderable.h"
-#include "Renderer.h"
-#include "LinearMath.h"
-#include "Mesh.h"
-#include "Actor.h"
-#include "Light.h"
-#include "Camera.h"
-#include "ShaderProgram.h"
-#include "GLErrorHandling.h"
-#include "Transform.h"
-#include "DirectionalLight.h"
-#include "FrameBuffer.h"
-#include "Material.h"
-#include "ShadowRenderer.h"
+
+class Camera;
+class Light;
+class Actor;
+class Renderer;
+class ShadowRenderer;
+class Material;
+class Mesh;
 
 class MeshRenderer : public Renderable {
 
@@ -43,13 +37,13 @@ private:
 	uint mDirectional_directionLocation;
 	uint mDirectional_colorLocation;
 	uint mDirectional_intensityLocation;
-	mutable ShadowRenderer mShadowRenderer;
+	mutable ShadowRenderer* mShadowRenderer;
 
 	bool mShouldCastShadow;
 	bool mShouldReceiveShadow;
 
-	Mesh mCurrentMesh;
-	mutable Material mMaterial;
+	Mesh* mCurrentMesh;
+	mutable Material* mMaterial;
 
 	void prepare(const Renderer& renderer) const;
 	void finishRendering(const Renderer& renderer) const;

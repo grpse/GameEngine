@@ -1,37 +1,15 @@
-#include <GL/glew.h>
-#include <SDL.h>
-#include <iostream>
 #include "GameLoop.h"
-#include "Time.h"
-#include "ParticleSystem.h"
-#include "Camera.h"
-#include "GLErrorHandling.h"
-#include "Loader.h"
-#include "Mesh.h"
-#include "MeshRenderer.h"
-#include "Input.h"
-#include "Light.h"
-#include "Actor.h"
-#include "Renderable.h"
-#include "Scene.h"
-#include "LinearMath.h"
-#include "Transform.h"
-#include "Input.h"
-#include "Window.h"
-#include "MainScene.h"
-
+//#include "Time.h"
+//#include "MainScene.h"
+//#include "Window.h"
 
 void GameLoop::start()
 {
-	Uint64 NOW = 0;
-	Uint64 LAST = 0;
-	double deltaTimeInSecondsFraction = 0;
-	double mElapsedSecond = 0;
-	NOW = SDL_GetPerformanceCounter();
+	/*
+	Time::start();
 
-	Rect viewport = { 0, 0, 640, 480 };
 	Window mWindow;
-	mWindow.setViewport(viewport);
+	mWindow.setViewport({ 0, 0, 640, 480 });
 	mWindow.start();
 	
 	Scene* currentScene = new MainScene;
@@ -53,12 +31,9 @@ void GameLoop::start()
 		mWindow.swapBuffers();
 		mWindow.pollEvents();
 
-		LAST = NOW;
-		NOW = SDL_GetPerformanceCounter();
-
-		deltaTimeInSecondsFraction = (double)((NOW - LAST) * 1000 / SDL_GetPerformanceFrequency()) / 1000;
-		Time::setDeltaTime(deltaTimeInSecondsFraction);
+		Time::updateDeltaTime();
 	}
 
 	mWindow.finish();
+	*/
 }

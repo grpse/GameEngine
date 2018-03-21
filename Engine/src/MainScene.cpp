@@ -4,14 +4,16 @@
 #include "Actor.h"
 #include "Loader.h"
 #include "Window.h"
+#include "Transform.h"
+#include "Mesh.h"
 
 void MainScene::start()
 {
 	// Create suzanne actor to show
 	Actor suzanne;
-	suzanne.transform.setLocalPosition(Vector3(0, -1, 0));
-	suzanne.transform.setLocalScale(Vector3(1, 1, 1));
-	suzanne.transform.setLocalRotation(Vector3(0, 0, 0));
+	suzanne.getTransform().setLocalPosition(Vector3(0, -1, 0));
+	suzanne.getTransform().setLocalScale(Vector3(1, 1, 1));
+	suzanne.getTransform().setLocalRotation(Vector3(0, 0, 0));
 	suzanne.setRenderable<MeshRenderer>();
 	Mesh suzanneGeometry = Loader::loadSimpleMesh("suzanne.obj");
 	suzanne.getRenderable<MeshRenderer>()->setMesh(suzanneGeometry);
@@ -19,9 +21,9 @@ void MainScene::start()
 
 	// create floor to show
 	Actor floor;
-	floor.transform.setLocalPosition(Vector3(0, -2, 0));
-	floor.transform.setLocalScale(Vector3(5, 5, 5));
-	floor.transform.setLocalRotation(Quaternion(1, 0, 0, 3.1415));
+	floor.getTransform().setLocalPosition(Vector3(0, -2, 0));
+	floor.getTransform().setLocalScale(Vector3(5, 5, 5));
+	floor.getTransform().setLocalRotation(Quaternion(1, 0, 0, 3.1415));
 
 	Mesh floorGeometry = Mesh::createQuad();
 	floor.setRenderable<MeshRenderer>();
@@ -38,12 +40,12 @@ void MainScene::start()
 	cameraFormat.farPlane = 10000.0;
 
 	mCamera.setFormat(cameraFormat, Camera::Type::Perspective);
-	mCamera.transform.setLocalPosition(Vector3(0, 0, 10));
-	mCamera.transform.setLocalRotation(Quaternion(0, 1, 0, 3.1415));
+	mCamera.getTransform().setLocalPosition(Vector3(0, 0, 10));
+	mCamera.getTransform().setLocalRotation(Quaternion(0, 1, 0, 3.1415));
 
 	//get current camera position and rotation
-	mCameraPosition = mCamera.transform.getLocalPosition();
-	mCameraRotation = mCamera.transform.getLocalRotation();
+	mCameraPosition = mCamera.getTransform().getLocalPosition();
+	mCameraRotation = mCamera.getTransform().getLocalRotation();
 
 	// Create directional light
 	Light directional;
@@ -72,7 +74,7 @@ void MainScene::start()
 			mCameraRotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
 		}
 
-		mCamera.transform.setLocalRotation(Quaternion(mCameraRotation));
+		mCamera.getTransform().setLocalRotation(Quaternion(mCameraRotation));
 	});
 }
 
@@ -80,8 +82,8 @@ void MainScene::update(float deltaTime)
 {
 	float moveDiff = (float)(80.0 * deltaTime);
 
-	Vector3 front = mCamera.transform.getFront();
-	Vector3 right = mCamera.transform.getRight();
+	Vector3 front = mCamera.getTransform().getFront();
+	Vector3 right = mCamera.getTransform().getRight();
 
 	if (Input::isPressedKey(ArrowUp)) {
 		mCameraPosition += Math::normalize(front) * moveDiff;
@@ -99,5 +101,5 @@ void MainScene::update(float deltaTime)
 		mCameraPosition -= Math::normalize(right) * moveDiff;
 	}
 
-	mCamera.transform.setLocalPosition(mCameraPosition);
+	mCamera.getTransform().setLocalPosition(mCameraPosition);
 }

@@ -1,8 +1,14 @@
 #include "Camera.h"
-#include <iostream>
+#include "Transform.h"
 
 Camera::Camera()
 {
+	mTransform = new Transform;
+}
+
+Camera::~Camera()
+{
+	delete mTransform;
 }
 
 void Camera::setFormat(const Camera::Format& format, const Camera::Type& type)
@@ -29,9 +35,9 @@ void Camera::setFormat(const Camera::Format& format, const Camera::Type& type)
 
 const Matrix4& Camera::getViewMatrix() const
 {
-	if (transform.isDirty()) {
-		const Vector3 position = transform.getLocalPosition();
-		const Vector3 front = transform.getFront();
+	if (getTransform().isDirty()) {
+		const Vector3 position = getTransform().getLocalPosition();
+		const Vector3 front = getTransform().getFront();
 		const Vector3 target = position + front;
 
 		mViewMatrix = Math::lookAt(
@@ -46,4 +52,9 @@ const Matrix4& Camera::getViewMatrix() const
 const Matrix4 & Camera::getProjectionMatrix() const
 {
 	return mProjectionMatrix;
+}
+
+Transform& Camera::getTransform() const
+{
+	return *mTransform;
 }

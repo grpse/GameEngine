@@ -32,6 +32,15 @@
     <Filter Include="Sources\test_scenes">
       <UniqueIdentifier>{4dee115d-fb2d-426d-b2bb-db863481041a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="external">
+      <UniqueIdentifier>{937300c9-8972-44e5-ac04-3c212aa3e048}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\SOIL">
+      <UniqueIdentifier>{e3398a63-eec0-4240-a55d-80ca47b71818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external\glew">
+      <UniqueIdentifier>{da0702a2-a681-4d9c-8b47-a13ee40310de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h">
@@ -131,9 +140,6 @@
     <ClInclude Include="include\BillboardRenderer.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="include\DirectionalLight.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="include\ShadowRenderer.h">
       <Filter>Headers</Filter>
     </ClInclude>
@@ -160,6 +166,24 @@
     </ClInclude>
     <ClInclude Include="include\MainScene.h">
       <Filter>Headers\test_scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\src\image_DXT.h">
+      <Filter>external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\src\image_helper.h">
+      <Filter>external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\src\SOIL.h">
+      <Filter>external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\src\stb_image_aug.h">
+      <Filter>external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\src\stbi_DDS_aug.h">
+      <Filter>external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\src\stbi_DDS_aug_c.h">
+      <Filter>external\SOIL</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -243,6 +267,27 @@
     </ClCompile>
     <ClCompile Include="src\MainScene.cpp">
       <Filter>Sources\test_scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\src\image_DXT.c">
+      <Filter>external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\src\image_helper.c">
+      <Filter>external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\src\SOIL.c">
+      <Filter>external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\src\stb_image_aug.c">
+      <Filter>external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\glew\src\glew.c">
+      <Filter>external\glew</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Sources\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FrameBuffer.cpp">
+      <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

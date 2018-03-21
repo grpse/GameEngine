@@ -10,6 +10,9 @@
 #include <vector>
 #include <tuple>
 
+class ShaderProgram;
+enum Renderable::QueueType;
+
 class Material {
 
 public:

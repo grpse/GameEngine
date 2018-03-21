@@ -1,6 +1,10 @@
 #include <GL/glew.h>
 #include <SOIL.h>
-//#include <stb_image.h>
+#include <vector>
+#include "Typedefs.h"
+#include "LinearMath.h"
+#include "Texture2D.h"
+#include "Mesh.h"
 #include <vector>
 #include <objloader/objloader.hpp>
 #include <objloader/vboindexer.hpp>

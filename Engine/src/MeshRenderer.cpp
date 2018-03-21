@@ -1,5 +1,17 @@
+#include <GL/glew.h>
+#include "Renderer.h"
 #include "MeshRenderer.h"
 #include "MeshShaderSource.h"
+#include "Mesh.h"
+#include "Actor.h"
+#include "Light.h"
+#include "Camera.h"
+#include "ShaderProgram.h"
+#include "GLErrorHandling.h"
+#include "Material.h"
+#include "ShadowRenderer.h"
+#include "LinearMath.h"
+#include "Transform.h"
 
 MeshRenderer::MeshRenderer()
 {
@@ -14,7 +26,7 @@ MeshRenderer::MeshRenderer()
 	Shader.useViewMatrix();
 
 	Shader.buildShadersFromSource(MeshShaderSource);
-	mMaterial.setShaderProgram(Shader);
+	mMaterial->setShaderProgram(Shader);
 
 	mShouldCastShadow = false;
 	mShouldReceiveShadow = false;
@@ -27,7 +39,7 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::setMesh(const Mesh& mesh)
 {
-	mCurrentMesh = mesh;
+	mCurrentMesh = (Mesh*)&mesh;
 }
 
 void MeshRenderer::setReceiveShadow(const bool shouldReceiveShadow)
@@ -42,12 +54,12 @@ void MeshRenderer::setCastShadow(const bool shouldCastShadow)
 
 void MeshRenderer::preRender(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
 {
-	//mShadowRenderer.getShadowBuffer().bind();
+	//mShadowRenderer->getShadowBuffer().bind();
 	//for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
 	//{
-	//	mShadowRenderer.renderShadowMap(camera, mCurrentMesh, actor.transform, lights[lightIndex], renderer);
+	//	mShadowRenderer->renderShadowMap(camera, mCurrentMesh, actor.transform, lights[lightIndex], renderer);
 	//}
-	//mShadowRenderer.getShadowBuffer().unbind();
+	//mShadowRenderer->getShadowBuffer().unbind();
 }
 
 void MeshRenderer::render(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
@@ -55,17 +67,17 @@ void MeshRenderer::render(const Camera & camera, const Light * lights, uint ligh
 	prepare(renderer);
 
 	//TODO: render phong model (maybe), lit without shadows.
-	const auto& vao = mCurrentMesh.getVertexArray();
-	const auto& ibo = mCurrentMesh.getIndexBuffer();
+	const auto& vao = mCurrentMesh->getVertexArray();
+	const auto& ibo = mCurrentMesh->getIndexBuffer();
 
-	const Matrix4& World = actor.transform.getWorldMatrix();
+	const Matrix4& World = actor.getTransform().getWorldMatrix();
 	const Matrix4& View = camera.getViewMatrix();
 	const Matrix4 WorldView = View * World;
 
-	mMaterial.getShaderProgram().setProjectionMatrix(camera.getProjectionMatrix());
-	mMaterial.getShaderProgram().setWorldViewMatrix(WorldView);
-	mMaterial.getShaderProgram().setWorldMatrix(World);
-	mMaterial.getShaderProgram().setViewMatrix(View);
+	mMaterial->getShaderProgram().setProjectionMatrix(camera.getProjectionMatrix());
+	mMaterial->getShaderProgram().setWorldViewMatrix(WorldView);
+	mMaterial->getShaderProgram().setWorldMatrix(World);
+	mMaterial->getShaderProgram().setViewMatrix(View);
 
 	renderer.render(vao, ibo);
 
@@ -82,23 +94,23 @@ void MeshRenderer::postRender(const Camera & camera, const Light * lights, uint 
 
 	//for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
 	//{
-	//	mShadowRenderer.renderAdditiveShadow(camera, mCurrentMesh, actor.transform, lights[lightIndex], renderer);
+	//	mShadowRenderer->renderAdditiveShadow(camera, mCurrentMesh, actor.transform, lights[lightIndex], renderer);
 	//}
 }
 
 Renderable::QueueType MeshRenderer::getRenderQueue() const 
 {
-	return mMaterial.getQueueType();
+	return mMaterial->getQueueType();
 }
 
 void MeshRenderer::setMaterial(const Material & material)
 {
-	mMaterial = material;
+	mMaterial = (Material*)&material;
 }
 
 const Material & MeshRenderer::getMaterial() const
 {
-	return mMaterial;
+	return *mMaterial;
 }
 
 bool MeshRenderer::hasPrePassStep() const
@@ -113,7 +125,7 @@ bool MeshRenderer::hasPostPassStep() const
 
 void MeshRenderer::prepare(const Renderer& renderer) const
 {
-	mMaterial.use();
+	mMaterial->use();
 	renderer.enableDepthTest();
 	renderer.enableCullFace();
 	renderer.cullBackFace();

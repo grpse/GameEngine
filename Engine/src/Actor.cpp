@@ -1,4 +1,17 @@
 #include "Actor.h"
+#include "Component.h"
+#include "Renderable.h"
+#include "Transform.h"
+
+Actor::Actor()
+{
+	mTransform = new Transform;
+}
+
+Actor::~Actor()
+{
+	delete mTransform;
+}
 
 void Actor::start()
 {
@@ -30,4 +43,9 @@ void Actor::setRenderable(Renderable * renderable)
 Renderable* Actor::getRenderable() const
 {
 	return mRenderable;
+}
+
+Transform& Actor::getTransform() const
+{
+	return *mTransform;
 }

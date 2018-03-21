@@ -1,11 +1,8 @@
 #pragma once
-#include <vector>
-#include "Typedefs.h"
-#include "LinearMath.h"
-#include "Texture2D.h"
-#include "Mesh.h"
 #include "OSExport.h"
 
+class Texture2D;
+class Mesh;
 
 class ENGINE_API Loader {
 

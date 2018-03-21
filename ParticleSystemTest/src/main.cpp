@@ -1,10 +1,6 @@
 #include <GameLoop.h>
-#include <iostream>
 
-#undef main
-
-int main() {
-	std::cout << "OIAJSODIJ";
+int main(int argc, char** argv) {
 	GameLoop loop;
 	loop.start();
 	return 0;

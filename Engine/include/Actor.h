@@ -1,14 +1,16 @@
 #pragma once
 #include <vector>
-#include "Transform.h"
-#include "Renderable.h"
-#include "Component.h"
 #include "Typedefs.h"
+
+class Component;
+class Renderable;
+class Transform;
 
 class Actor {
 
 public:
-	Transform transform;
+	Actor();
+	~Actor();
 
 	void start();
 	void update(float deltaTime) const;
@@ -29,11 +31,13 @@ public:
 	RenderableType* getRenderable() const;
 
 	Renderable* getRenderable() const;
+	Transform& getTransform() const;
 
 private:
 	std::vector<Component*> mComponents;
 	Renderable* mRenderable;
-	
+	Transform* mTransform;
+
 	Component* addComponent(Component* component);
 	void setRenderable(Renderable* renderable);
 };
