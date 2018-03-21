@@ -6,6 +6,7 @@
 #include "Window.h"
 #include "Transform.h"
 #include "Mesh.h"
+#include "Light.h"
 
 void MainScene::start()
 {

@@ -4,6 +4,16 @@
 #include "FrameBuffer.h"
 #include "ShadowRenderer.h"
 #include "Window.h"
+#include "Renderable.h"
+#include "Actor.h"
+#include "Camera.h"
+#include "Light.h"
+#include "Renderer.h"
+
+void Scene::setup()
+{
+	mRenderer = new Renderer;
+}
 
 void Scene::addChild(const Actor& actor)
 {
@@ -28,9 +38,7 @@ void Scene::updateComponents(float deltaTime)
 
 	const uint RenderablesQueueTypesCount = (uint)Renderable::QueueType::Count;
 
-	std::vector<RenderableActor> preRenderQueues[RenderablesQueueTypesCount];
 	std::vector<RenderableActor> renderQueues[RenderablesQueueTypesCount];
-	std::vector<RenderableActor> postRenderQueues[RenderablesQueueTypesCount];
 
 	for (const Actor* actor : mActors)
 	{
@@ -38,12 +46,6 @@ void Scene::updateComponents(float deltaTime)
 		{
 			uint QueueTypeIndex = (uint)actor->getRenderable()->getRenderQueue();
 			renderQueues[QueueTypeIndex].push_back({ actor->getRenderable(), actor });
-
-			if (actor->getRenderable()->hasPrePassStep())
-				preRenderQueues[QueueTypeIndex].push_back({ actor->getRenderable(), actor });
-
-			if (actor->getRenderable()->hasPostPassStep())
-				postRenderQueues[QueueTypeIndex].push_back({ actor->getRenderable(), actor });
 		}
 
 		actor->update(deltaTime);
@@ -52,11 +54,11 @@ void Scene::updateComponents(float deltaTime)
 	// TODO: Remove this fixed step from here
 	// Clear shadow map framebuffer
 	ShadowRenderer::getFrameBuffer().bind();
-	mRenderer.clearColorAndDepth();
+	mRenderer->clearColorAndDepth();
 	ShadowRenderer::getFrameBuffer().unbind();
 
 	// Reset viewport
-	mRenderer.clearColorAndDepth();
+	mRenderer->clearColorAndDepth();
 
 	Rect ScreenRect = Window::getInstance().getViewport();
 
@@ -65,22 +67,22 @@ void Scene::updateComponents(float deltaTime)
 	{
 		for (const Camera* camera : mCameras)
 		{
-			for (RenderableActor renderActor : preRenderQueues[i])
+			for (RenderableActor renderActor : renderQueues[i])
 			{
-				mRenderer.setViewport(ScreenRect);
-				renderActor.first->preRender(*camera, mLights[0], mLights.size(), *renderActor.second, mRenderer);
+				mRenderer->setViewport(ScreenRect);
+				renderActor.first->preRender(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
 			}
 
 			for (RenderableActor renderActor : renderQueues[i])
 			{
-				mRenderer.setViewport(ScreenRect);
-				renderActor.first->render(*camera, mLights[0], mLights.size(), *renderActor.second, mRenderer);
+				mRenderer->setViewport(ScreenRect);
+				renderActor.first->render(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
 			}
 
-			for (RenderableActor renderActor : postRenderQueues[i])
+			for (RenderableActor renderActor : renderQueues[i])
 			{
-				mRenderer.setViewport(ScreenRect);
-				renderActor.first->postRender(*camera, mLights[0], mLights.size(), *renderActor.second, mRenderer);
+				mRenderer->setViewport(ScreenRect);
+				renderActor.first->postRender(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
 			}
 		}
 	}

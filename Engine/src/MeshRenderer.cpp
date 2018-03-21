@@ -100,7 +100,8 @@ void MeshRenderer::postRender(const Camera & camera, const Light * lights, uint 
 
 Renderable::QueueType MeshRenderer::getRenderQueue() const 
 {
-	return mMaterial->getQueueType();
+	//	return mMaterial->getQueueType();
+	return Renderable::QueueType::Opaque;
 }
 
 void MeshRenderer::setMaterial(const Material & material)

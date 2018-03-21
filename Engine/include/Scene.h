@@ -1,16 +1,16 @@
 #pragma once
-
 #include <vector>
-#include <utility>
 
-#include "Actor.h"
-#include "Camera.h"
-#include "Light.h"
-#include "Renderer.h"
+class Renderer;
+class Light;
+class Camera;
+class Actor;
 
 class Scene {
 
 public:
+
+	void setup();
 
 	virtual void start() = 0;
 	virtual void update(float deltaTime) = 0;
@@ -24,5 +24,5 @@ private:
 	std::vector<Actor*> mActors;
 	std::vector<Camera*> mCameras;
 	std::vector<Light*> mLights;
-	Renderer mRenderer;
+	Renderer* mRenderer;
 };

@@ -1,23 +1,22 @@
 #pragma once
 #include "Typedefs.h"
 #include "LinearMath.h"
-#include "Texture2D.h"
-#include "ShaderProgram.h"
-#include "Renderable.h"
-#include "Light.h"
-#include "Camera.h"
 #include <map>
-#include <vector>
 #include <tuple>
 
 class ShaderProgram;
-enum Renderable::QueueType;
+//enum Renderable::QueueType;
+class Camera;
+class Light;
+class Texture2D;
 
 class Material {
 
 public:
+	Material();
+	~Material();
 	ShaderProgram & getShaderProgram();
-	Renderable::QueueType getQueueType() const;
+	//Renderable::QueueType getQueueType() const;
 	void setShader(const std::string& shaderSource);
 	void setShaderProgram(const ShaderProgram& shaderProgram);
 	void setInt(const std::string& name, int i);
@@ -42,8 +41,8 @@ public:
 	};
 
 private:
-	ShaderProgram mShader;
-	Renderable::QueueType mQueueType;
+	ShaderProgram* mShader;
+	//mutable Renderable::QueueType* mQueueType;
 
 	std::map<std::string, std::pair<uint, int> > mIntValues;
 	std::map<std::string, std::pair<uint, float> > mFloatValues;

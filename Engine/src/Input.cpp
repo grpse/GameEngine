@@ -1,4 +1,5 @@
 #include "Input.h"
+#include <string.h>
 
 bool mPressedKeys[NUMBER_OF_KEYS];
 

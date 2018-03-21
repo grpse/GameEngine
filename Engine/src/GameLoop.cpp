@@ -17,7 +17,8 @@ void GameLoop::start()
 	//Texture2D particleTexture = Loader::loadRGBATexture2D("start.png");
 	//ParticleSystem mParticleSystem(50.0, 25, 1, 4);
 	//mParticleSystem.loadTexture(particleTexture);
-		
+	
+	currentScene->setup();
 	currentScene->start();
 
 	while (mWindow.isOpen()) {

@@ -1,25 +1,45 @@
+#include <vector>
 #include "Material.h"
+#include "Texture2D.h"
+#include "ShaderProgram.h"
+#include "Renderable.h"
+#include "Light.h"
+#include "Camera.h"
 
 std::vector<Material::LightUniformNames> LightsNames;
 
-ShaderProgram& Material::getShaderProgram()
+Material::Material()
 {
-	return mShader;
+	//mQueueType = new Renderable::QueueType;
 }
 
+Material::~Material()
+{
+	//delete mQueueType;
+	delete mShader;
+}
+
+ShaderProgram& Material::getShaderProgram()
+{
+	return *mShader;
+}
+
+/*
 Renderable::QueueType Material::getQueueType() const
 {
-	return mQueueType;
+	return (*mQueueType);
 }
+*/
 
 void Material::setShader(const std::string & shaderSource)
 {
-	mShader.buildShadersFromSource(shaderSource);
+	mShader = new ShaderProgram;
+	mShader->buildShadersFromSource(shaderSource);
 }
 
 void Material::setShaderProgram(const ShaderProgram& shaderProgram)
 {
-	mShader = shaderProgram;
+	mShader = new ShaderProgram(shaderProgram);
 }
 
 void Material::setInt(const std::string & name, int i)
@@ -75,7 +95,7 @@ void Material::setLights(const Light* lights, uint lightsCount)
 
 void Material::use()
 {
-	mShader.start();
+	mShader->start();
 
 	uint index = 0;
 	
@@ -85,42 +105,42 @@ void Material::use()
 		Texture2D& texture = t.second.second;
 		texture.setIndex(index++);
 		texture.start();
-		mShader.setUniform(uniformLocation, (int)index);
+		mShader->setUniform(uniformLocation, (int)index);
 	}
 
 	for (auto& f : mFloatValues)
 	{
 		uint uniformLocation = f.second.first;
 		float value = f.second.second;
-		mShader.setUniform(uniformLocation, value);
+		mShader->setUniform(uniformLocation, value);
 	}
 
 	for (auto& i : mIntValues)
 	{
 		uint uniformLocation = i.second.first;
 		int value = i.second.second;
-		mShader.setUniform(uniformLocation, (int)value);
+		mShader->setUniform(uniformLocation, (int)value);
 	}
 
 	for (auto& v3 : mVector3Values)
 	{
 		uint uniformLocation = v3.second.first;
 		Vector3& value = v3.second.second;
-		mShader.setUniform(uniformLocation, value);
+		mShader->setUniform(uniformLocation, value);
 	}
 
 	for (auto& v2 : mVector2Values)
 	{
 		uint uniformLocation = v2.second.first;
 		Vector2& value = v2.second.second;
-		mShader.setUniform(uniformLocation, value);
+		mShader->setUniform(uniformLocation, value);
 	}
 
 	for (auto& m4 : mMatrix4Values)
 	{
 		uint uniformLocation = m4.second.first;
 		Matrix4& value = m4.second.second;
-		mShader.setUniform(uniformLocation, value);
+		mShader->setUniform(uniformLocation, value);
 	}
 }
 
@@ -129,9 +149,9 @@ uint Material::getUniformLocation(const std::string& name)
 	int uniformLocation = mUniformsMap[name];
 	if (uniformLocation < 0)
 	{
-		mShader.start();
+		mShader->start();
 		const char* uniformName = name.c_str();
-		uniformLocation = mShader.getUniformLocation(uniformName);
+		uniformLocation = mShader->getUniformLocation(uniformName);
 		mUniformsMap[name] = uniformLocation;
 	}
 

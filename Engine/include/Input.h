@@ -1,7 +1,6 @@
 #pragma once
-#include <SDL.h>
+
 #include "Typedefs.h"
-#include <string.h>
 #define NUMBER_OF_KEYS 256
 
 const uint ArrowUp = 82;
