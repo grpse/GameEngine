@@ -1,9 +1,10 @@
 #pragma once
 #include "LinearMath.h"
-#include "Camera.h"
 #include "Typedefs.h"
-#include "Particle.h"
-#include "Texture2D.h"
+
+class Camera;
+class Particle;
+class Texture2D;
 
 class ParticleMaster {
 

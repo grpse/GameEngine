@@ -1,3 +1,4 @@
+#include "Camera.h"
 #include "Renderer.h"
 #include "ParticleSystem.h"
 #include <vector>
@@ -7,6 +8,7 @@
 #include "ParticleBasicShader.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "Particle.h"
 
 static Vector3 quadVertices[] = {
 	Vector3(-0.5, -0.5, 0),

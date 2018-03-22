@@ -37,7 +37,7 @@ in vec3 Eye_WorldSpace;
 uniform Light LIGHTS[MAX_LIGHTS_COUNT];
 uniform int LIGHTS_COUNT = 0;
 
-vec4 CalculateDirectionalDiffuseColor(Light light) {
+vec4 CalculateDiffuseColor(Light light) {
 	float diffuseFactor = max(0, dot(-light.direction, VertexNormal_WorldSpace));
 	return light.color * light.intensity * diffuseFactor;
 }

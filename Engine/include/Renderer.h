@@ -1,8 +1,9 @@
 #pragma once
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "Rect.h"
 #include "LinearMath.h"
+
+class IndexBuffer;
+class VertexArray;
+struct Rect;
 
 class Renderer {
 

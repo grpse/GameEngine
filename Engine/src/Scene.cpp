@@ -9,6 +9,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Renderer.h"
+#include "ServiceLocator.h"
 
 void Scene::setup()
 {
@@ -53,14 +54,14 @@ void Scene::updateComponents(float deltaTime)
 
 	// TODO: Remove this fixed step from here
 	// Clear shadow map framebuffer
-	ShadowRenderer::getFrameBuffer().bind();
-	mRenderer->clearColorAndDepth();
-	ShadowRenderer::getFrameBuffer().unbind();
+	//ShadowRenderer::getFrameBuffer().bind();
+	//mRenderer->clearColorAndDepth();
+	//Locator::locateShadowRenderer()->getFrameBuffer().unbind();
 
 	// Reset viewport
 	mRenderer->clearColorAndDepth();
 
-	Rect ScreenRect = Window::getInstance().getViewport();
+	Rect ScreenRect = Locator::locateWindow()->getViewport();
 
 	// render on queue type order [Opaque, Cutoff, Transparent]
 	for (uint i = 0; i < RenderablesQueueTypesCount; i++)

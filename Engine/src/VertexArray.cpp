@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include "VertexArray.h"
 #include "GLErrorHandling.h"
+#include "VertexBuffer.h"
 
 VertexArray::VertexArray() 
 	: mWasGenerated(false)

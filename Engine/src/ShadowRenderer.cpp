@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "ShadowRenderer.h"
 
 #include "Camera.h"
@@ -71,16 +72,7 @@ void main()
 )";
 
 
-const Matrix4 biasMatrix(
-	0.5, 0.0, 0.0, 0.0,
-	0.0, 0.5, 0.0, 0.0,
-	0.0, 0.0, 0.5, 0.0,
-	0.5, 0.5, 0.5, 1.0
-);
 
-Texture2DLayout* DepthLayout = new Texture2DLayout;
-FrameBuffer* ShadowBuffer = new FrameBuffer;
-Texture2D* ShadowMap = new Texture2D;
 
 ShadowRenderer::ShadowRenderer()
 {
@@ -103,11 +95,29 @@ ShadowRenderer::ShadowRenderer()
 	mShadowIntensityLocation = mShadowMapAdditiveShader.getUniformLocation("ShadowIntensity");
 	mShadowMapLocation = mShadowMapAdditiveShader.getUniformLocation("ShadowMap");
 	mShadowMapAdditiveShader.stop();
+
+	DepthLayout.target = GL_TEXTURE_2D;
+	DepthLayout.level = 0;
+	DepthLayout.internalFormat = GL_DEPTH_COMPONENT16;
+	DepthLayout.width = 1024;
+	DepthLayout.height = 1024;
+	DepthLayout.border = 0;
+	DepthLayout.format = GL_DEPTH_COMPONENT;
+	DepthLayout.type = GL_FLOAT;
+
+	ShadowBuffer.setDrawAttachment(GL_NONE);
+
+	ShadowMap = ShadowBuffer.createDepthTextureAttachment(DepthLayout);
+}
+
+ShadowRenderer::~ShadowRenderer()
+{
+
 }
 
 void ShadowRenderer::renderShadowMap(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer)
 {
-	ShadowBuffer->bind();
+	getShadowBuffer().bind();
 
 	renderer.enableDepthTest();
 	renderer.enableCullFace();
@@ -130,7 +140,7 @@ void ShadowRenderer::renderShadowMap(const Camera& camera, const Mesh& mesh, con
 	renderer.disableCullFace();
 	renderer.disableDepthTest();
 
-	ShadowBuffer->unbind();
+	getShadowBuffer().unbind();
 }
 
 void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer)
@@ -139,6 +149,12 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 	Matrix4 WorldViewProjection = camera.getProjectionMatrix() * camera.getViewMatrix() * transform.getWorldMatrix();
 
 	// light WVP biased
+	Matrix4 biasMatrix(
+		0.5, 0.0, 0.0, 0.0,
+		0.0, 0.5, 0.0, 0.0,
+		0.0, 0.0, 0.5, 0.0,
+		0.5, 0.5, 0.5, 1.0
+	);
 	Matrix4 projection = light.getLightProjection(camera, transform);
 	Matrix4 view = light.getLightView(camera, transform);
 	Matrix4 model = transform.getWorldMatrix();
@@ -146,7 +162,7 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 	Matrix4 depthMVPBias = biasMatrix * depthMVP;
 
 	// Bind depth texture
-	ShadowMap->start();
+	getShadowMap().start();
 
 	// Bind light intentisity, depth wvp biased and shadow map depth texture
 	mShadowMapAdditiveShader.setUniform(mShadowIntensityLocation, 1 - light.intensity);
@@ -155,36 +171,20 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 
 	renderer.render(mesh.getVertexArray(), mesh.getIndexBuffer());
 
-	ShadowMap->stop();
-}
-
-void ShadowRenderer::initializeSharedResources()
-{	
-	DepthLayout->target = GL_TEXTURE_2D;
-	DepthLayout->level = 0;
-	DepthLayout->internalFormat = GL_DEPTH_COMPONENT16;
-	DepthLayout->width = 1024;
-	DepthLayout->height = 1024;
-	DepthLayout->border = 0;
-	DepthLayout->format = GL_DEPTH_COMPONENT;
-	DepthLayout->type = GL_FLOAT;
-		
-	ShadowBuffer->setDrawAttachment(GL_NONE);
-
-	ShadowMap = &ShadowBuffer->createDepthTextureAttachment(*DepthLayout);
+	getShadowMap().stop();
 }
 
 const FrameBuffer& ShadowRenderer::getShadowBuffer() const
 {
-	return *ShadowBuffer;
+	return ShadowBuffer;
 }
 
 const Texture2D& ShadowRenderer::getShadowMap() const
 {
-	return *ShadowMap;
+	return ShadowMap;
 }
 
 const FrameBuffer& ShadowRenderer::getFrameBuffer()
 {
-	return *ShadowBuffer;
+	return ShadowBuffer;
 }

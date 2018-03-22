@@ -1,17 +1,19 @@
 #pragma once
 #include <vector>
 #include "Typedefs.h"
+#include "Transform.h"
 
 class Component;
 class Renderable;
-class Transform;
 
 class Actor {
 
 public:
+	Transform transform;
+
 	Actor();
 	~Actor();
-
+	
 	void start();
 	void update(float deltaTime) const;
 
@@ -24,22 +26,14 @@ public:
 	template <typename ComponentType>
 	std::vector<ComponentType*> getComponentsOfType() const;
 
-	template <typename RenderableType>
-	void setRenderable();
-
-	template <typename RenderableType>
-	RenderableType* getRenderable() const;
-
+	void setRenderable(Renderable* renderable);
 	Renderable* getRenderable() const;
-	Transform& getTransform() const;
 
 private:
 	std::vector<Component*> mComponents;
-	Renderable* mRenderable;
-	Transform* mTransform;
+	Renderable* mRenderable;	
 
 	Component* addComponent(Component* component);
-	void setRenderable(Renderable* renderable);
 };
 
 template <typename ComponentType>
@@ -79,21 +73,4 @@ std::vector<ComponentType*> Actor::getComponentsOfType() const
 	}
 
 	return componentsOfType;
-}
-
-template <typename RenderableType>
-void Actor::setRenderable()
-{
-	if (mRenderable != nullptr)
-	{
-		delete mRenderable;
-	}
-
-	setRenderable(new RenderableType());
-}
-
-template <typename RenderableType>
-RenderableType* Actor::getRenderable() const
-{
-	return dynamic_cast<RenderableType*>(mRenderable);
 }

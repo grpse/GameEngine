@@ -2,6 +2,8 @@
 #include <SDL_opengl.h>
 #include "GLErrorHandling.h"
 #include "RendererOpenGL.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
 
 void RendererOpenGL::clearColorAndDepth() const
 {

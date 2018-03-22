@@ -27,7 +27,6 @@ ShaderProgram::ShaderProgram()
 
 ShaderProgram::ShaderProgram(const ShaderProgram& shaderProgram)
 {
-	shaderProgram.mRefCount++;
 	mShaderProgram = shaderProgram.mShaderProgram;
 	mVertShader = shaderProgram.mVertShader;
 	mFragShader = shaderProgram.mFragShader;
@@ -42,12 +41,15 @@ ShaderProgram::ShaderProgram(const ShaderProgram& shaderProgram)
 
 	mUniformsUse = shaderProgram.mUniformsUse;
 	mAttributesUse = shaderProgram.mAttributesUse;
+	shaderProgram.mRefCount++;
 }
 
 ShaderProgram::~ShaderProgram() 
 {
 	if (mRefCount == 0)
-		GLCall(glDeleteShader(mShaderProgram));
+	{
+	//	GLCall(glDeleteProgram(mShaderProgram));
+	}	
 }
 
 void ShaderProgram::setUniform(uint uniform, int i)

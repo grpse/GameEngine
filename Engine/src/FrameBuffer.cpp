@@ -21,7 +21,7 @@ FrameBuffer::~FrameBuffer()
 {
 	if (mRefCount == 0)
 	{
-		GLCall(glDeleteFramebuffers(1, &mFBO));
+		//GLCall(glDeleteFramebuffers(1, &mFBO));
 	}
 }
 
@@ -93,14 +93,14 @@ bool FrameBuffer::isComplete() const
 
 void FrameBuffer::bind() const
 {
-	glBindTexture(GL_TEXTURE_2D, 0);//To make sure the texture isn't bound
-	glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
-	glViewport(0, 0, mLayout.width, mLayout.height);
+	GLCall(glBindTexture(GL_TEXTURE_2D, 0));//To make sure the texture isn't bound
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, mFBO));
+	GLCall(glViewport(0, 0, mLayout.width, mLayout.height));
 }
 
 void FrameBuffer::unbind() const
 {
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 	// TODO: Reset originals framebuffer
 	//glViewport(0, 0, Display.getWidth(), Display.getHeight());
 }

@@ -1,16 +1,21 @@
+#include <GL/glew.h>
 #include "GameLoop.h"
-//#include "Time.h"
-//#include "MainScene.h"
-//#include "Window.h"
+#include "Time.h"
+#include "MainScene.h"
+#include "Window.h"
+#include <iostream>
+#include "ServiceLocator.h"
+#include "GLErrorHandling.h"
+#include "ShadowRenderer.h"
 
 void GameLoop::start()
 {
-	/*
-	Time::start();
+	Locator::provideWindow(new Window);
 
-	Window mWindow;
-	mWindow.setViewport({ 0, 0, 640, 480 });
-	mWindow.start();
+	Locator::locateWindow()->setViewport({ 0, 0, 640, 480 });
+	Locator::locateWindow()->start();
+
+	Time::start();
 	
 	Scene* currentScene = new MainScene;
 	// particle system setup
@@ -21,7 +26,9 @@ void GameLoop::start()
 	currentScene->setup();
 	currentScene->start();
 
-	while (mWindow.isOpen()) {
+	//Locator::provideShadowRenderer(new ShadowRenderer);
+
+	while (Locator::locateWindow()->isOpen()) {
 		float dt = (float)Time::getDeltaTime();
 		
 		//mParticleSystem.emitParticle(Vector3(0, -5, 0));
@@ -29,12 +36,11 @@ void GameLoop::start()
 
 		currentScene->updateComponents(dt);
 
-		mWindow.swapBuffers();
-		mWindow.pollEvents();
+		Locator::locateWindow()->swapBuffers();
+		Locator::locateWindow()->pollEvents();
 
 		Time::updateDeltaTime();
 	}
 
-	mWindow.finish();
-	*/
+	Locator::locateWindow()->finish();
 }

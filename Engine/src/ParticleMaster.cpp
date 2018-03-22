@@ -1,4 +1,7 @@
 #include "ParticleMaster.h"
+#include "Camera.h"
+#include "Particle.h"
+#include "Texture2D.h"
 
 ParticleMaster::ParticleMaster() 
 {

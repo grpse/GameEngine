@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "Texture2D.h"
 #include "GLErrorHandling.h"
 
@@ -27,7 +28,7 @@ Texture2D::~Texture2D()
 {
 	if (mRefCount == 0)
 	{
-		GLCall(glDeleteTextures(1, &mID));
+		//GLCall(glDeleteTextures(1, &mID));
 	}
 }
 

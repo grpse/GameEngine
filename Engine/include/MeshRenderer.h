@@ -37,7 +37,7 @@ private:
 	uint mDirectional_directionLocation;
 	uint mDirectional_colorLocation;
 	uint mDirectional_intensityLocation;
-	mutable ShadowRenderer* mShadowRenderer;
+	ShadowRenderer* mShadowRenderer;
 
 	bool mShouldCastShadow;
 	bool mShouldReceiveShadow;

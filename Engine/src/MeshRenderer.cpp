@@ -12,9 +12,11 @@
 #include "ShadowRenderer.h"
 #include "LinearMath.h"
 #include "Transform.h"
+#include "FrameBuffer.h"
 
 MeshRenderer::MeshRenderer()
 {
+	mShadowRenderer = new ShadowRenderer();
 	ShaderProgram Shader;
 	Shader.useVertexAttribute();
 	Shader.useNormalAttribute();
@@ -26,6 +28,7 @@ MeshRenderer::MeshRenderer()
 	Shader.useViewMatrix();
 
 	Shader.buildShadersFromSource(MeshShaderSource);
+	mMaterial = new Material;
 	mMaterial->setShaderProgram(Shader);
 
 	mShouldCastShadow = false;
@@ -39,7 +42,10 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::setMesh(const Mesh& mesh)
 {
-	mCurrentMesh = (Mesh*)&mesh;
+	((Mesh&)mesh).markAsCopy();
+	if (mCurrentMesh != nullptr)
+		delete mCurrentMesh;
+	mCurrentMesh = new Mesh(mesh);
 }
 
 void MeshRenderer::setReceiveShadow(const bool shouldReceiveShadow)
@@ -54,12 +60,12 @@ void MeshRenderer::setCastShadow(const bool shouldCastShadow)
 
 void MeshRenderer::preRender(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
 {
-	//mShadowRenderer->getShadowBuffer().bind();
-	//for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
-	//{
-	//	mShadowRenderer->renderShadowMap(camera, mCurrentMesh, actor.transform, lights[lightIndex], renderer);
-	//}
-	//mShadowRenderer->getShadowBuffer().unbind();
+	mShadowRenderer->getShadowBuffer().bind();
+	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
+	{
+		//mShadowRenderer->renderShadowMap(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
+	}
+	mShadowRenderer->getShadowBuffer().unbind();
 }
 
 void MeshRenderer::render(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
@@ -70,7 +76,7 @@ void MeshRenderer::render(const Camera & camera, const Light * lights, uint ligh
 	const auto& vao = mCurrentMesh->getVertexArray();
 	const auto& ibo = mCurrentMesh->getIndexBuffer();
 
-	const Matrix4& World = actor.getTransform().getWorldMatrix();
+	const Matrix4& World = actor.transform.getWorldMatrix();
 	const Matrix4& View = camera.getViewMatrix();
 	const Matrix4 WorldView = View * World;
 
@@ -92,10 +98,10 @@ void MeshRenderer::postRender(const Camera & camera, const Light * lights, uint 
 	// TODO: set right blend function
 	renderer.setBlendSrcAlpha_One();
 
-	//for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
-	//{
-	//	mShadowRenderer->renderAdditiveShadow(camera, mCurrentMesh, actor.transform, lights[lightIndex], renderer);
-	//}
+	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
+	{
+		//mShadowRenderer->renderAdditiveShadow(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
+	}
 }
 
 Renderable::QueueType MeshRenderer::getRenderQueue() const 

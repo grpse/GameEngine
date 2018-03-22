@@ -8,9 +8,6 @@
       <UniqueIdentifier>{f1a625c7-3e9e-47e9-8295-9e448e1c48fc}</UniqueIdentifier>
       <Extensions>.cpp;.c</Extensions>
     </Filter>
-    <Filter Include="Resources">
-      <UniqueIdentifier>{db7795a5-59bd-4fd2-a23c-ae50c89bfbfd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Headers\objloader">
       <UniqueIdentifier>{bb9bae6d-53cd-4709-8eb9-15fa686d5c21}</UniqueIdentifier>
     </Filter>
@@ -185,6 +182,15 @@
     <ClInclude Include="external\SOIL\src\stbi_DDS_aug_c.h">
       <Filter>external\SOIL</Filter>
     </ClInclude>
+    <ClInclude Include="include\stdafx.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\targetver.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ServiceLocator.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">
@@ -287,6 +293,24 @@
       <Filter>Sources\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\FrameBuffer.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexBufferLayout.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dllmain.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServiceLocator.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLErrorHandling.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>

@@ -5,23 +5,21 @@
 #include "Window.h"
 #include "Input.h"
 
-static Window* mInstance = nullptr;
-
 Window::Window()
 {
-	mInstance = this;
+
 }
 
 void Window::start()
 {
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
-
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0) {
 		std::cout << "SDL2 Error: " << SDL_GetError() << std::endl;
 	}
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 8);
+
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 	mWindow = SDL_CreateWindow(
 		"ParticleSystem",
@@ -114,9 +112,4 @@ void Window::onKeydown(const std::function<void(uint key)>& keydownListener)
 void Window::onMouseMove(const std::function<void(int x, int y)>& mousemoveListener)
 {
 	mMouseMoveListeners.push_back(mousemoveListener);
-}
-
-Window& Window::getInstance()
-{
-	return *mInstance;
 }

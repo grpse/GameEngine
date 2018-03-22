@@ -7,32 +7,35 @@
 #include "Transform.h"
 #include "Mesh.h"
 #include "Light.h"
+#include "ServiceLocator.h"
+#include <iostream>
 
 void MainScene::start()
 {
 	// Create suzanne actor to show
-	Actor suzanne;
-	suzanne.getTransform().setLocalPosition(Vector3(0, -1, 0));
-	suzanne.getTransform().setLocalScale(Vector3(1, 1, 1));
-	suzanne.getTransform().setLocalRotation(Vector3(0, 0, 0));
-	suzanne.setRenderable<MeshRenderer>();
+	
+	mSuzanne.transform.setLocalPosition(Vector3(0, -1, 0));
+	mSuzanne.transform.setLocalScale(Vector3(1, 1, 1));
+	mSuzanne.transform.setLocalRotation(Vector3(0, 0, 0));
+	MeshRenderer* suzanneRenderer = new MeshRenderer;
+	mSuzanne.setRenderable(suzanneRenderer);
 	Mesh suzanneGeometry = Loader::loadSimpleMesh("suzanne.obj");
-	suzanne.getRenderable<MeshRenderer>()->setMesh(suzanneGeometry);
-	suzanne.getRenderable<MeshRenderer>()->setCastShadow(true);
+	suzanneRenderer->setMesh(suzanneGeometry);
+	suzanneRenderer->setCastShadow(true);
 
 	// create floor to show
-	Actor floor;
-	floor.getTransform().setLocalPosition(Vector3(0, -2, 0));
-	floor.getTransform().setLocalScale(Vector3(5, 5, 5));
-	floor.getTransform().setLocalRotation(Quaternion(1, 0, 0, 3.1415));
+	mFloor.transform.setLocalPosition(Vector3(0, -2, 0));
+	mFloor.transform.setLocalScale(Vector3(5, 5, 5));
+	mFloor.transform.setLocalRotation(Quaternion(1, 0, 0, 3.1415));
 
 	Mesh floorGeometry = Mesh::createQuad();
-	floor.setRenderable<MeshRenderer>();
-	floor.getRenderable<MeshRenderer>()->setMesh(floorGeometry);
-	floor.getRenderable<MeshRenderer>()->setReceiveShadow(true);
+	MeshRenderer* floorRenderer = new MeshRenderer;
+	mFloor.setRenderable(floorRenderer);
+	floorRenderer->setMesh(floorGeometry);
+	floorRenderer->setReceiveShadow(true);
 
 	// Create main camera to this scene
-	Rect viewport = Window::getInstance().getViewport();
+	Rect viewport = Locator::locateWindow()->getViewport();
 
 	Camera::Format cameraFormat;
 	cameraFormat.fieldOfView = 45.0f;
@@ -41,27 +44,26 @@ void MainScene::start()
 	cameraFormat.farPlane = 10000.0;
 
 	mCamera.setFormat(cameraFormat, Camera::Type::Perspective);
-	mCamera.getTransform().setLocalPosition(Vector3(0, 0, 10));
-	mCamera.getTransform().setLocalRotation(Quaternion(0, 1, 0, 3.1415));
+	mCamera.transform.setLocalPosition(Vector3(0, 0, 10));
+	mCamera.transform.setLocalRotation(Quaternion(0, 1, 0, 3.1415));
 
 	//get current camera position and rotation
-	mCameraPosition = mCamera.getTransform().getLocalPosition();
-	mCameraRotation = mCamera.getTransform().getLocalRotation();
+	mCameraPosition = mCamera.transform.getLocalPosition();
+	mCameraRotation = mCamera.transform.getLocalRotation();
 
 	// Create directional light
-	Light directional;
-	directional.intensity = 0.5f;
-	directional.type = Light::Type::Directional;
-	directional.direction = Vector3(-1.0f, -1.0f, -1.0f);
+	mDirectional.intensity = 0.5f;
+	mDirectional.type = Light::Type::Directional;
+	mDirectional.direction = Vector3(-1.0f, -1.0f, -1.0f);
 
 	// push to the scene
 	addChild(mCamera);
-	addChild(directional);
-	addChild(floor);
-	addChild(suzanne);
+	addChild(mDirectional);
+	addChild(mFloor);
+	addChild(mSuzanne);
 
 	// set mouse movement handler
-	Window::getInstance().onMouseMove([&](int x, int y) {
+	Locator::locateWindow()->onMouseMove([&](int x, int y) {
 
 		float rotationDiff = (float)(10.0 * Time::getDeltaTime());
 
@@ -75,7 +77,8 @@ void MainScene::start()
 			mCameraRotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
 		}
 
-		mCamera.getTransform().setLocalRotation(Quaternion(mCameraRotation));
+		mCamera.transform.setLocalRotation(Quaternion(mCameraRotation));
+		std::cout << "Mouse Coords: " << x << ", " << y << std::endl;
 	});
 }
 
@@ -83,8 +86,8 @@ void MainScene::update(float deltaTime)
 {
 	float moveDiff = (float)(80.0 * deltaTime);
 
-	Vector3 front = mCamera.getTransform().getFront();
-	Vector3 right = mCamera.getTransform().getRight();
+	Vector3 front = mCamera.transform.getFront();
+	Vector3 right = mCamera.transform.getRight();
 
 	if (Input::isPressedKey(ArrowUp)) {
 		mCameraPosition += Math::normalize(front) * moveDiff;
@@ -102,5 +105,5 @@ void MainScene::update(float deltaTime)
 		mCameraPosition -= Math::normalize(right) * moveDiff;
 	}
 
-	mCamera.getTransform().setLocalPosition(mCameraPosition);
+	mCamera.transform.setLocalPosition(mCameraPosition);
 }

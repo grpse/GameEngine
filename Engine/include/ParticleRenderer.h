@@ -1,14 +1,10 @@
 #pragma once
 #include "LinearMath.h"
 #include "ShaderProgram.h"
-#include "Particle.h"
-#include "Camera.h"
-#include "Texture2D.h"
 #include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "Texture2D.h"
 
+class Camera;
+class Texture2D;
 class Renderer;
 class ParticleSystem;
 

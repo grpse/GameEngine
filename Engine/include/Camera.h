@@ -1,8 +1,7 @@
 #pragma once
 #include "LinearMath.h"
 #include "Rect.h"
-
-class Transform;
+#include "Transform.h"
 
 class Camera {
 public:
@@ -19,6 +18,8 @@ public:
 		float fieldOfView;
 		Rect viewport;
 	};
+	
+	Transform transform;
 
 	Camera();
 	~Camera();
@@ -26,10 +27,8 @@ public:
 	void setFormat(const Camera::Format& format, const Camera::Type& type);
 	const Matrix4& getViewMatrix() const;
 	const Matrix4& getProjectionMatrix() const;
-	Transform& getTransform() const;
 
 private:
-	Transform* mTransform;
 	mutable Matrix4 mViewMatrix;
 	mutable Matrix4 mProjectionMatrix;
 };

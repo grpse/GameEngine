@@ -3,6 +3,9 @@
 
 #include "Renderer.h"
 #include "GLErrorHandling.h"
+#include "VertexArray.h"
+#include "IndexBuffer.h"
+#include "Rect.h"
 
 void Renderer::setClearColor(Color32 color) const
 {
