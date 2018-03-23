@@ -9,6 +9,7 @@
 #include "MeshShaderSource.h"
 #include "Transform.h"
 #include "DirectionalLight.h"
+#include "Light.h"
 
 class MeshRenderer{
 
@@ -39,7 +40,7 @@ public:
 
 	}
 	
-    void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const DirectionalLight& directional, const Renderer& renderer)
+    void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
     {
 		prepare(renderer);
 
@@ -61,7 +62,7 @@ public:
 		finishRendering(renderer);
     }
 
-	void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const DirectionalLight& directional, const Texture2D& depthTexture, const Renderer& renderer)
+	void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Texture2D& depthTexture, const Renderer& renderer)
 	{
 		prepare(renderer);
 

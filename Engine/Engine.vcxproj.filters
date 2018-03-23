@@ -11,8 +11,17 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{db7795a5-59bd-4fd2-a23c-ae50c89bfbfd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\objloader">
+    <Filter Include="_external">
+      <UniqueIdentifier>{f621e78d-f810-488e-990f-8f0231b26af0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_external\objloader">
       <UniqueIdentifier>{bb9bae6d-53cd-4709-8eb9-15fa686d5c21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_external\SOIL">
+      <UniqueIdentifier>{106d37d9-c46d-4c02-8a15-e858284baa77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_external\glew">
+      <UniqueIdentifier>{3162f8c9-69d6-4f5c-bf18-2909e817ab04}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -93,13 +102,13 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="external\objloader\objloader.hpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClInclude>
     <ClInclude Include="external\objloader\tangentspace.hpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClInclude>
     <ClInclude Include="external\objloader\vboindexer.hpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClInclude>
     <ClInclude Include="include\RendererOpenGL.h">
       <Filter>Headers</Filter>
@@ -120,6 +129,27 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="include\Input.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\image_DXT.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\image_helper.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\SOIL.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\stb_image_aug.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\stbi_DDS_aug.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\stbi_DDS_aug_c.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Light.h">
       <Filter>Headers</Filter>
     </ClInclude>
   </ItemGroup>
@@ -170,13 +200,13 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="external\objloader\objloader.cpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClCompile>
     <ClCompile Include="external\objloader\tangentspace.cpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClCompile>
     <ClCompile Include="external\objloader\vboindexer.cpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClCompile>
     <ClCompile Include="src\RendererOpenGL.cpp">
       <Filter>Sources</Filter>
@@ -185,6 +215,24 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="src\Input.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\image_DXT.c">
+      <Filter>_external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\image_helper.c">
+      <Filter>_external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\SOIL.c">
+      <Filter>_external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\SOIL\stb_image_aug.c">
+      <Filter>_external\SOIL</Filter>
+    </ClCompile>
+    <ClCompile Include="external\glew\src\glew.c">
+      <Filter>_external\glew</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
   </ItemGroup>
