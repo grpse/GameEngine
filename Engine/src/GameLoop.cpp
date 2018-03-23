@@ -40,6 +40,8 @@ void GameLoop::start()
 		Locator::locateWindow()->pollEvents();
 
 		Time::updateDeltaTime();
+
+		std::cout << "Delta Time: " << Time::getDeltaTime() << "ms" << std::endl;
 	}
 
 	Locator::locateWindow()->finish();

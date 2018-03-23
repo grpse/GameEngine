@@ -62,29 +62,32 @@ void Scene::updateComponents(float deltaTime)
 	mRenderer->clearColorAndDepth();
 
 	Rect ScreenRect = Locator::locateWindow()->getViewport();
-
+	mRenderer->setViewport(ScreenRect);
 	// render on queue type order [Opaque, Cutoff, Transparent]
-	for (uint i = 0; i < RenderablesQueueTypesCount; i++)
+	std::vector<RenderableActor>& opaqueRenderables = renderQueues[(uint)Renderable::QueueType::Opaque];
+
+	for (const Camera* camera : mCameras)
 	{
-		for (const Camera* camera : mCameras)
+		/*
+		for (RenderableActor renderActor : renderQueues[i])
 		{
-			for (RenderableActor renderActor : renderQueues[i])
-			{
-				mRenderer->setViewport(ScreenRect);
-				renderActor.first->preRender(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
-			}
-
-			for (RenderableActor renderActor : renderQueues[i])
-			{
-				mRenderer->setViewport(ScreenRect);
-				renderActor.first->render(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
-			}
-
-			for (RenderableActor renderActor : renderQueues[i])
-			{
-				mRenderer->setViewport(ScreenRect);
-				renderActor.first->postRender(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
-			}
+		mRenderer->setViewport(ScreenRect);
+		renderActor.first->preRender(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
 		}
+		*/
+
+		for (RenderableActor renderActor : opaqueRenderables)
+		{
+			renderActor.first->render(camera[0], mLights[0], mLights.size(), renderActor.second[0], mRenderer[0]);
+		}
+
+		/*
+		for (RenderableActor renderActor : renderQueues[i])
+		{
+		mRenderer->setViewport(ScreenRect);
+		renderActor.first->postRender(*camera, mLights[0], mLights.size(), *renderActor.second, *mRenderer);
+		}
+		*/
 	}
+
 }

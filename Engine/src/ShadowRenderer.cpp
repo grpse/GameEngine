@@ -10,7 +10,7 @@
 #include "FrameBuffer.h"
 #include "Texture2D.h"
 
-const char* ShadowShader = R"(
+char ShadowShader[] = R"(
 
 #BEGIN VERTEXSHADER
 
@@ -34,7 +34,7 @@ void main() {
 
 )";
 
-const char* ShadowMapShaderAdditive = R"(
+char ShadowMapShaderAdditive[] = R"(
 
 #BEGIN VERTEXSHADER
 
@@ -54,6 +54,8 @@ void main()
 
 uniform float ShadowIntensity;
 uniform sampler2D ShadowMap;
+
+in vec4 ShadowCoord;
 
 void main() 
 {
@@ -106,6 +108,7 @@ ShadowRenderer::ShadowRenderer()
 	DepthLayout.type = GL_FLOAT;
 
 	ShadowBuffer.setDrawAttachment(GL_NONE);
+	ShadowBuffer.setLayout({ 2048, 2048, 0 });
 
 	ShadowMap = ShadowBuffer.createDepthTextureAttachment(DepthLayout);
 }

@@ -13,7 +13,7 @@ void main()
 	VertexPosition_WorldSpace = (vec4(VertexPosition_ModelSpace, 1) * World).xyz;
 	VertexNormal_WorldSpace = (vec4(VertexNormal_ModelSpace, 1) * World).xyz;
 	Eye_WorldSpace = View[3].xyz;
-	gl_Position = Projection * WorldView * vec4(VertexPosition_ModelSpace, 1);	
+	gl_Position = WorldViewProjection * vec4(VertexPosition_ModelSpace, 1);	
 }
 
 #END VERTEXSHADER

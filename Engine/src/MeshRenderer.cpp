@@ -24,12 +24,12 @@ MeshRenderer::MeshRenderer()
 
 	Shader.useProjectionMatrix();
 	Shader.useWorldViewMatrix();
+	Shader.useWorldViewProjectionMatrix();
 	Shader.useWorldMatrix();
 	Shader.useViewMatrix();
 
 	Shader.buildShadersFromSource(MeshShaderSource);
-	mMaterial = new Material;
-	mMaterial->setShaderProgram(Shader);
+	mMaterial.setShaderProgram(Shader);
 
 	mShouldCastShadow = false;
 	mShouldReceiveShadow = false;
@@ -42,10 +42,8 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::setMesh(const Mesh& mesh)
 {
-	((Mesh&)mesh).markAsCopy();
-	if (mCurrentMesh != nullptr)
-		delete mCurrentMesh;
-	mCurrentMesh = new Mesh(mesh);
+	mesh.markAsCopy();
+	mCurrentMesh = mesh;
 }
 
 void MeshRenderer::setReceiveShadow(const bool shouldReceiveShadow)
@@ -60,12 +58,14 @@ void MeshRenderer::setCastShadow(const bool shouldCastShadow)
 
 void MeshRenderer::preRender(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
 {
+	/*
 	mShadowRenderer->getShadowBuffer().bind();
 	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
 	{
 		//mShadowRenderer->renderShadowMap(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
 	}
 	mShadowRenderer->getShadowBuffer().unbind();
+	*/
 }
 
 void MeshRenderer::render(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
@@ -73,17 +73,18 @@ void MeshRenderer::render(const Camera & camera, const Light * lights, uint ligh
 	prepare(renderer);
 
 	//TODO: render phong model (maybe), lit without shadows.
-	const auto& vao = mCurrentMesh->getVertexArray();
-	const auto& ibo = mCurrentMesh->getIndexBuffer();
+	const auto& vao = mCurrentMesh.getVertexArray();
+	const auto& ibo = mCurrentMesh.getIndexBuffer();
 
 	const Matrix4& World = actor.transform.getWorldMatrix();
 	const Matrix4& View = camera.getViewMatrix();
 	const Matrix4 WorldView = View * World;
+	const Matrix4 WorldViewProjection = camera.getProjectionMatrix() * WorldView;
 
-	mMaterial->getShaderProgram().setProjectionMatrix(camera.getProjectionMatrix());
-	mMaterial->getShaderProgram().setWorldViewMatrix(WorldView);
-	mMaterial->getShaderProgram().setWorldMatrix(World);
-	mMaterial->getShaderProgram().setViewMatrix(View);
+	mMaterial.getShaderProgram().setWorldViewProjectionMatrix(WorldViewProjection);
+	mMaterial.getShaderProgram().setWorldViewMatrix(WorldView);
+	mMaterial.getShaderProgram().setWorldMatrix(World);
+	mMaterial.getShaderProgram().setViewMatrix(View);
 
 	renderer.render(vao, ibo);
 
@@ -92,16 +93,18 @@ void MeshRenderer::render(const Camera & camera, const Light * lights, uint ligh
 
 void MeshRenderer::postRender(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
 {
-	renderer.enableDepthTest();
-	renderer.enableBlend();
+	//renderer.enableDepthTest();
+	//renderer.enableBlend();
 	// TODO: apply only shadows on this model using blending
 	// TODO: set right blend function
-	renderer.setBlendSrcAlpha_One();
+	//renderer.setBlendSrcAlpha_One();
 
+	/*
 	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
 	{
 		//mShadowRenderer->renderAdditiveShadow(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
 	}
+	*/
 }
 
 Renderable::QueueType MeshRenderer::getRenderQueue() const 
@@ -112,12 +115,12 @@ Renderable::QueueType MeshRenderer::getRenderQueue() const
 
 void MeshRenderer::setMaterial(const Material & material)
 {
-	mMaterial = (Material*)&material;
+	mMaterial = material;
 }
 
 const Material & MeshRenderer::getMaterial() const
 {
-	return *mMaterial;
+	return mMaterial;
 }
 
 bool MeshRenderer::hasPrePassStep() const
@@ -132,14 +135,14 @@ bool MeshRenderer::hasPostPassStep() const
 
 void MeshRenderer::prepare(const Renderer& renderer) const
 {
-	mMaterial->use();
+	mMaterial.use();
 	renderer.enableDepthTest();
-	renderer.enableCullFace();
-	renderer.cullBackFace();
+	//renderer.enableCullFace();
+	//renderer.cullBackFace();
 }
 
 void MeshRenderer::finishRendering(const Renderer& renderer) const
 {
-	renderer.disableCullFace();
-	renderer.disableDepthTest();
+	//renderer.disableCullFace();
+	//renderer.disableDepthTest();
 }

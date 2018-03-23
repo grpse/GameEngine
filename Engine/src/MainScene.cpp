@@ -45,16 +45,18 @@ void MainScene::start()
 
 	mCamera.setFormat(cameraFormat, Camera::Type::Perspective);
 	mCamera.transform.setLocalPosition(Vector3(0, 0, 10));
-	mCamera.transform.setLocalRotation(Quaternion(0, 1, 0, 3.1415));
+	//mCamera.transform.setLocalRotation(Quaternion(0, 1, 0, 3.1415));
 
 	//get current camera position and rotation
 	mCameraPosition = mCamera.transform.getLocalPosition();
 	mCameraRotation = mCamera.transform.getLocalRotation();
 
 	// Create directional light
-	mDirectional.intensity = 0.5f;
+	mDirectional.intensity = 1.0f;
 	mDirectional.type = Light::Type::Directional;
 	mDirectional.direction = Vector3(-1.0f, -1.0f, -1.0f);
+	mDirectional.color = Color32(1, 1, 1, 1);
+	mDirectional.position = Math::one<Vector3>();
 
 	// push to the scene
 	addChild(mCamera);
@@ -63,47 +65,56 @@ void MainScene::start()
 	addChild(mSuzanne);
 
 	// set mouse movement handler
-	Locator::locateWindow()->onMouseMove([&](int x, int y) {
+	Camera* ptrCam = &mCamera;
+	Quaternion quatCam = mCameraRotation;
+	Locator::locateWindow()->onMouseMove([ptrCam, &quatCam](int x, int y) -> void {
 
 		float rotationDiff = (float)(10.0 * Time::getDeltaTime());
 
 		if (x > 0 || x < 0) {
-			mCameraRotation.y += x * rotationDiff;
+			quatCam.y += x * rotationDiff;
 		}
 
 		if (y > 0 || y < 0) {
 			const float halfPi = Math::radians(90.0);
-			float nextRotationOnX = mCameraRotation.x - y * rotationDiff;
-			mCameraRotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
+			float nextRotationOnX = quatCam.x - y * rotationDiff;
+			quatCam.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
 		}
 
-		mCamera.transform.setLocalRotation(Quaternion(mCameraRotation));
-		std::cout << "Mouse Coords: " << x << ", " << y << std::endl;
+		ptrCam->transform.setLocalRotation(Quaternion(quatCam));
+		ptrCam->transform.getWorldMatrix();
+
+
 	});
 }
 
 void MainScene::update(float deltaTime)
 {
-	float moveDiff = (float)(80.0 * deltaTime);
+	float moveDiff = 80.0f * deltaTime;
 
 	Vector3 front = mCamera.transform.getFront();
 	Vector3 right = mCamera.transform.getRight();
 
-	if (Input::isPressedKey(ArrowUp)) {
+	if (Input::isPressedKey(ArrowUp)) 
+	{
 		mCameraPosition += Math::normalize(front) * moveDiff;
 	}
 
-	if (Input::isPressedKey(ArrowDown)) {
+	if (Input::isPressedKey(ArrowDown)) 
+	{
 		mCameraPosition -= Math::normalize(front) * moveDiff;
 	}
 
-	if (Input::isPressedKey(ArrowRight)) {
+	if (Input::isPressedKey(ArrowRight)) 
+	{
 		mCameraPosition += Math::normalize(right) * moveDiff;
 	}
 
-	if (Input::isPressedKey(ArrowLeft)) {
+	if (Input::isPressedKey(ArrowLeft)) 
+	{
 		mCameraPosition -= Math::normalize(right) * moveDiff;
 	}
 
 	mCamera.transform.setLocalPosition(mCameraPosition);
+	mCamera.transform.getWorldMatrix();
 }

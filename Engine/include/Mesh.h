@@ -20,7 +20,7 @@ public:
 	~Mesh();
 
 	void load(VertexArray& vertexArray, IndexBuffer& indexBuffer);
-	void markAsCopy();
+	void markAsCopy() const;
 	const VertexArray& getVertexArray() const;
 	const IndexBuffer& getIndexBuffer() const;
 	static Mesh createQuad();
