@@ -32,18 +32,6 @@ public:
 	uint getUniformLocation(const char* uniform);
 	uint getAttributeLocation(const char* uniform);
 
-	void useWorldMatrix();
-	void useViewMatrix();
-	void useWorldViewMatrix();
-	void useProjectionMatrix();
-	void useWorldViewProjectionMatrix();
-	
-	void useVertexAttribute();
-	void useNormalAttribute();
-	void useTextureCoord0Attribute();
-	void useTextureCoord1Attribute();
-	void useTextureCoord2Attribute();
-
 	void setCustomUniform(std::string customUniform);
 
 	void buildShadersFromSource(std::string shaderSource);

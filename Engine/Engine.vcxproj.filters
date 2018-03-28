@@ -163,6 +163,15 @@
     <ClInclude Include="include\Typedefs.h">
       <Filter>Source\common</Filter>
     </ClInclude>
+    <ClInclude Include="include\ShaderParser.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MatricesNamesDefines.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AttributesNamesDefines.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\objloader\objloader.cpp">

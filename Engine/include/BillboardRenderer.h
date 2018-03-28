@@ -20,14 +20,14 @@ uniform vec2 widthHeight;
 out vec2 TextureCoord0_pass;
 
 void main() {
-	vec2 VertexPositionTransformed = VertexPosition_ModelSpace.xy;
+	vec2 VertexPositionTransformed = POSITION.xy;
 	VertexPositionTransformed.x *= widthHeight.x;
 	VertexPositionTransformed.y *= widthHeight.y;
 	VertexPositionTransformed.x += displacement.x;
 	VertexPositionTransformed.y += displacement.y;
 
 	gl_Position = vec4(VertexPositionTransformed, 0, 1);
-	TextureCoord0_pass = TextureCoord0;
+	TextureCoord0_pass = TEXCOORD0;
 }
 
 #END VERTEXSHADER
@@ -62,9 +62,6 @@ public:
 	
 	explicit BillboardRenderer()
 	{
-		mShader.useVertexAttribute();
-		mShader.useTextureCoord0Attribute();
-		mShader.useProjectionMatrix();
 		mShader.buildShadersFromSource(BillboardShader);
 
 		mShader.start();

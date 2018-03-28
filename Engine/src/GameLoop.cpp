@@ -186,10 +186,9 @@ void GameLoop::start()
 	depthLayout.type = GL_FLOAT;
 
 
-	BillboardRenderer billboardRenderer;
+	//BillboardRenderer billboardRenderer;
 	// ShadowRenderer shadowRenderer;
 
-	glFrontFace(GL_CCW);
 
 	Light directional;
 	directional.direction = Vector3(-1, -1, -1);
@@ -237,7 +236,7 @@ void GameLoop::start()
 
 		// if (shadowRenderer.getShadowBuffer().isComplete())
 		//		billboardRenderer.render(shadowRenderer.getShadowMap(), { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
-		billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
+		//billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 
 		mWindow.swapBuffers();
 		mWindow.pollEvents();

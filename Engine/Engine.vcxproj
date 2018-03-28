@@ -169,6 +169,7 @@
     <ClInclude Include="external\SOIL\stbi_DDS_aug.h" />
     <ClInclude Include="external\SOIL\stbi_DDS_aug_c.h" />
     <ClInclude Include="external\SOIL\stb_image_aug.h" />
+    <ClInclude Include="include\AttributesNamesDefines.h" />
     <ClInclude Include="include\BillboardRenderer.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\FrameBuffer.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\LinearMath.h" />
     <ClInclude Include="include\Loader.h" />
+    <ClInclude Include="include\MatricesNamesDefines.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshRenderer.h" />
     <ClInclude Include="include\MeshShaderSource.h" />
@@ -191,6 +193,7 @@
     <ClInclude Include="include\Rect.h" />
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\RendererOpenGL.h" />
+    <ClInclude Include="include\ShaderParser.h" />
     <ClInclude Include="include\ShaderProgram.h" />
     <ClInclude Include="include\ShadowRenderer.h" />
     <ClInclude Include="include\Texture2D.h" />

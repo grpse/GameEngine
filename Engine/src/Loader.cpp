@@ -182,26 +182,21 @@ Mesh Loader::loadMesh(const char* filepath)
 	VertexBufferLayout layout;
 	IndexBuffer ibo;
 
-	
-	vao.generateBuffer();
-	vao.bind();
-
-	vbo.bind();
-	vbo.load<Vertex>(out_vertices.data(), out_vertices.size());
-
-	ibo.generateBuffer();
-	ibo.bind();
-	ibo.load<uint>(out_indices.data(), out_indices.size());
+	vbo.load(out_vertices.data(), out_vertices.size() * sizeof(Vertex));
 
 	layout.pushFloat(3);
 	layout.pushFloat(3, true);
 	layout.pushFloat(2);
 
+	vao.generateBuffer();
 	vao.setVertexBuffer(vbo, layout);
 
-	mesh.load(vao, ibo);
+	ibo.generateBuffer();
+	ibo.bind();
+	ibo.load<uint>(out_indices.data(), out_indices.size());
 
 	mesh.markAsCopy();
+	mesh.load(vao, ibo);
 
 	return mesh;
 }

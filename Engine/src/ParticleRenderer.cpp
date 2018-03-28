@@ -24,9 +24,6 @@ static Vector2 uvs[] = {
 
 ParticleRenderer::ParticleRenderer()
 {
-	mShader.useVertexAttribute();
-	mShader.useProjectionMatrix();
-	mShader.useWorldViewMatrix();
 
 	mShader.buildShadersFromSource(ParticleShaderStr);
 

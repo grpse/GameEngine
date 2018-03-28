@@ -23,7 +23,7 @@ char ShadowShader[] = R"(
 uniform mat4 depthMVP;
 
 void main() {
-	gl_Position = depthMVP * vec4(VertexPosition_ModelSpace, 1);
+	gl_Position = depthMVP * vec4(POSITION, 1);
 }
 
 #END VERTEXSHADER
@@ -50,8 +50,8 @@ out vec4 ShadowCoord;
 
 void main()
 {
-	gl_Position = WorldViewProjection * vec4(VertexPosition_ModelSpace, 1);	
-	ShadowCoord = DepthMVPBias * vec4(VertexPosition_ModelSpace, 1);
+	gl_Position = WORLDVIEWPROJECTION * vec4(POSITION, 1);	
+	ShadowCoord = DepthMVPBias * vec4(POSITION, 1);
 }
 
 #END VERTEXSHADER
@@ -85,7 +85,6 @@ void main()
 ShadowRenderer::ShadowRenderer()
 {
 	// Shadow map shader to generate depth texture
-	mShadowMapShader.useVertexAttribute();
 	mShadowMapShader.buildShadersFromSource(ShadowShader);
 
 	mShadowMapShader.start();
@@ -93,9 +92,6 @@ ShadowRenderer::ShadowRenderer()
 	mShadowMapShader.stop();
 
 	// Additive Shadow Shader to add Shadow to Scene
-	mShadowMapAdditiveShader.useVertexAttribute();
-	mShadowMapAdditiveShader.useWorldViewProjectionMatrix();
-
 	mShadowMapAdditiveShader.buildShadersFromSource(ShadowMapShaderAdditive);
 
 	mShadowMapAdditiveShader.start();

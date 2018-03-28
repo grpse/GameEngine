@@ -3,7 +3,9 @@
 
 const char* MeshShaderSource = R"(
 
-#BEGIN VERTEXSHADER
+#queue Transparent
+
+#begin vertexshader
 
 out vec3 VertexPosition_WorldSpace;
 out vec3 VertexNormal_WorldSpace;
@@ -11,14 +13,14 @@ out vec3 Eye_WorldSpace;
 
 void main()
 {
-	VertexPosition_WorldSpace = (vec4(VertexPosition_ModelSpace, 1) * World).xyz;
-	VertexNormal_WorldSpace = (vec4(VertexNormal_ModelSpace, 1) * World).xyz;
-	Eye_WorldSpace = View[3].xyz;
-	gl_Position = Projection * WorldView * vec4(VertexPosition_ModelSpace, 1);	
+	VertexPosition_WorldSpace = (vec4(POSITION, 1) * WORLD).xyz;
+	VertexNormal_WorldSpace = (vec4(NORMAL, 1) * WORLD).xyz;
+	Eye_WorldSpace = VIEW[3].xyz;
+	gl_Position = WORLDVIEWPROJECTION * vec4(POSITION, 1);	
 }
-#END VERTEXSHADER
+#end vertexshader
 
-#BEGIN FRAGMENTSHADER
+#begin fragmentshader
 
 #define MAX_LIGHTS_COUNT 10
 
@@ -67,6 +69,6 @@ void main() {
 */
 	gl_FragColor = AmbientLightColor + SpecularColor + DiffuseColor;
 }
-#END FRAGMENTSHADER
+#end fragmentshader
 
 )";

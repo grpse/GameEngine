@@ -4,24 +4,17 @@
 #include <iostream>
 #include "GLErrorHandling.h"
 #include "ShaderProgram.h"
+#include "ShaderParser.h"
 
 #define STRINGIFY(value) (#value)
 
 ShaderProgram::ShaderProgram() 
 {
-	VERSION = STRINGIFY(#version 330 core\n);
+	VERSION = STRINGIFY(#version 430\n);
 	PRECODE_VERTEX = "";
 	PRECODE_FRAGMENT = "";
 
-	ATTRIBUTE_VERTEX_POSITION = "";
-	ATTRIBUTE_NORMAL_POSITION = "";
-	ATTRIBUTE_TEXTURECOORD0 = "";
-	ATTRIBUTE_TEXTURECOORD1 = "";
-	ATTRIBUTE_TEXTURECOORD2 = "";
-
-	//mUniformsUse = { -1, -1, -1, -1, -1 };
 	memset(&mUniformsUse, -1, sizeof(mUniformsUse));
-	//mAttributesUse = { -1, -1, -1, -1, -1 };
 	memset(&mAttributesUse, -1, sizeof(mAttributesUse));
 }
 
@@ -93,7 +86,7 @@ void ShaderProgram::setUniform(const char * uniform, const Matrix4& m)
 void ShaderProgram::setProjectionMatrix(const Matrix4& projection)
 {
 	if (mUniformsUse.Projection < 0)
-		mUniformsUse.Projection = getUniformLocation(STRINGIFY(Projection));
+		mUniformsUse.Projection = getUniformLocation(PROJECTION);
 
 	setUniform(mUniformsUse.Projection, projection);
 }
@@ -101,7 +94,7 @@ void ShaderProgram::setProjectionMatrix(const Matrix4& projection)
 void ShaderProgram::setViewMatrix(const Matrix4& view)
 {
 	if (mUniformsUse.View < 0)
-		mUniformsUse.View = getUniformLocation(STRINGIFY(View));
+		mUniformsUse.View = getUniformLocation(VIEW);
 
 	setUniform(mUniformsUse.View, view);
 }
@@ -109,7 +102,7 @@ void ShaderProgram::setViewMatrix(const Matrix4& view)
 void ShaderProgram::setWorldMatrix(const Matrix4 & world)
 {
 	if (mUniformsUse.World < 0)
-		mUniformsUse.World = getUniformLocation(STRINGIFY(World));
+		mUniformsUse.World = getUniformLocation(WORLD);
 
 	setUniform(mUniformsUse.World, world);
 }
@@ -117,7 +110,7 @@ void ShaderProgram::setWorldMatrix(const Matrix4 & world)
 void ShaderProgram::setWorldViewMatrix(const Matrix4 & worldView)
 {
 	if (mUniformsUse.WorldView < 0)
-		mUniformsUse.WorldView = getUniformLocation(STRINGIFY(WorldView));
+		mUniformsUse.WorldView = getUniformLocation(WORLDVIEW);
 
 	setUniform(mUniformsUse.WorldView, worldView);
 }
@@ -125,7 +118,7 @@ void ShaderProgram::setWorldViewMatrix(const Matrix4 & worldView)
 void ShaderProgram::setWorldViewProjectionMatrix(const Matrix4& worldViewProjection)
 {
 	if (mUniformsUse.WorldViewProjection < 0)
-		mUniformsUse.WorldViewProjection = getUniformLocation(STRINGIFY(WorldViewProjection));
+		mUniformsUse.WorldViewProjection = getUniformLocation(WORLDVIEWPROJECTION);
 
 	setUniform(mUniformsUse.WorldViewProjection, worldViewProjection);
 }
@@ -143,56 +136,6 @@ uint ShaderProgram::getAttributeLocation(const char* uniform)
 	return attributeLocation;
 }
 
-void ShaderProgram::useWorldMatrix() 
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 World;\n);
-}
-
-void ShaderProgram::useViewMatrix() 
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 View;\n);
-}
-
-void ShaderProgram::useWorldViewMatrix() 
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 WorldView;\n);
-}
-
-void ShaderProgram::useProjectionMatrix() 
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 Projection;\n);
-}
-
-void ShaderProgram::useWorldViewProjectionMatrix()
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 WorldViewProjection;\n);
-}
-
-void ShaderProgram::useVertexAttribute() 
-{
-	ATTRIBUTE_VERTEX_POSITION += STRINGIFY(in vec3 VertexPosition_ModelSpace;\n);
-}
-
-void ShaderProgram::useNormalAttribute() 
-{
-	ATTRIBUTE_NORMAL_POSITION += STRINGIFY(in vec3 VertexNormal_ModelSpace;\n);
-}
-
-void ShaderProgram::useTextureCoord0Attribute()
-{
-	ATTRIBUTE_TEXTURECOORD0 += STRINGIFY(in vec2 TextureCoord0;\n);
-}
-
-void ShaderProgram::useTextureCoord1Attribute()
-{
-	ATTRIBUTE_TEXTURECOORD1 += STRINGIFY(in vec2 TextureCoord1;\n);
-}
-
-void ShaderProgram::useTextureCoord2Attribute()
-{
-	ATTRIBUTE_TEXTURECOORD2 += STRINGIFY(in vec2 TextureCoord2;\n);
-}
-
 void ShaderProgram::setCustomUniform(std::string customUniform)
 {
 	PRECODE_VERTEX += customUniform + STRINGIFY(\n);
@@ -204,45 +147,19 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	//		on what shader is going to be compiled and linked.
 	//TODO: Link method should also be able to receive multiples shaders to link to shader program
 	GLCall(mShaderProgram = glCreateProgram());
-	
-	std::string source;
-	source.assign(shaderSource.c_str(), shaderSource.length());
 
-	std::string BEGIN_VERTEXSHADER = STRINGIFY(#BEGIN VERTEXSHADER);
-	std::string END_VERTEXSHADER = STRINGIFY(#END VERTEXSHADER);
+	Shader::Parser parser;
 
-	uint beginVertShaderPosition = source.find(BEGIN_VERTEXSHADER) + BEGIN_VERTEXSHADER.length();
-	uint endVertShaderPosition = source.find(END_VERTEXSHADER);
-	uint vertSourcePositionsCount = endVertShaderPosition - beginVertShaderPosition;
-	std::string vertShaderSource = 
-		VERSION +
-		ATTRIBUTE_VERTEX_POSITION +
-		ATTRIBUTE_NORMAL_POSITION +
-		ATTRIBUTE_TEXTURECOORD0 +
-		ATTRIBUTE_TEXTURECOORD1 +
-		ATTRIBUTE_TEXTURECOORD2 +
-		PRECODE_VERTEX + 
-		STRINGIFY(\n) + source.substr(beginVertShaderPosition, vertSourcePositionsCount);
+	parser.parse(shaderSource.c_str());
 		
 	std::cout << "VERTEX SHADER" << std::endl;
+	std::string& vertShaderSource = VERSION + parser.getVertexShaderSource();
 	std::cout << vertShaderSource << std::endl;
 	const char* vertShaderSourceStr = vertShaderSource.c_str();
 	buildVertShaderFromSource(vertShaderSourceStr);
 
-	std::cout << std::endl;
-
-	std::string BEGIN_FRAGMENTSHADER = STRINGIFY(#BEGIN FRAGMENTSHADER);
-	std::string END_FRAGMENTSHADER = STRINGIFY(#END FRAGMENTSHADER);
-
-	uint beginFragShaderPosition = source.find(BEGIN_FRAGMENTSHADER) + BEGIN_FRAGMENTSHADER.length();
-	uint endFragShaderPosition = source.find(END_FRAGMENTSHADER);
-	uint fragSourcePositionsCount = endFragShaderPosition - beginFragShaderPosition;
-	std::string fragShaderSource = 
-		VERSION +
-		PRECODE_FRAGMENT + 
-		STRINGIFY(\n) + source.substr(beginFragShaderPosition, fragSourcePositionsCount);
-	
 	std::cout << "FRAGMENT SHADER" << std::endl;
+	std::string& fragShaderSource = VERSION + parser.getFragmentShaderSource();
 	std::cout << fragShaderSource << std::endl;
 	const char* fragShaderSourceStr = fragShaderSource.c_str();
 	buildFragShaderFromSource(fragShaderSourceStr);

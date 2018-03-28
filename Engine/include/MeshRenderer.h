@@ -16,15 +16,6 @@ public:
 
 	MeshRenderer()
 	{
-		mShader.useVertexAttribute();
-		mShader.useNormalAttribute();
-		mShader.useTextureCoord0Attribute();
-
-		mShader.useProjectionMatrix();
-		mShader.useWorldViewProjectionMatrix();
-		mShader.useWorldViewMatrix();
-		mShader.useWorldMatrix();
-		mShader.useViewMatrix();
 
 		mShader.buildShadersFromSource(MeshShaderSource);
 

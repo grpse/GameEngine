@@ -4,6 +4,8 @@
 #include "IndexBuffer.h"
 #include "LinearMath.h"
 
+#pragma pack(push, 1)
+
 struct Vertex {
     Vector3 position;
     Vector3 normal;
@@ -21,6 +23,7 @@ struct Vertex {
 
 	}
 };
+#pragma pack(pop)
 
 class Mesh {
 
