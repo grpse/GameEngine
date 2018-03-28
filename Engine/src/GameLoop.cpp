@@ -21,6 +21,7 @@
 #include "BillboardRenderer.h"
 #include "ShadowRenderer.h"
 #include "Input.h"
+#include "Light.h"
 
 Uint64 NOW = 0;
 Uint64 LAST = 0;
@@ -66,13 +67,13 @@ void GameLoop::start()
 
 	NOW = SDL_GetPerformanceCounter();
 
-	mCamera.transform.setLocalPosition({ 0, 0, 10 });
-	mCamera.transform.setLocalRotation(Vector3(0, Math::pi<float>(), 0));
+	mCamera.transform.setLocalPosition({ 0, 2, -10 });
+	mCamera.transform.setLocalRotation(Vector3(3.1415f/2.0f, 3.1415f, 0));
 
 	// particle system setup
-	Texture2D particleTexture = Loader::loadRGBATexture2D("start.png");
-	ParticleSystem mParticleSystem(50.0, 25, 1, 4);
-	mParticleSystem.loadTexture(particleTexture);
+	 Texture2D particleTexture = Loader::loadRGBATexture2D("start.png");
+	// ParticleSystem mParticleSystem(50.0, 25, 1, 4);
+	// mParticleSystem.loadTexture(particleTexture);
 
 
 	Vector3 position = mCamera.transform.getLocalPosition();
@@ -146,10 +147,10 @@ void GameLoop::start()
 		orthoCam.transform.setLocalRotation(Quaternion(rotation));
 	});
 	
-	ParticleRenderer particleRenderer;
+	//ParticleRenderer particleRenderer;
 	MeshRenderer meshRenderer;
 
-	Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
+	Mesh suzanne = Loader::loadMesh("cow_up.in");
 	Transform suzanneTransform;
 
 	Mesh quad = Mesh::createQuad();
@@ -184,14 +185,13 @@ void GameLoop::start()
 	depthLayout.format = GL_DEPTH_COMPONENT;
 	depthLayout.type = GL_FLOAT;
 
-	FrameBuffer frameBuffer(GL_NONE);
-	//Texture2D frameTexture = frameBuffer.createTextureAttachment(layout, 0);
-	Texture2D depthTexture = frameBuffer.createDepthTextureAttachment(depthLayout);
 
 	BillboardRenderer billboardRenderer;
-	ShadowRenderer shadowRenderer;
+	// ShadowRenderer shadowRenderer;
 
-	DirectionalLight directional;
+	glFrontFace(GL_CCW);
+
+	Light directional;
 	directional.direction = Vector3(-1, -1, -1);
 	directional.color = Color32(1, 1, 1, 1);
 	directional.intensity = 1;
@@ -209,31 +209,35 @@ void GameLoop::start()
 
 		suzanneTransform.setLocalPosition({ mx, 0, mz });
 
-		mParticleSystem.emitParticle(Vector3(0, -5, 0));
-		mParticleSystem.update();
+		//mParticleSystem.emitParticle(Vector3(0, -5, 0));
+		// mParticleSystem.update();
 
-		frameBuffer.setLayout({ 1024, 1024, 0 });
-		frameBuffer.bind();
+		// shadowRenderer.getShadowBuffer().setLayout({ 1024, 1024, 0 });
+		// shadowRenderer.getShadowBuffer().bind();
 
 		renderer.clearColorAndDepth();
 		// TODO: in order to draw shadow map, we need a shadow renderer
 		//			where geometries, lights and camera will create the
 		//			depth buffer appropriated to use on shadow projection.
-		shadowRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
-		shadowRenderer.render(mCamera, quad, quadTransform, directional, renderer);
-		frameBuffer.unbind();
+		// shadowRenderer.renderShadowMap(mCamera, suzanne, suzanneTransform, directional, renderer);
+		// shadowRenderer.renderShadowMap(mCamera, quad, quadTransform, directional, renderer);
 
-		renderer.clearColorAndDepth();
-		renderer.setViewport(viewport);
+		// shadowRenderer.getFrameBuffer().unbind();
 
-		meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, depthTexture, renderer);
-		meshRenderer.render(mCamera, quad, quadTransform, directional, depthTexture, renderer);
+		//renderer.clearColorAndDepth();
+		//renderer.setViewport(viewport);
+
+		meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
+		meshRenderer.render(mCamera, quad, quadTransform, directional, renderer);
+		//meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, shadowRenderer.getShadowMap(), renderer);
+		//meshRenderer.render(mCamera, quad, quadTransform, directional, shadowRenderer.getShadowMap(), renderer);
 		
 		//particleRenderer.render(mParticleSystem, mCamera, renderer);
 
 
-		if (frameBuffer.isComplete())
-			billboardRenderer.render(depthTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
+		// if (shadowRenderer.getShadowBuffer().isComplete())
+		//		billboardRenderer.render(shadowRenderer.getShadowMap(), { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
+		billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 
 		mWindow.swapBuffers();
 		mWindow.pollEvents();
@@ -243,7 +247,7 @@ void GameLoop::start()
 		NOW = SDL_GetPerformanceCounter();
 
 		deltaTimeInSecondsFraction = (double)((NOW - LAST) * 1000 / SDL_GetPerformanceFrequency()) / 1000;
-		Time::setDeltaTime(deltaTimeInSecondsFraction);
+		Time::setDeltaTime(deltaTimeInSecondsFraction);		
 	}
 
 	mWindow.finish();

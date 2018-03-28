@@ -95,6 +95,8 @@ void Window::pollEvents()
 				break;
 		}
 	}
+
+	//SDL_WarpMouseInWindow(mWindow, mViewport.width / 2, mViewport.height / 2);
 }
 
 bool Window::isOpen()

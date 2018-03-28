@@ -8,6 +8,18 @@ struct Vertex {
     Vector3 position;
     Vector3 normal;
     Vector2 texturecoord0;
+	
+	Vertex(const Vector3& p, const Vector2& uv, const Vector3& n)
+	{
+		position = p;
+		texturecoord0 = uv;
+		normal = n;
+	}
+
+	Vertex()
+	{
+
+	}
 };
 
 class Mesh {
@@ -34,8 +46,8 @@ public:
     {
 		if (!mMarkedAsCopy)
 		{
-			mVertexArray.deleteBuffer();
-			mIndexBuffer.deleteBuffer();
+			//mVertexArray.deleteBuffer();
+			//mIndexBuffer.deleteBuffer();
 		}
     }
 
@@ -71,10 +83,20 @@ public:
 
 		Vertex v1, v2, v3, v4;
 
-		v1.position = v1.normal = { -1, 0, -1 }; v1.texturecoord0 = { 0, 0 };
-		v2.position = v2.normal = {  1, 0, -1 }; v2.texturecoord0 = { 1, 0 };
-		v3.position = v3.normal = {  1, 0,  1 }; v3.texturecoord0 = { 1, 1 };
-		v4.position = v4.normal = { -1, 0,  1 }; v4.texturecoord0 = { 0, 1 };
+		v1.position = { -1, 0, -1 };
+		v2.position = { 1, 0, -1 }; 
+		v3.position = { 1, 0,  1 }; 
+		v4.position = { -1, 0,  1 };
+
+		v1.texturecoord0 = { 0, 0 };
+		v2.texturecoord0 = { 1, 0 };
+		v3.texturecoord0 = { 1, 1 };
+		v4.texturecoord0 = { 0, 1 };
+
+		v1.normal = { 0, 0, -1 };
+		v2.normal = { 0, 0, -1 };
+		v3.normal = { 0, 0, -1 };
+		v4.normal = { 0, 0, -1 };
 
 		Vertex description[] = {
 			v1, v2, v3, v4
@@ -93,7 +115,7 @@ public:
 		vao.generateBuffer();
 		vao.setVertexBuffer(vbo, layout);
 
-		ibo.load(indices, 6);
+		ibo.load<uint>(indices, 6);
 
 		quad.load(vao, ibo);
 

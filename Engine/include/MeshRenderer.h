@@ -8,7 +8,6 @@
 #include "GLErrorHandling.h"
 #include "MeshShaderSource.h"
 #include "Transform.h"
-#include "DirectionalLight.h"
 #include "Light.h"
 
 class MeshRenderer{
@@ -22,6 +21,7 @@ public:
 		mShader.useTextureCoord0Attribute();
 
 		mShader.useProjectionMatrix();
+		mShader.useWorldViewProjectionMatrix();
 		mShader.useWorldViewMatrix();
 		mShader.useWorldMatrix();
 		mShader.useViewMatrix();
@@ -29,9 +29,10 @@ public:
 		mShader.buildShadersFromSource(MeshShaderSource);
 
 		mShader.start();
-		mShadowMapLocation = mShader.getUniformLocation("ShadowMap");
-		mDepthMVPBiasLocation = mShader.getUniformLocation("DepthMVPBias");
-		mLightDirectionLocation = mShader.getUniformLocation("LightDirection");
+		mLightUniforms.position = mShader.getUniformLocation("directional.position");
+		mLightUniforms.direction = mShader.getUniformLocation("directional.direction");
+		mLightUniforms.color = mShader.getUniformLocation("directional.color");
+		mLightUniforms.intensity = mShader.getUniformLocation("directional.intensity");
 		mShader.stop();
 	}
 
@@ -49,79 +50,50 @@ public:
 
 		const Matrix4& World = transform.getWorldMatrix();
 		const Matrix4& View = camera.getViewMatrix();
+		const Matrix4& Projection = camera.getProjectionMatrix();
 		const Matrix4 WorldView = View * World;
+		const Matrix4 WorldViewProjection = Projection * WorldView;
 
-		mShader.setProjectionMatrix(camera.getProjectionMatrix());
+		mShader.setProjectionMatrix(Projection);
 		mShader.setWorldViewMatrix(WorldView);
+		mShader.setWorldViewProjectionMatrix(WorldViewProjection);
 		mShader.setWorldMatrix(World);
 		mShader.setViewMatrix(View);
-		mShader.setUniform(mLightDirectionLocation, directional.direction);
+		mShader.setUniform(mLightUniforms.position, directional.position);
+		mShader.setUniform(mLightUniforms.direction, directional.direction);
+		mShader.setUniform(mLightUniforms.color, directional.color);
+		mShader.setUniform(mLightUniforms.intensity, directional.intensity);
 				
 		renderer.render(vao, ibo);
 
 		finishRendering(renderer);
     }
 
-	void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Texture2D& depthTexture, const Renderer& renderer)
-	{
-		prepare(renderer);
-
-		const auto& vao = mesh.getVertexArray();
-		const auto& ibo = mesh.getIndexBuffer();
-
-		const Matrix4& World = transform.getWorldMatrix();
-		const Matrix4& View = camera.getViewMatrix();
-		const Matrix4 WorldView = View * World;
-
-		mShader.setProjectionMatrix(camera.getProjectionMatrix());
-		mShader.setWorldViewMatrix(WorldView);
-		mShader.setWorldMatrix(World);
-		mShader.setViewMatrix(View);
-
-		// light stuff
-		Matrix4 projection = Math::ortho(-2.0, 2.0, -2.0, 2.0, 0.0001, 10.0);
-		Matrix4 view = Math::lookAt(-directional.direction, directional.direction, Vector3(0, 1, 0));
-		Matrix4 model = transform.getWorldMatrix();
-
-		Matrix4 biasMatrix(
-			0.5, 0.0, 0.0, 0.0,
-			0.0, 0.5, 0.0, 0.0,
-			0.0, 0.0, 0.5, 0.0,
-			0.5, 0.5, 0.5, 1.0
-		);
-
-		Matrix4 depthMVP = projection * view * model;
-		Matrix4 depthMVPBias = biasMatrix * depthMVP;
-
-		depthTexture.start();
-
-		mShader.setUniform(mDepthMVPBiasLocation, depthMVPBias);
-		mShader.setUniform(mShadowMapLocation, (uint)0);
-		mShader.setUniform(mLightDirectionLocation, directional.direction);
-
-		renderer.render(vao, ibo);
-
-		depthTexture.stop();
-		finishRendering(renderer);
-	}
 
 private:
-	ShaderProgram mShader;
-	uint mShadowMapLocation;
-	uint mDepthMVPBiasLocation;
-	uint mLightDirectionLocation;
+	ShaderProgram mShader;	
+
+
+	struct LightUniforms {
+		uint position;
+		uint direction;
+		uint color;
+		uint intensity;
+	};
+
+	LightUniforms mLightUniforms;
 
 	void prepare(const Renderer& renderer)
 	{
 		mShader.start();
 		renderer.enableDepthTest();
-		renderer.enableCullFace();
-		renderer.cullBackFace();
+		//renderer.enableCullFace();
+		//renderer.cullBackFace();
 	}
 
 	void finishRendering(const Renderer& renderer)
 	{
-		renderer.disableCullFace();
+		// renderer.disableCullFace();
 		renderer.disableDepthTest();
 		mShader.stop();
 	}

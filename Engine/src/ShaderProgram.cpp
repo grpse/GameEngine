@@ -9,9 +9,9 @@
 
 ShaderProgram::ShaderProgram() 
 {
-	
-	PRECODE_VERTEX = STRINGIFY(#version 330\n);
-	PRECODE_FRAGMENT = STRINGIFY(#version 330\n);
+	VERSION = STRINGIFY(#version 330 core\n);
+	PRECODE_VERTEX = "";
+	PRECODE_FRAGMENT = "";
 
 	ATTRIBUTE_VERTEX_POSITION = "";
 	ATTRIBUTE_NORMAL_POSITION = "";
@@ -40,6 +40,11 @@ void ShaderProgram::setUniform(uint uniform, float v)
 	GLCall(glUniform1f(uniform, v));
 }
 
+void ShaderProgram::setUniform(uint uniform, const Color32 & v)
+{
+	GLCall(glUniform4fv(uniform, 1, Math::value_ptr(v)));
+}
+
 void ShaderProgram::setUniform(uint uniform, const Vector3& v)
 {
 	GLCall(glUniform3fv(uniform, 1, Math::value_ptr(v)));
@@ -59,6 +64,12 @@ void ShaderProgram::setUniform(const char * uniform, uint i)
 {
 	uint uniformLocation = getUniformLocation(uniform);
 	setUniform(uniformLocation, i);
+}
+
+void ShaderProgram::setUniform(const char * uniform, const Color32 & v)
+{
+	uint uniformLocation = getUniformLocation(uniform);
+	setUniform(uniformLocation, v);
 }
 
 void ShaderProgram::setUniform(const char * uniform, const Vector3& v)
@@ -154,7 +165,7 @@ void ShaderProgram::useProjectionMatrix()
 
 void ShaderProgram::useWorldViewProjectionMatrix()
 {
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 WorldViewProjection; \n);
+	PRECODE_VERTEX += STRINGIFY(uniform mat4 WorldViewProjection;\n);
 }
 
 void ShaderProgram::useVertexAttribute() 
@@ -204,12 +215,13 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	uint endVertShaderPosition = source.find(END_VERTEXSHADER);
 	uint vertSourcePositionsCount = endVertShaderPosition - beginVertShaderPosition;
 	std::string vertShaderSource = 
-		PRECODE_VERTEX + 
+		VERSION +
 		ATTRIBUTE_VERTEX_POSITION +
 		ATTRIBUTE_NORMAL_POSITION +
 		ATTRIBUTE_TEXTURECOORD0 +
 		ATTRIBUTE_TEXTURECOORD1 +
 		ATTRIBUTE_TEXTURECOORD2 +
+		PRECODE_VERTEX + 
 		STRINGIFY(\n) + source.substr(beginVertShaderPosition, vertSourcePositionsCount);
 		
 	std::cout << "VERTEX SHADER" << std::endl;
@@ -225,7 +237,10 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	uint beginFragShaderPosition = source.find(BEGIN_FRAGMENTSHADER) + BEGIN_FRAGMENTSHADER.length();
 	uint endFragShaderPosition = source.find(END_FRAGMENTSHADER);
 	uint fragSourcePositionsCount = endFragShaderPosition - beginFragShaderPosition;
-	std::string fragShaderSource = PRECODE_FRAGMENT + STRINGIFY(\n) + source.substr(beginFragShaderPosition, fragSourcePositionsCount);
+	std::string fragShaderSource = 
+		VERSION +
+		PRECODE_FRAGMENT + 
+		STRINGIFY(\n) + source.substr(beginFragShaderPosition, fragSourcePositionsCount);
 	
 	std::cout << "FRAGMENT SHADER" << std::endl;
 	std::cout << fragShaderSource << std::endl;

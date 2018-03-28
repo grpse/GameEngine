@@ -14,12 +14,20 @@ public:
 	void generateBuffer();
 	void deleteBuffer();
 
+	template<typename Type>
+	inline void load(const void* data, uint count)
+	{
+		loadData(data, count, sizeof(Type));
+	}
+
+	void loadData(const void* data, size_t count, size_t typeSize);
     void load(const uint* data, uint count);
 
     void bind() const;
     void unbind() const;
 
-    inline uint getElementCount() const {
+    inline uint getElementCount() const 
+	{
         return mCount;
     }
 

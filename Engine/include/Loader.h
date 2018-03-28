@@ -13,6 +13,7 @@ public:
 
 	static Texture2D loadRGBATexture2D(const char* filepath);
 	static Mesh loadSimpleMesh(const char* filepath);
+	static Mesh loadMesh(const char* filepath);
 
 private:
 

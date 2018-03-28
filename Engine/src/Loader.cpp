@@ -10,6 +10,8 @@
 #include "IndexBuffer.h"
 #include "GLErrorHandling.h"
 
+#define MAX_MATERIAL_COUNT 2
+
 Loader::Loader() 
 {
 
@@ -48,31 +50,158 @@ Texture2D Loader::loadRGBATexture2D(const char* filepath)
 Mesh Loader::loadSimpleMesh(const char* filepath)
 {
 	Mesh mesh;
-	std::vector<Vertex> file_vertices;
-	loadOBJ(filepath, file_vertices);
+	std::vector<Vector3> positions;
+	std::vector<Vector2> uvs;
+	std::vector<Vector3> normals;
+	loadOBJ(filepath, positions, uvs, normals);
 
-	std::vector<Vertex> mesh_vertices;
-	std::vector<unsigned int> mesh_indices;
+	std::vector<Vector3> out_positions;
+	std::vector<Vector2> out_uvs;
+	std::vector<Vector3> out_normals;
+	std::vector<unsigned short> mesh_indices;
 
-	indexVBO(file_vertices, mesh_indices, mesh_vertices);
+	indexVBO(
+		positions,
+		uvs,
+		normals, mesh_indices, out_positions, out_uvs, out_normals);
 
 	VertexArray vao;
 	VertexBuffer vbo;
 	VertexBufferLayout layout;
 	IndexBuffer ibo;
 
-	vbo.load(mesh_vertices.data(), mesh_vertices.size() * sizeof(Vertex));
+	std::vector<Vertex> vertexData;
+
+	for (uint i = 0; i < out_positions.size(); i++)
+	{
+		Vertex vertex;
+		vertex.position = out_positions[mesh_indices[i]];
+		vertex.texturecoord0 = out_uvs[mesh_indices[i]];
+		vertex.normal = out_normals[mesh_indices[i]];
+		vertexData.push_back(vertex);
+	}
+
+
+	vbo.load(vertexData.data(), vertexData.size());
 	layout.pushFloat(3);
 	layout.pushFloat(3, true);
 	layout.pushFloat(2);
 
+	ibo.load<unsigned short>(mesh_indices.data(), mesh_indices.size());
+
 	vao.generateBuffer();
 	vao.setVertexBuffer(vbo, layout);
 
-	ibo.load(mesh_indices.data(), mesh_indices.size());
-
 	mesh.markAsCopy();
 	mesh.load(vao, ibo);
+
+	return mesh;
+}
+
+Mesh Loader::loadMesh(const char* filepath)
+{
+	Vector3 ambient[MAX_MATERIAL_COUNT], diffuse[MAX_MATERIAL_COUNT], specular[MAX_MATERIAL_COUNT];
+	float shine[MAX_MATERIAL_COUNT];
+	int material_count, color_index[3], i, NumTris;
+	char ch;
+	
+	FILE* fp = fopen(filepath, "r");
+	if (fp == NULL) 
+	{ 
+		printf("ERROR: unable to open TriObj [%s]!\n", filepath); 
+		exit(1); 
+	}
+
+	fscanf(fp, "%c", &ch);
+	while (ch != '\n') // skip the first line – object’s name
+		fscanf(fp, "%c", &ch);
+	//
+	fscanf(fp, "# triangles = %d\n", &NumTris); // read # of triangles
+	fscanf(fp, "Material count = %d\n", &material_count); // read material count
+															//
+	for (i = 0; i<material_count; i++) 
+	{
+		fscanf(fp, "ambient color %f %f %f\n", &(ambient[i].x), &(ambient[i].y), &(ambient[i].z));
+		fscanf(fp, "diffuse color %f %f %f\n", &(diffuse[i].x), &(diffuse[i].y), &(diffuse[i].z));
+		fscanf(fp, "specular color %f %f %f\n", &(specular[i].x), &(specular[i].y), &(specular[i].z));
+		fscanf(fp, "material shine %f\n", &(shine[i]));
+	}
+		
+	//
+	fscanf(fp, "%c", &ch);
+	while (ch != '\n') // skip documentation line
+		fscanf(fp, "%c", &ch);
+	//
+	// allocate triangles for tri model
+	//		
+	printf("Reading in %s (%d triangles). . .\n", filepath, NumTris);
+	
+	std::vector<Vertex> vertices;
+
+	//
+	for (i = 0; i < NumTris; i++) // read triangles
+	{
+		Vertex vertice;
+		vertice.texturecoord0 = Vector2(0, 0);
+
+		fscanf(fp, "v0 %f %f %f %f %f %f %d\n",
+			&vertice.position.x, &vertice.position.y, &vertice.position.z,
+			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
+			&(color_index[0]));
+
+		vertices.push_back(vertice);
+
+		fscanf(fp, "v1 %f %f %f %f %f %f %d\n",
+			&vertice.position.x, &vertice.position.y, &vertice.position.z,
+			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
+			&(color_index[1]));
+
+		vertices.push_back(vertice);
+
+		fscanf(fp, "v2 %f %f %f %f %f %f %d\n",
+			&vertice.position.x, &vertice.position.y, &vertice.position.z,
+			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
+			&(color_index[2]));
+
+		vertices.push_back(vertice);
+
+		fscanf(fp, "face normal %f %f %f\n", &vertice.normal.x, &vertice.normal.y, &vertice.normal.z);
+	}
+
+	fclose(fp);
+
+	std::vector<Vertex> out_vertices;
+	std::vector<uint> out_indices;
+
+	indexVBO(vertices, out_indices, out_vertices);
+
+	Mesh mesh;
+
+	VertexArray vao;
+	VertexBuffer vbo;
+	VertexBufferLayout layout;
+	IndexBuffer ibo;
+
+	
+	vao.generateBuffer();
+	vao.bind();
+
+	vbo.bind();
+	vbo.load<Vertex>(out_vertices.data(), out_vertices.size());
+
+	ibo.generateBuffer();
+	ibo.bind();
+	ibo.load<uint>(out_indices.data(), out_indices.size());
+
+	layout.pushFloat(3);
+	layout.pushFloat(3, true);
+	layout.pushFloat(2);
+
+	vao.setVertexBuffer(vbo, layout);
+
+	mesh.load(vao, ibo);
+
+	mesh.markAsCopy();
 
 	return mesh;
 }
