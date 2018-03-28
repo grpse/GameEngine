@@ -2,7 +2,7 @@
 #include "OSExport.h"
 
 class Window;
-//class ShadowRenderer;
+class ShadowRenderer;
 
 class ENGINE_API Locator {
 public:	
@@ -15,7 +15,7 @@ public:
 	{
 		return mWindow;
 	}
-	/*
+
 	inline static void provideShadowRenderer(ShadowRenderer* shadowRenderer)
 	{
 		mShadowRenderer = shadowRenderer;
@@ -24,11 +24,9 @@ public:
 	inline static ShadowRenderer* locateShadowRenderer()
 	{
 		return mShadowRenderer;
-	}*/
-
-
+	}
 
 private:
 	static Window* mWindow;
-	//static ShadowRenderer* mShadowRenderer;
+	static ShadowRenderer* mShadowRenderer;
 };

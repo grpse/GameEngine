@@ -26,7 +26,7 @@ void GameLoop::start()
 	currentScene->setup();
 	currentScene->start();
 
-	//Locator::provideShadowRenderer(new ShadowRenderer);
+	Locator::provideShadowRenderer(new ShadowRenderer);
 
 	while (Locator::locateWindow()->isOpen()) {
 		float dt = (float)Time::getDeltaTime();

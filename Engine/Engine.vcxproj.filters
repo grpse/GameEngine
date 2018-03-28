@@ -191,6 +191,9 @@
     <ClInclude Include="include\ServiceLocator.h">
       <Filter>Headers</Filter>
     </ClInclude>
+    <ClInclude Include="include\ShadowShaders.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">

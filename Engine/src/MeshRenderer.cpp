@@ -63,7 +63,7 @@ void MeshRenderer::preRender(const Camera & camera, const Light * lights, uint l
 	mShadowRenderer->getShadowBuffer().bind();
 	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
 	{
-		//mShadowRenderer->renderShadowMap(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
+		mShadowRenderer->renderShadowMap(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
 	}
 	mShadowRenderer->getShadowBuffer().unbind();
 }
@@ -100,7 +100,7 @@ void MeshRenderer::postRender(const Camera & camera, const Light * lights, uint 
 
 	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
 	{
-		//mShadowRenderer->renderAdditiveShadow(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
+		mShadowRenderer->renderAdditiveShadow(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
 	}
 }
 

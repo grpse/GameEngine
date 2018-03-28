@@ -54,9 +54,9 @@ void Scene::updateComponents(float deltaTime)
 
 	// TODO: Remove this fixed step from here
 	// Clear shadow map framebuffer
-	//ShadowRenderer::getFrameBuffer().bind();
-	//mRenderer->clearColorAndDepth();
-	//Locator::locateShadowRenderer()->getFrameBuffer().unbind();
+	Locator::locateShadowRenderer()->getFrameBuffer().bind();
+	mRenderer->clearColorAndDepth();
+	Locator::locateShadowRenderer()->getFrameBuffer().unbind();
 
 	// Reset viewport
 	mRenderer->clearColorAndDepth();

@@ -191,6 +191,7 @@
     <ClInclude Include="include\ServiceLocator.h" />
     <ClInclude Include="include\ShaderProgram.h" />
     <ClInclude Include="include\ShadowRenderer.h" />
+    <ClInclude Include="include\ShadowShaders.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\targetver.h" />
     <ClInclude Include="include\Texture2D.h" />
