@@ -11,7 +11,6 @@
 #include "Texture2D.h"
 #include "ShadowShaders.h"
 
-
 ShadowRenderer::ShadowRenderer()
 {
 	// Shadow map shader to generate depth texture
@@ -44,6 +43,7 @@ ShadowRenderer::ShadowRenderer()
 	DepthLayout.type = GL_FLOAT;
 
 	ShadowBuffer.setDrawAttachment(GL_NONE);
+	ShadowBuffer.setLayout({ 2048, 2048, 0 });
 
 	ShadowMap = ShadowBuffer.createDepthTextureAttachment(DepthLayout);
 }

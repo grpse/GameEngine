@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Mesh.h"
+#include "Material.h"
 #include "Renderable.h"
 
 class Camera;
@@ -7,8 +9,6 @@ class Light;
 class Actor;
 class Renderer;
 class ShadowRenderer;
-class Material;
-class Mesh;
 
 class MeshRenderer : public Renderable {
 
@@ -42,8 +42,8 @@ private:
 	bool mShouldCastShadow;
 	bool mShouldReceiveShadow;
 
-	Mesh* mCurrentMesh;
-	mutable Material* mMaterial;
+	Mesh mCurrentMesh;
+	mutable Material mMaterial;
 
 	void prepare(const Renderer& renderer) const;
 	void finishRendering(const Renderer& renderer) const;

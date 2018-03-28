@@ -313,9 +313,6 @@
     <ClCompile Include="src\ServiceLocator.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLErrorHandling.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />

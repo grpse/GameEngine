@@ -24,8 +24,8 @@ Mesh::~Mesh()
 {
 	if (!mMarkedAsCopy)
 	{
-		mVertexArray.deleteBuffer();
-		mIndexBuffer.deleteBuffer();
+	//	mVertexArray.deleteBuffer();
+	//	mIndexBuffer.deleteBuffer();
 	}
 }
 
@@ -35,7 +35,7 @@ void Mesh::load(VertexArray& vertexArray, IndexBuffer& indexBuffer)
 	mIndexBuffer = indexBuffer;
 }
 
-void Mesh::markAsCopy()
+void Mesh::markAsCopy() const
 {
 	mMarkedAsCopy = true;
 }

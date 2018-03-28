@@ -218,7 +218,6 @@
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\GameLoop.cpp" />
-    <ClCompile Include="src\GLErrorHandling.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Light.cpp" />

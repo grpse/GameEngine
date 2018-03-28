@@ -10,7 +10,7 @@ class MainScene : public Scene {
 
 public:
 	void start();
-	void update(float deltaTime);
+	virtual void update(float deltaTime);
 
 private:
 	Actor mFloor;
