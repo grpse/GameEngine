@@ -66,7 +66,7 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 		float scale = particles[particleCount].getScale();
 		updateModelViewMatrix(position, rotation, scale, view);
 
-		renderer.renderQuad(0, 4);
+		renderer.render(mVertexArray, 0, 4);
 	}
 	
 	mVertexArray.unbind();	

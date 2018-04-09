@@ -5,8 +5,7 @@
 #include "OSExport.h"
 #include "Typedefs.h"
 
-struct SDL_Window;
-
+struct GLFWwindow;
 class ENGINE_API Window {
 
 public:
@@ -18,15 +17,14 @@ public:
 	void finish();
 	void pollEvents();
 	bool isOpen();
-
-	void onKeydown(const std::function<void(uint key)>& keydownListener);
-	void onMouseMove(const std::function<void(int x, int y)>& mousemoveListener);
 	
 private:
+	GLFWwindow* mWindow;
 	Rect mViewport;
-	SDL_Window* mWindow;
+
 	bool mIsOpen;
 
-	std::vector< std::function<void(uint key)> > mKeydownListeners;
-	std::vector< std::function<void(int x, int y)> > mMouseMoveListeners;
+	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void MousePositionCallback(GLFWwindow* window, double xpos, double ypos);
+	static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 };

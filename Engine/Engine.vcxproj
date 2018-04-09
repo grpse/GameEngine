@@ -71,23 +71,23 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
     <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
     <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
     <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
     <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
@@ -97,7 +97,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -110,7 +110,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -125,7 +125,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -142,7 +142,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -151,14 +151,6 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Dependencies\SDL2\VisualC\SDLmain\SDLmain.vcxproj">
-      <Project>{da956fd3-e142-46f2-9dd5-c78bebb56b7a}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Dependencies\SDL2\VisualC\SDL\SDL.vcxproj">
-      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
-    </ProjectReference>
-  </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\objloader\objloader.hpp" />
     <ClInclude Include="external\objloader\tangentspace.hpp" />
@@ -172,6 +164,7 @@
     <ClInclude Include="include\AttributesNamesDefines.h" />
     <ClInclude Include="include\BillboardRenderer.h" />
     <ClInclude Include="include\Camera.h" />
+    <ClInclude Include="include\CubeMap.h" />
     <ClInclude Include="include\FrameBuffer.h" />
     <ClInclude Include="include\GameLoop.h" />
     <ClInclude Include="include\GLErrorHandling.h" />
@@ -196,6 +189,8 @@
     <ClInclude Include="include\ShaderParser.h" />
     <ClInclude Include="include\ShaderProgram.h" />
     <ClInclude Include="include\ShadowRenderer.h" />
+    <ClInclude Include="include\ShadowShader.h" />
+    <ClInclude Include="include\SkyboxRenderer.h" />
     <ClInclude Include="include\Texture2D.h" />
     <ClInclude Include="include\Time.h" />
     <ClInclude Include="include\Transform.h" />
@@ -216,6 +211,7 @@
     <ClCompile Include="external\SOIL\SOIL.c" />
     <ClCompile Include="external\SOIL\stb_image_aug.c" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\CubeMap.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\GameLoop.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
@@ -230,6 +226,7 @@
     <ClCompile Include="src\RendererOpenGL.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\ShadowRenderer.cpp" />
+    <ClCompile Include="src\SkyboxRenderer.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\Time.cpp" />
     <ClCompile Include="src\Transform.cpp" />
@@ -239,6 +236,11 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dependencies\glfw\src\glfw.vcxproj">
+      <Project>{1be114d2-d8ea-3ee3-a4b5-dc1508266e92}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -104,6 +104,25 @@ const Matrix4& Transform::getWorldMatrix() const {
     return mWorldMatrix;
 }
 
+const Matrix4& Transform::getWorldInverseTranspose() const
+{
+	if (!mValidCalcCachedMatrix)
+	{
+		const Vector3& t = mLocalPosition;
+		const Vector3& s = mLocalScale;
+		glm::mat3 r = Math::toMat3(mLocalRotation);
+		mWorldInverseTransposeMatrix = 
+		{
+			{r[0][0] / s.x, r[0][1] / s.x, r[0][2] / s.x, 0},
+			{r[1][0] / s.y, r[1][1] / s.y, r[1][2] / s.y, 0},
+			{r[2][0] / s.x, r[2][1] / s.x, r[2][2] / s.x, 0},
+			{-t.x, -t.y, -t.z, 1}
+		};
+	}
+
+	return mWorldInverseTransposeMatrix;
+}
+
 const Transform* const Transform::getParent() const {
     return mParent;
 }

@@ -1,8 +1,27 @@
 #include <GL/glew.h>
-#include <SDL_opengl.h>
 
 #include "Renderer.h"
 #include "GLErrorHandling.h"
+
+Renderer::Renderer()
+{
+	mMode = Renderer::Mode::Triangles;
+}
+
+void Renderer::setRenderMode(Renderer::Mode mode)
+{
+	mMode = mode;
+}
+
+void Renderer::setFrontClockwise() const
+{
+	GLCall(glFrontFace(GL_CW));
+}
+
+void Renderer::setFrontCounterClockwise() const
+{
+	GLCall(glFrontFace(GL_CCW));
+}
 
 void Renderer::setClearColor(Color32 color) const
 {
@@ -19,14 +38,16 @@ void Renderer::render(const VertexArray & vao, const IndexBuffer & ibo) const
 	vao.bind();
 	ibo.bind();
 
-	GLCall(glDrawElements(GL_TRIANGLES, ibo.getElementCount(), GL_UNSIGNED_INT, (const void*)0));
+	GLCall(glDrawElements((uint)mMode, ibo.getElementCount(), GL_UNSIGNED_INT, (const void*)0));
 
 	vao.unbind();
 }
 
-void Renderer::renderQuad(uint startIndex, uint count) const
+void Renderer::render(const VertexArray& vao, uint startIndex, uint count) const
 {
-	GLCall(glDrawArrays(GL_QUADS, startIndex, count));
+	vao.bind();
+	GLCall(glDrawArrays((uint)mMode, startIndex, count));
+	vao.unbind();
 }
 
 void Renderer::cullBackFace() const
@@ -88,4 +109,9 @@ void Renderer::unsetDepthMask() const
 void Renderer::setBlendSrcAlpha_OneMinusSrcColor() const
 {
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_COLOR));
+}
+
+void Renderer::setBlendSrcAlpha_One() const
+{
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE));
 }

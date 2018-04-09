@@ -12,7 +12,9 @@
 
 const char* BillboardShader = R"(
 
-#BEGIN VERTEXSHADER
+#queue Opaque
+
+#begin vertexshader
 
 uniform vec2 displacement;
 uniform vec2 widthHeight;
@@ -30,9 +32,9 @@ void main() {
 	TextureCoord0_pass = TEXCOORD0;
 }
 
-#END VERTEXSHADER
+#end vertexshader
 
-#BEGIN FRAGMENTSHADER
+#begin fragmentshader
 
 in vec2 TextureCoord0_pass;
 
@@ -41,7 +43,7 @@ uniform sampler2D billboardTexture;
 void main() {
 	gl_FragColor = texture(billboardTexture, TextureCoord0_pass);
 }
-#END FRAGMENTSHADER	
+#end fragmentshader
 
 )";
 
@@ -89,9 +91,7 @@ public:
 		mShader.setUniform(mDisplacementLocation, Vector2(rect.x, rect.y));
 		mShader.setUniform(mWidthHeightLocation, Vector2(rect.width, rect.height));
 
-		mVAO.bind();
-		renderer.renderQuad(0, 4);
-		mVAO.unbind();
+		renderer.render(mVAO, 0, 4);
 
 		texture.stop();
 		mShader.stop();

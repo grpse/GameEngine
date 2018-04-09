@@ -1,5 +1,7 @@
 #pragma once
 #include "LinearMath.h"
+#include "Texture2D.h"
+#include "CubeMap.h"
 #include "Typedefs.h"
 #include <string>
 #include <map>
@@ -16,6 +18,9 @@ public:
 	void setUniform(uint uniform, const Vector3& v);
 	void setUniform(uint uniform, const Vector2& v);
 	void setUniform(uint uniform, const Matrix4& m);
+	void setUniform(uint uniform, const Texture2D& t);
+	void setUniform(uint uniform, const CubeMap& c);
+	void setInteger(uint uniform, int i);
 
 	void setUniform(const char* uniform, uint i);
 	void setUniform(const char* uniform, const Color32& v);
@@ -25,6 +30,8 @@ public:
 
 	void setWorldMatrix(const Matrix4& world);
 	void setViewMatrix(const Matrix4& view);
+	void setWorldViewInverseTranspose(const Matrix4& worldViewInverseTranspose);
+	void setWorldInverseTranspose(const Matrix4& worldInverseTranspose);
 	void setWorldViewMatrix(const Matrix4& worldView);
 	void setProjectionMatrix(const Matrix4& projection);
 	void setWorldViewProjectionMatrix(const Matrix4& worldViewProjection);
@@ -35,14 +42,16 @@ public:
 	void setCustomUniform(std::string customUniform);
 
 	void buildShadersFromSource(std::string shaderSource);
-	void start();
-	void stop();
+	void start() const;
+	void stop() const;
 
 private:
 	struct UniformsUse {
 		int World = -1;
 		int View = -1;
 		int WorldView = -1;
+		int WorldInverseTranspose = -1;
+		int WorldViewInverseTranspose = -1;
 		int Projection = -1;
 		int WorldViewProjection = -1;
 	};

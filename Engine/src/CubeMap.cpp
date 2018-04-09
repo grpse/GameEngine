@@ -1,0 +1,51 @@
+#include <GL/glew.h>
+#include "GLErrorHandling.h"
+#include "CubeMap.h"
+
+CubeMap::CubeMap()
+{
+	mIndex = 0;
+	GLCall(glGenTextures(1, &mID));
+}
+
+CubeMap::CubeMap(const CubeMap& other)
+{
+	mID = other.mID;
+	mIndex = other.mIndex;
+}
+
+CubeMap::~CubeMap()
+{
+	// TODO: make a releaser
+}
+
+void CubeMap::setParameter(uint name, uint value) const
+{
+	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, name, value));
+}
+
+uint CubeMap::getId() const
+{
+	return mID;
+}
+
+void CubeMap::setIndex(uint index)
+{
+	mIndex = index;
+}
+
+uint CubeMap::getIndex() const
+{
+	return mIndex;
+}
+
+void CubeMap::bind() const
+{
+	GLCall(glActiveTexture(GL_TEXTURE0 + mIndex));
+	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, mID));
+}
+
+void CubeMap::unbind() const
+{
+	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, 0));
+}

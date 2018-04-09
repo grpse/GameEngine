@@ -53,6 +53,23 @@ void ShaderProgram::setUniform(uint uniform, const Matrix4& m)
 	GLCall(glUniformMatrix4fv(uniform, 1, GL_FALSE, Math::value_ptr(m)));
 }
 
+void ShaderProgram::setUniform(uint uniform, const Texture2D& t)
+{
+	// TODO: This can only bind one texture to current shader program
+	GLCall(glUniform1i(uniform, t.getIndex()));
+}
+
+void ShaderProgram::setUniform(uint uniform, const CubeMap& c)
+{
+	c.bind();
+	GLCall(glUniform1i(uniform, c.getIndex()));
+}
+
+void ShaderProgram::setInteger(uint uniform, int i)
+{
+	GLCall(glUniform1i(uniform, i));
+}
+
 void ShaderProgram::setUniform(const char * uniform, uint i)
 {
 	uint uniformLocation = getUniformLocation(uniform);
@@ -97,6 +114,22 @@ void ShaderProgram::setViewMatrix(const Matrix4& view)
 		mUniformsUse.View = getUniformLocation(VIEW);
 
 	setUniform(mUniformsUse.View, view);
+}
+
+void ShaderProgram::setWorldInverseTranspose(const Matrix4& worldInverseTranspose)
+{
+	if (mUniformsUse.WorldInverseTranspose < 0)
+		mUniformsUse.WorldInverseTranspose = getUniformLocation(WORLDINVERSETRANSPOSE);
+
+	setUniform(mUniformsUse.WorldInverseTranspose, worldInverseTranspose);
+}
+
+void ShaderProgram::setWorldViewInverseTranspose(const Matrix4& worldViewInverseTranspose)
+{
+	if (mUniformsUse.WorldViewInverseTranspose < 0)
+		mUniformsUse.WorldViewInverseTranspose = getUniformLocation(WORLDVIEWINVERSETRANSPOSE);
+
+	setUniform(mUniformsUse.WorldViewInverseTranspose, worldViewInverseTranspose);
 }
 
 void ShaderProgram::setWorldMatrix(const Matrix4 & world)
@@ -152,27 +185,27 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 
 	parser.parse(shaderSource.c_str());
 		
-	std::cout << "VERTEX SHADER" << std::endl;
+	//std::cout << "VERTEX SHADER" << std::endl;
 	std::string& vertShaderSource = VERSION + parser.getVertexShaderSource();
-	std::cout << vertShaderSource << std::endl;
+	//std::cout << vertShaderSource << std::endl;
 	const char* vertShaderSourceStr = vertShaderSource.c_str();
 	buildVertShaderFromSource(vertShaderSourceStr);
 
-	std::cout << "FRAGMENT SHADER" << std::endl;
+	//std::cout << "FRAGMENT SHADER" << std::endl;
 	std::string& fragShaderSource = VERSION + parser.getFragmentShaderSource();
-	std::cout << fragShaderSource << std::endl;
+	//std::cout << fragShaderSource << std::endl;
 	const char* fragShaderSourceStr = fragShaderSource.c_str();
 	buildFragShaderFromSource(fragShaderSourceStr);
 
 	link();
 }
 
-void ShaderProgram::start()
+void ShaderProgram::start() const
 {
 	GLCall(glUseProgram(mShaderProgram));
 }
 
-void ShaderProgram::stop()
+void ShaderProgram::stop() const
 {
 	GLCall(glUseProgram(0));
 }

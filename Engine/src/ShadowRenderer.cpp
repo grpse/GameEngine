@@ -15,72 +15,7 @@
 #include "Camera.h"
 #include "ShaderProgram.h"
 #include "Light.h"
-
-char ShadowShader[] = R"(
-
-#BEGIN VERTEXSHADER
-
-uniform mat4 depthMVP;
-
-void main() {
-	gl_Position = depthMVP * vec4(POSITION, 1);
-}
-
-#END VERTEXSHADER
-
-#BEGIN FRAGMENTSHADER
-
-out float fragmentDepth;
-
-void main() {
-	fragmentDepth = gl_FragCoord.z;
-}
-
-#END FRAGMENTSHADER
-
-)";
-
-char ShadowMapShaderAdditive[] = R"(
-
-#BEGIN VERTEXSHADER
-
-uniform mat4 DepthMVPBias;
-
-out vec4 ShadowCoord;
-
-void main()
-{
-	gl_Position = WORLDVIEWPROJECTION * vec4(POSITION, 1);	
-	ShadowCoord = DepthMVPBias * vec4(POSITION, 1);
-}
-
-#END VERTEXSHADER
-
-#BEGIN FRAGMENTSHADER
-
-uniform float ShadowIntensity;
-uniform sampler2D ShadowMap;
-
-in vec4 ShadowCoord;
-
-void main() 
-{
-	float visibility = 1.0;
-	float bias = 0.005;
-
-	if (texture(ShadowMap, ShadowCoord.xy).z  <  ShadowCoord.z - bias) {
-		visibility = 0.1;
-	}
-	
-	gl_FragColor = vec4(1, 1, 1, 1) * visibility * ShadowIntensity;
-}
-
-#END FRAGMENTSHADER
-
-)";
-
-
-
+#include "ShadowShader.h"
 
 ShadowRenderer::ShadowRenderer()
 {
@@ -125,36 +60,14 @@ ShadowRenderer::~ShadowRenderer()
 
 }
 
-void ShadowRenderer::renderShadowMap(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer)
+void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer)
 {
-	ShadowBuffer.bind();
-
 	renderer.enableDepthTest();
 	renderer.enableCullFace();
 	renderer.cullBackFace();
+	renderer.enableBlend();
+	renderer.setBlendSrcAlpha_OneMinusSrcColor();
 
-	Matrix4 projection = light.getLightProjection(camera, transform);
-	Matrix4 view = light.getLightView(camera, transform);
-	Matrix4 model = transform.getWorldMatrix();
-
-	Matrix4 depthMVP = projection * view * model;
-
-	mShadowMapShader.start();
-
-	mShadowMapShader.setUniform(mDepthMVPLocation, depthMVP);
-
-	renderer.render(mesh.getVertexArray(), mesh.getIndexBuffer());
-
-	mShadowMapShader.stop();
-
-	renderer.disableCullFace();
-	renderer.disableDepthTest();
-
-	ShadowBuffer.unbind();
-}
-
-void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer)
-{
 	// model WVP
 	Matrix4 WorldViewProjection = camera.getProjectionMatrix() * camera.getViewMatrix() * transform.getWorldMatrix();
 
@@ -165,8 +78,8 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 		0.0, 0.0, 0.5, 0.0,
 		0.5, 0.5, 0.5, 1.0
 	);
-	Matrix4 projection = Matrix4(1);// light.getLightProjection(camera, transform);
-	Matrix4 view = Matrix4(1);// light.getLightView(camera, transform);
+	Matrix4 projection = light.getLightProjection(camera, transform);
+	Matrix4 view = light.getLightView(camera, transform);
 	Matrix4 model = transform.getWorldMatrix();
 	Matrix4 depthMVP = projection * view * model;
 	Matrix4 depthMVPBias = biasMatrix * depthMVP;
@@ -175,11 +88,13 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 	getShadowMap().start();
 
 	// Bind light intentisity, depth wvp biased and shadow map depth texture
+	mShadowMapAdditiveShader.start();
 	mShadowMapAdditiveShader.setUniform(mShadowIntensityLocation, 1 - light.intensity);
 	mShadowMapAdditiveShader.setUniform(mDepthMVPBiasLocation, depthMVPBias);
-	mShadowMapAdditiveShader.setUniform(mShadowMapLocation, (uint)0);
+	mShadowMapAdditiveShader.setInteger(mShadowMapLocation, 0);
 
 	renderer.render(mesh.getVertexArray(), mesh.getIndexBuffer());
+	mShadowMapAdditiveShader.stop();
 
 	getShadowMap().stop();
 }

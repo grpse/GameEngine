@@ -23,6 +23,7 @@ public:
     const Quaternion& getLocalRotation() const;
     const Vector3& getLocalScale() const;
     const Matrix4& getWorldMatrix() const;
+	const Matrix4& getWorldInverseTranspose() const;
     const Transform* const getParent() const;
     Transform* getChildren() const;
     uint getChildrenCount() const;
@@ -41,6 +42,7 @@ private:
     Quaternion mLocalRotation;
     Vector3 mLocalScale;
     mutable Matrix4 mWorldMatrix;
+	mutable Matrix4 mWorldInverseTransposeMatrix;
     mutable bool mValidCalcCachedMatrix;
 
 	uint mMaxChildren;

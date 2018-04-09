@@ -3,6 +3,8 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "LinearMath.h"
+#include "Renderer.h"
+#include <iostream>
 
 #pragma pack(push, 1)
 
@@ -31,19 +33,28 @@ public:
 	Mesh()
 		: mMarkedAsCopy(false)
     {
-
+		mIsIndexed = false;
     }
 
 	Mesh(const Mesh& other)
 	{
 		mVertexArray = other.mVertexArray;
 		mIndexBuffer = other.mIndexBuffer;
+		mIsIndexed = other.mIsIndexed;
+		mIndexStart = other.mIndexStart;
+		mIndexEnd = other.mIndexEnd;
 	}
 
     Mesh(VertexArray& vertexArray, IndexBuffer& indexBuffer)
     {
         load(vertexArray, indexBuffer);
     }
+
+	Mesh(VertexArray& vertexArray)
+	{
+		mIsIndexed = false;
+		mVertexArray = vertexArray;
+	}
 
     ~Mesh()
     {
@@ -54,10 +65,25 @@ public:
 		}
     }
 
+	void render(const Renderer& renderer) const
+	{
+		if (mIsIndexed)
+		{
+			renderer.render(mVertexArray, mIndexBuffer);
+			std::cout << "Indexed!" << std::endl;
+		}
+		else 
+		{
+			renderer.render(mVertexArray, mIndexStart, mIndexEnd);
+		}
+
+	}
+
     void load(VertexArray& vertexArray, IndexBuffer& indexBuffer)
     {
         mVertexArray = vertexArray;
         mIndexBuffer = indexBuffer;
+		mIsIndexed = true;
     }
 
 	void markAsCopy()
@@ -125,9 +151,13 @@ public:
 		return quad;
 	}
 
+	uint mIndexStart;
+	uint mIndexEnd;
+
 private:
     IndexBuffer mIndexBuffer;
     VertexArray mVertexArray;
+	bool mIsIndexed;
 	bool mMarkedAsCopy;
 };
 

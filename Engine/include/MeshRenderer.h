@@ -39,23 +39,25 @@ public:
 		const auto& vao = mesh.getVertexArray();
 		const auto& ibo = mesh.getIndexBuffer();
 
+		const Matrix4& NormalMatrix = transform.getWorldInverseTranspose();
 		const Matrix4& World = transform.getWorldMatrix();
 		const Matrix4& View = camera.getViewMatrix();
 		const Matrix4& Projection = camera.getProjectionMatrix();
 		const Matrix4 WorldView = View * World;
 		const Matrix4 WorldViewProjection = Projection * WorldView;
 
-		mShader.setProjectionMatrix(Projection);
-		mShader.setWorldViewMatrix(WorldView);
-		mShader.setWorldViewProjectionMatrix(WorldViewProjection);
 		mShader.setWorldMatrix(World);
 		mShader.setViewMatrix(View);
+		mShader.setWorldViewMatrix(WorldView);
+		mShader.setWorldViewProjectionMatrix(WorldViewProjection);
+		mShader.setWorldInverseTranspose(NormalMatrix);
+
 		mShader.setUniform(mLightUniforms.position, directional.position);
 		mShader.setUniform(mLightUniforms.direction, directional.direction);
 		mShader.setUniform(mLightUniforms.color, directional.color);
 		mShader.setUniform(mLightUniforms.intensity, directional.intensity);
-				
-		renderer.render(vao, ibo);
+		
+		mesh.render(renderer);
 
 		finishRendering(renderer);
     }
@@ -78,13 +80,13 @@ private:
 	{
 		mShader.start();
 		renderer.enableDepthTest();
-		//renderer.enableCullFace();
-		//renderer.cullBackFace();
+		renderer.enableCullFace();
+		renderer.cullBackFace();
 	}
 
 	void finishRendering(const Renderer& renderer)
 	{
-		// renderer.disableCullFace();
+		renderer.disableCullFace();
 		renderer.disableDepthTest();
 		mShader.stop();
 	}
