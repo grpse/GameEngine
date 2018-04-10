@@ -33,11 +33,12 @@ const Matrix4& Camera::getViewMatrix() const
 		const Vector3 position = transform.getLocalPosition();
 		const Vector3 front = transform.getFront();
 		const Vector3 target = position + front;
-
+		const Vector3 up = Vector3(0, 1, 0);
+		
 		mViewMatrix = Math::lookAt(
 			position,
 			target,
-			Vector3(0, 1, 0)
+			up
 		);
 	}
 	return mViewMatrix;

@@ -75,6 +75,12 @@ void Transform::removeChild(Transform* child) {
     }
 }
 
+void Transform::lookAt(Vector3 position)
+{
+	Vector3 orientation = Math::normalize(position - mLocalPosition);
+	setLocalRotation(orientation);
+}
+
 const Vector3& Transform::getLocalPosition() const {
     return mLocalPosition;
 }
@@ -136,7 +142,7 @@ uint Transform::getChildrenCount() const {
 }
 
 Vector3 Transform::getFront() const {
-    return Vector3(mWorldMatrix[0][2], mWorldMatrix[1][2], mWorldMatrix[2][2]);
+	return Math::eulerAngles(mLocalRotation);
 }
 
 Vector3 Transform::getUp() const {

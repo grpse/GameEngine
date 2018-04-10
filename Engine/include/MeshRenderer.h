@@ -36,9 +36,6 @@ public:
     {
 		prepare(renderer);
 
-		const auto& vao = mesh.getVertexArray();
-		const auto& ibo = mesh.getIndexBuffer();
-
 		const Matrix4& NormalMatrix = transform.getWorldInverseTranspose();
 		const Matrix4& World = transform.getWorldMatrix();
 		const Matrix4& View = camera.getViewMatrix();
@@ -80,6 +77,7 @@ private:
 	{
 		mShader.start();
 		renderer.enableDepthTest();
+		renderer.setDepthMask();
 		renderer.enableCullFace();
 		renderer.cullBackFace();
 	}

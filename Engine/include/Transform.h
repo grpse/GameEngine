@@ -17,7 +17,7 @@ public:
     void setParent(Transform* parent);
     void addChild(Transform* child);
     void removeChild(Transform* child);
-    
+	void lookAt(Vector3 position);
     
     const Vector3& getLocalPosition() const;
     const Quaternion& getLocalRotation() const;

@@ -1,77 +1,74 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\context.c">
+    <ClCompile Include="context.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\init.c">
+    <ClCompile Include="egl_context.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\input.c">
+    <ClCompile Include="init.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\monitor.c">
+    <ClCompile Include="input.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\vulkan.c">
+    <ClCompile Include="monitor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\window.c">
+    <ClCompile Include="vulkan.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_init.c">
+    <ClCompile Include="wgl_context.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_joystick.c">
+    <ClCompile Include="win32_init.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_monitor.c">
+    <ClCompile Include="win32_joystick.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_time.c">
+    <ClCompile Include="win32_monitor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_tls.c">
+    <ClCompile Include="win32_time.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_window.c">
+    <ClCompile Include="win32_tls.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\wgl_context.c">
+    <ClCompile Include="win32_window.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\egl_context.c">
+    <ClCompile Include="window.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\internal.h">
+    <ClInclude Include="egl_context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\glfw_config.h">
+    <ClInclude Include="glfw_config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\include\GLFW\glfw3.h">
+    <ClInclude Include="internal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\include\GLFW\glfw3native.h">
+    <ClInclude Include="wgl_context.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_platform.h">
+    <ClInclude Include="win32_joystick.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\win32_joystick.h">
+    <ClInclude Include="win32_platform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\wgl_context.h">
+    <ClInclude Include="..\include\GLFW\glfw3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\egl_context.h">
+    <ClInclude Include="..\include\GLFW\glfw3native.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <CustomBuild Include="C:\Users\Gilberto\Downloads\glfw-3.2.1\src\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source Files">
@@ -80,5 +77,8 @@
     <Filter Include="Header Files">
       <UniqueIdentifier>{4E42AE27-08F8-349E-BFB6-DEA4EE0DBE41}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="CMakeLists.txt" />
   </ItemGroup>
 </Project>

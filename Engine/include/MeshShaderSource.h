@@ -15,6 +15,8 @@ void main()
 	PASS_POSITION = POSITION;
 	PASS_NORMAL = NORMAL;
 	gl_Position = WORLDVIEWPROJECTION * vec4(POSITION, 1);
+
+	//TEXCOORD0
 }
 
 #end vertexshader
@@ -69,7 +71,7 @@ void main() {
 
 	//output specular
 	vec4 specColor = SpecularColor * directional.color * spec;
-	gl_FragColor = AmbientLightColor + specColor + diffColor;
+	gl_FragColor = vec4((AmbientLightColor + specColor + diffColor).rgb, 1);
 }
 #end fragmentshader
 

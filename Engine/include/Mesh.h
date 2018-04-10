@@ -70,7 +70,6 @@ public:
 		if (mIsIndexed)
 		{
 			renderer.render(mVertexArray, mIndexBuffer);
-			std::cout << "Indexed!" << std::endl;
 		}
 		else 
 		{

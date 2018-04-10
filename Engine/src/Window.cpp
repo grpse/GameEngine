@@ -37,6 +37,7 @@ void Window::start()
 	glfwSetKeyCallback(mWindow, Window::KeyCallback);
 	glfwSetCursorPosCallback(mWindow, Window::MousePositionCallback);
 	glfwSetMouseButtonCallback(mWindow, Window::MouseButtonCallback);
+	glfwSetScrollCallback(mWindow, Window::ScrollCallback);
 }
 
 
@@ -75,7 +76,11 @@ bool Window::isOpen()
 void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_REPEAT)
+		Input::setPressedKeyRepeated(key);
+	else if (action == GLFW_PRESS)
 		Input::setPressedKey(key);
+	else if (action == GLFW_RELEASE)
+		Input::setReleasedKey(key);
 }
 
 void Window::MousePositionCallback(GLFWwindow* window, double xpos, double ypos)
@@ -92,4 +97,9 @@ void Window::MouseButtonCallback(GLFWwindow * window, int button, int action, in
 		Input::setMouseButtonPress(button);
 	else if (action == GLFW_RELEASE)
 		Input::setMouseButtonRelease(button);
+}
+
+void Window::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Input::setScrollOffset(xoffset, yoffset);
 }

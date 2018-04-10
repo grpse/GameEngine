@@ -7,6 +7,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/random.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 using namespace glm;
 namespace Math = glm;

@@ -58,6 +58,8 @@ void GameLoop::start()
 		 
 	Vector3 position = mCamera.transform.getLocalPosition();
 	Vector3 rotation = Math::eulerAngles(mCamera.transform.getLocalRotation()) * 3.14159f / 180.f;
+	Vector3 originalPosition = position;
+	Vector3 originalRotation = rotation;
 
 	auto updateCameraPositionAndRotation = [&]() {
 
@@ -65,19 +67,19 @@ void GameLoop::start()
 
 		Vector3 front = mCamera.transform.getFront();
 		Vector3 right = mCamera.transform.getRight();
-		if (Input::isPressedKey(W)) {
+		if (Input::isPressedKeyRepeated(W)) {
 			position += Math::normalize(front) * moveDiff;
 		}
 
-		if (Input::isPressedKey(S)) {
+		if (Input::isPressedKeyRepeated(S)) {
 			position -= Math::normalize(front) * moveDiff;
 		}
 
-		if (Input::isPressedKey(D)) {
+		if (Input::isPressedKeyRepeated(D)) {
 			position += Math::normalize(right) * moveDiff;
 		}
 
-		if (Input::isPressedKey(A)) {
+		if (Input::isPressedKeyRepeated(A)) {
 			position -= Math::normalize(right) * moveDiff;
 		}
 
@@ -100,7 +102,7 @@ void GameLoop::start()
 		}
 
 		if (y > 0 || y < 0) {
-			const float halfPi = Math::radians(90.0);
+			const float halfPi = Math::pi<float>() / 2.0f;
 			float nextRotationOnX = rotation.x - y * rotationDiff;
 			rotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
 		}
@@ -109,11 +111,22 @@ void GameLoop::start()
 		mCamera.transform.getWorldMatrix();
 	};
 	
+	auto resetButtom = [&]() {
+		if (Input::wasPressedKey(R))
+		{
+			position = originalPosition;
+			rotation = originalRotation;
+			mCamera.transform.setLocalPosition(position);
+			mCamera.transform.setLocalRotation(rotation);
+			mCamera.transform.getWorldMatrix();
+		}
+	};
+
 	//ParticleRenderer particleRenderer;
 	MeshRenderer meshRenderer;
 
-	//Mesh suzanne = Loader::loadMeshAsArray("cow_up.in");
-	Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
+	Mesh suzanne = Loader::loadMeshAsArray("cow_up.in");
+	//Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
 	Transform suzanneTransform;
 
 	Mesh quad = Mesh::createQuad();
@@ -122,13 +135,73 @@ void GameLoop::start()
 	quadTransform.setLocalScale({ 5, 5, 5 });
 	quadTransform.setLocalRotation(Vector3(Math::radians(180.0), 0, 0));
 
-	suzanneTransform.setLocalPosition({ -0.5, 0.1, -1 });
-	// suzanneTransform.setLocalScale({ 0.001, 0.001, 0.001 });
-	suzanneTransform.setLocalScale({1, 1, 1 });
+	suzanneTransform.setLocalPosition({ 0, 0, 0 });
+	suzanneTransform.setLocalScale({ 0.001, 0.001, 0.001 });
+	//suzanneTransform.setLocalScale({1, 1, 1 });
 	suzanneTransform.setLocalRotation(Vector3(0, 0, 0));
 
+	double xAngle = 0;
+	double yAngle = 0;
+	float distanceFromCow = 1.0f;
+
+	auto updateDistanceFromCow = [&]() {
+		double scrollX, scrollY;
+		Input::getScrollOffsetDelta(scrollX, scrollY);
+		if (scrollY > 0 || scrollY < 0) {
+			distanceFromCow += scrollY * 10 * Time::getDeltaTime();
+			mCamera.transform.getWorldMatrix();
+		}
+	};
+
+	auto updateCameraOrientationAndPositionLookAtCow = [&]() {
+		double x, y;
+		Input::getMouseDelta(x, y);
+
+		float rotationDiff = (float)(5.0 * Time::getDeltaTime());
+
+		if (x > 0 || x < 0) {
+			xAngle += Math::radians(x);
+			
+			//xAngle += Math::radians(x);
+			position.x = Math::sin(xAngle) * distanceFromCow;
+			position.z = -Math::cos(xAngle) * distanceFromCow;
+		}
+
+		if (y > 0 || y < 0) {
+			//const float halfPi = Math::pi<float>() / 2.0f;
+			//float nextRotationOnX = rotation.x - y * rotationDiff;
+			//rotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
+			double tempYAngle = yAngle + Math::radians(y);
+			yAngle = Math::abs(tempYAngle) >= Math::pi<double>() / 2 ? yAngle : tempYAngle;
+			position.y = Math::sin(yAngle) * distanceFromCow;
+		}
+
+		// UPDATE ORIENTATION
+		mCamera.transform.setLocalPosition(position);
+		mCamera.transform.lookAt(suzanneTransform.getLocalPosition());
+		mCamera.transform.getWorldMatrix();
+	};
+
+
 	Renderer renderer;
-	renderer.setFrontCounterClockwise();
+	Renderer::Mode renderMode[3] = {
+		Renderer::Mode::Triangles,
+		Renderer::Mode::Lines,
+		Renderer::Mode::Points
+	};
+
+	uint renderModeIndex = 1;
+
+	auto changeRenderModeAndFrontFacing = [&]() -> void 
+	{
+		if (Input::wasReleasedKey(M))
+		{
+			renderModeIndex = (renderModeIndex + 1) % 3;
+			renderer.setRenderMode(renderMode[renderModeIndex]);
+		}
+	};
+
+	renderer.setFrontClockwise();
 	
 	BillboardRenderer billboardRenderer;
 	ShadowRenderer shadowRenderer;
@@ -143,6 +216,8 @@ void GameLoop::start()
 	float mx = 0;
 	float mz = 0;
 
+
+	renderer.setClearColor({ 1, 1, 1, 1 });
 	// load skybox
 	SkyboxRenderer skyboxRenderer;
 	skyboxRenderer.setCubeMap(Loader::loadCubeMap("skybox/cloudysky", "png"));
@@ -181,8 +256,13 @@ void GameLoop::start()
 		renderer.setRenderMode(Renderer::Mode::Triangles);
 		skyboxRenderer.render(mCamera, renderer);
 
+		renderer.enableDepthTest();
+		renderer.disableBlend();
+
+		renderer.setRenderMode(renderMode[renderModeIndex]);
 		meshRenderer.render(mCamera, quad, quadTransform, directional, renderer);
 		meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
+
 
 		//shadowRenderer.renderAdditiveShadow(mCamera, suzanne, suzanneTransform, directional, renderer);
 		//shadowRenderer.renderAdditiveShadow(mCamera, quad, quadTransform, directional, renderer);
@@ -191,20 +271,25 @@ void GameLoop::start()
 		
 		//particleRenderer.render(mParticleSystem, mCamera, renderer);
 
-
+		/*
 		if (shadowRenderer.getShadowBuffer().isComplete())
 		{
 			renderer.setRenderMode(Renderer::Mode::Quads);
 			billboardRenderer.render(shadowRenderer.getShadowMap(), { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 		}
+		*/
 		//billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 
 		
 		mWindow.swapBuffers();
 		mWindow.pollEvents();
 		Time::updateDeltaTime();
-		updateCameraPositionAndRotation();
-		updateCameraOrientation();		
+		//updateCameraPositionAndRotation();
+		//updateCameraOrientation();	
+		updateDistanceFromCow();
+		updateCameraOrientationAndPositionLookAtCow();
+		changeRenderModeAndFrontFacing();
+		resetButtom();
 	}
 
 	//TwTerminate();
