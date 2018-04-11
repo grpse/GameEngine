@@ -19,12 +19,12 @@ public:
 
 		mShader.buildShadersFromSource(MeshShaderSource);
 
-		mShader.start();
+		mShader.bind();
 		mLightUniforms.position = mShader.getUniformLocation("directional.position");
 		mLightUniforms.direction = mShader.getUniformLocation("directional.direction");
 		mLightUniforms.color = mShader.getUniformLocation("directional.color");
 		mLightUniforms.intensity = mShader.getUniformLocation("directional.intensity");
-		mShader.stop();
+		mShader.unbind();
 	}
 
 	~MeshRenderer()
@@ -75,7 +75,7 @@ private:
 
 	void prepare(const Renderer& renderer)
 	{
-		mShader.start();
+		mShader.bind();
 		renderer.enableDepthTest();
 		renderer.setDepthMask();
 		renderer.enableCullFace();
@@ -86,6 +86,6 @@ private:
 	{
 		renderer.disableCullFace();
 		renderer.disableDepthTest();
-		mShader.stop();
+		mShader.unbind();
 	}
 };

@@ -2,6 +2,7 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include "SkyboxRenderer.h"
+#include "AttributesNamesDefines.h"
 
 const char SkyboxShader[] = R"(
 
@@ -78,21 +79,20 @@ float points[] = {
 SkyboxRenderer::SkyboxRenderer()
 {
 	mShader.buildShadersFromSource(SkyboxShader);
-	mShader.start();
+	mShader.bind();
 	mCubeMapLocation = mShader.getUniformLocation("CubeMap");
 	mCameraPositionLocation = mShader.getUniformLocation("CameraPosition");
-	mShader.stop();
+	mShader.unbind();
 
 	VertexBuffer vbo;
 	VertexBufferLayout layout;
 
 	vbo.bind();
 	vbo.load(points, sizeof(points));
-	layout.pushFloat(3);
+	layout.pushFloat(3, POSITION);
 
 	mVAO.generateBuffer();
-	mVAO.bind();
-	mVAO.setVertexBuffer(vbo, layout);
+	mVAO.addVertexBuffer(vbo, layout);
 }
 
 void SkyboxRenderer::setCubeMap(const CubeMap& cubeMap)
@@ -107,7 +107,7 @@ void SkyboxRenderer::render(const Camera& camera, const Renderer& renderer) cons
 	
 	Matrix4 WVP = camera.getProjectionMatrix() * camera.getViewMatrix() * Matrix4(10.0);
 
-	mShader.start();
+	mShader.bind();
 	mShader.setUniform(mCubeMapLocation, mCubeMap);
 	mShader.setUniform(mCameraPositionLocation, camera.transform.getLocalPosition());
 	mShader.setWorldViewProjectionMatrix(WVP);

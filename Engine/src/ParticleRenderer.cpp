@@ -7,6 +7,7 @@
 #include "ParticleBasicShader.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "AttributesNamesDefines.h"
 
 static Vector3 quadVertices[] = {
 	Vector3(-0.5, -0.5, 0),
@@ -27,15 +28,15 @@ ParticleRenderer::ParticleRenderer()
 
 	mShader.buildShadersFromSource(ParticleShaderStr);
 
-	mShader.start();
+	mShader.bind();
 	mTextureUniformLocation = mShader.getUniformLocation("tex");
-	mShader.stop();
+	mShader.unbind();
 
 	VertexBuffer vertexBuffer(quadVertices, sizeof(quadVertices));
 	VertexBufferLayout layout;
-	layout.pushFloat(3);
+	layout.pushFloat(3, POSITION);
 	mVertexArray.generateBuffer();
-	mVertexArray.setVertexBuffer(vertexBuffer, layout);
+	mVertexArray.addVertexBuffer(vertexBuffer, layout);
 }
 
 ParticleRenderer::~ParticleRenderer()
@@ -55,7 +56,6 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 	mShader.setProjectionMatrix(camera.getProjectionMatrix());
 
 	texture2d.start();
-	mVertexArray.bind();
 
 	while(particleCount--) {
 		Particle particle = particles[particleCount];
@@ -69,7 +69,6 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 		renderer.render(mVertexArray, 0, 4);
 	}
 	
-	mVertexArray.unbind();	
 	texture2d.stop();
 	finishRendering(renderer);
 }
@@ -103,7 +102,7 @@ void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rota
 
 void ParticleRenderer::prepare(const Renderer& renderer) const
 {
-	mShader.start();
+	mShader.bind();
 	
 	renderer.enableBlend();
 	renderer.enableDepthTest();
@@ -116,5 +115,5 @@ void ParticleRenderer::finishRendering(const Renderer& renderer) const
 	renderer.setDepthMask();
 	renderer.disableDepthTest();
 	renderer.disableBlend();
-	mShader.stop();
+	mShader.unbind();
 }

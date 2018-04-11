@@ -6,6 +6,11 @@ VertexBuffer::VertexBuffer()
 
 }
 
+VertexBuffer::VertexBuffer(const VertexBuffer& other)
+{
+	mID = other.mID;
+}
+
 VertexBuffer::VertexBuffer(const void* data, uint size)
 {
     load(data, size);

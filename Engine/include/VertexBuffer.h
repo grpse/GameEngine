@@ -7,6 +7,7 @@ class VertexBuffer {
 
 public:
     VertexBuffer();
+	VertexBuffer(const VertexBuffer& other);
     VertexBuffer(const void* data, uint size);
     ~VertexBuffer();
 

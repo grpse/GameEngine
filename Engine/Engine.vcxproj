@@ -185,7 +185,6 @@
     <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\Rect.h" />
     <ClInclude Include="include\Renderer.h" />
-    <ClInclude Include="include\RendererOpenGL.h" />
     <ClInclude Include="include\ShaderParser.h" />
     <ClInclude Include="include\ShaderProgram.h" />
     <ClInclude Include="include\ShadowRenderer.h" />
@@ -223,7 +222,6 @@
     <ClCompile Include="src\ParticleRenderer.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
-    <ClCompile Include="src\RendererOpenGL.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\ShadowRenderer.cpp" />
     <ClCompile Include="src\SkyboxRenderer.cpp" />

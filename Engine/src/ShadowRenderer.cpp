@@ -22,18 +22,18 @@ ShadowRenderer::ShadowRenderer()
 	// Shadow map shader to generate depth texture
 	mShadowMapShader.buildShadersFromSource(ShadowShader);
 
-	mShadowMapShader.start();
+	mShadowMapShader.bind();
 	mDepthMVPLocation = mShadowMapShader.getUniformLocation("depthMVP");
-	mShadowMapShader.stop();
+	mShadowMapShader.unbind();
 
 	// Additive Shadow Shader to add Shadow to Scene
 	mShadowMapAdditiveShader.buildShadersFromSource(ShadowMapShaderAdditive);
 
-	mShadowMapAdditiveShader.start();
+	mShadowMapAdditiveShader.bind();
 	mDepthMVPBiasLocation = mShadowMapAdditiveShader.getUniformLocation("DepthMVPBias");
 	mShadowIntensityLocation = mShadowMapAdditiveShader.getUniformLocation("ShadowIntensity");
 	mShadowMapLocation = mShadowMapAdditiveShader.getUniformLocation("ShadowMap");
-	mShadowMapAdditiveShader.stop();
+	mShadowMapAdditiveShader.unbind();
 
 	DepthLayout.target = GL_TEXTURE_2D;
 	DepthLayout.level = 0;
@@ -88,13 +88,13 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 	getShadowMap().start();
 
 	// Bind light intentisity, depth wvp biased and shadow map depth texture
-	mShadowMapAdditiveShader.start();
+	mShadowMapAdditiveShader.bind();
 	mShadowMapAdditiveShader.setUniform(mShadowIntensityLocation, 1 - light.intensity);
 	mShadowMapAdditiveShader.setUniform(mDepthMVPBiasLocation, depthMVPBias);
 	mShadowMapAdditiveShader.setInteger(mShadowMapLocation, 0);
 
 	renderer.render(mesh.getVertexArray(), mesh.getIndexBuffer());
-	mShadowMapAdditiveShader.stop();
+	mShadowMapAdditiveShader.unbind();
 
 	getShadowMap().stop();
 }

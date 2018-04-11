@@ -5,8 +5,9 @@
 #include "LinearMath.h"
 #include "Renderer.h"
 #include <iostream>
+#include "AttributesNamesDefines.h"
 
-#pragma pack(push, 1)
+//#pragma pack(push, 1)
 
 struct Vertex {
     Vector3 position;
@@ -25,7 +26,7 @@ struct Vertex {
 
 	}
 };
-#pragma pack(pop)
+//#pragma pack(pop)
 
 class Mesh {
 
@@ -136,12 +137,12 @@ public:
 
 		vbo.load(description, sizeof(description));
 
-		layout.pushFloat(3);
-		layout.pushFloat(3);
-		layout.pushFloat(2);
+		layout.pushFloat(3, POSITION);
+		layout.pushFloat(3, NORMAL, true);
+		layout.pushFloat(2, TEXCOORD0);
 
 		vao.generateBuffer();
-		vao.setVertexBuffer(vbo, layout);
+		vao.addVertexBuffer(vbo, layout);
 
 		ibo.load<uint>(indices, 6);
 

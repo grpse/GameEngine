@@ -13,6 +13,7 @@ const uint W = GLFW_KEY_W;
 const uint S = GLFW_KEY_S;
 const uint D = GLFW_KEY_D;
 const uint A = GLFW_KEY_A;
+const uint C = GLFW_KEY_C;
 const uint MouseLeftButton = GLFW_MOUSE_BUTTON_LEFT;
 const uint MouseRightButton = GLFW_MOUSE_BUTTON_RIGHT;
 const uint F = GLFW_KEY_F;

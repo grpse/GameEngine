@@ -31,13 +31,13 @@ public:
 
 		Matrix4 depthMVP = projection * view * model;
 
-		mShadowMapShader.start();
+		mShadowMapShader.bind();
 
 		mShadowMapShader.setUniform(mDepthMVPLocation, depthMVP);
 
 		renderer.render(mesh.getVertexArray(), mesh.getIndexBuffer());
 
-		mShadowMapShader.stop();
+		mShadowMapShader.unbind();
 
 		renderer.disableCullFace();
 		renderer.disableDepthTest();

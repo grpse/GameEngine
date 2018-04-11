@@ -66,26 +66,26 @@ public:
 	{
 		mShader.buildShadersFromSource(BillboardShader);
 
-		mShader.start();
+		mShader.bind();
 		mTextureLocation = mShader.getUniformLocation("billboardTexture");
 		mDisplacementLocation = mShader.getUniformLocation("displacement");
 		mWidthHeightLocation = mShader.getUniformLocation("widthHeight");
-		mShader.stop();
+		mShader.unbind();
 		
 		VertexBuffer vertexBuffer(quad, sizeof(quad));
 		VertexBufferLayout layout;
-		layout.pushFloat(3);
-		layout.pushFloat(2);
+		layout.pushFloat(3, POSITION);
+		layout.pushFloat(2, TEXCOORD0);
 
 		mVAO.generateBuffer();
-		mVAO.setVertexBuffer(vertexBuffer, layout);
+		mVAO.addVertexBuffer(vertexBuffer, layout);
 	}
 
 	void render(const Texture2D& texture, const Rect& rect, const Renderer& renderer)
 	{
 		renderer.disableBlend();
 		texture.start();
-		mShader.start();
+		mShader.bind();
 
 		mShader.setUniform(mTextureLocation, (uint)0);
 		mShader.setUniform(mDisplacementLocation, Vector2(rect.x, rect.y));
@@ -94,7 +94,7 @@ public:
 		renderer.render(mVAO, 0, 4);
 
 		texture.stop();
-		mShader.stop();
+		mShader.unbind();
 		renderer.enableBlend();
 	}
 

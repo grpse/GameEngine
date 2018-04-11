@@ -9,6 +9,7 @@
 #include "VertexBufferLayout.h"
 #include "IndexBuffer.h"
 #include "GLErrorHandling.h"
+#include "AttributesNamesDefines.h"
 
 #define MAX_MATERIAL_COUNT 2
 
@@ -83,14 +84,14 @@ Mesh Loader::loadSimpleMesh(const char* filepath)
 
 
 	vbo.load<Vertex>(vertexData.data(), vertexData.size());
-	layout.pushFloat(3);
-	layout.pushFloat(3, true);
-	layout.pushFloat(2);
+	layout.pushFloat(3, POSITION);
+	layout.pushFloat(3, NORMAL, true);
+	layout.pushFloat(2, TEXCOORD0);
 
 	ibo.load<uint>(mesh_indices.data(), mesh_indices.size());
 
 	vao.generateBuffer();
-	vao.setVertexBuffer(vbo, layout);
+	vao.addVertexBuffer(vbo, layout);
 
 	mesh.markAsCopy();
 	mesh.load(vao, ibo);
@@ -184,12 +185,12 @@ Mesh Loader::loadMesh(const char* filepath)
 
 	vbo.load(out_vertices.data(), out_vertices.size() * sizeof(Vertex));
 
-	layout.pushFloat(3);
-	layout.pushFloat(3, true);
-	layout.pushFloat(2);
+	layout.pushFloat(3, POSITION);
+	layout.pushFloat(3, NORMAL, true);
+	layout.pushFloat(2, TEXCOORD0);
 
 	vao.generateBuffer();
-	vao.setVertexBuffer(vbo, layout);
+	vao.addVertexBuffer(vbo, layout);
 
 	ibo.generateBuffer();
 	ibo.bind();
@@ -279,12 +280,12 @@ Mesh Loader::loadMeshAsArray(const char* filepath)
 
 	vbo.load<Vertex>(vertices.data(), vertices.size());
 
-	layout.pushFloat(3);
-	layout.pushFloat(3, true);
-	layout.pushFloat(2);
+	layout.pushFloat(3, POSITION);
+	layout.pushFloat(3, NORMAL, true);
+	layout.pushFloat(2, TEXCOORD0);
 
 	vao.generateBuffer();
-	vao.setVertexBuffer(vbo, layout);
+	vao.addVertexBuffer(vbo, layout);
 
 	Mesh mesh(vao);
 	mesh.markAsCopy();

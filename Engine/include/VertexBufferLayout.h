@@ -9,7 +9,9 @@ struct VertexBufferElement
 {
     uint type;
     uint count;
-    bool normalized;
+    uint normalized;
+	int attributeLocation = -1;
+	char attributeName[32] = "";
 
     inline static uint GetSizeOfType(unsigned int type)
     {
@@ -26,19 +28,38 @@ struct VertexBufferElement
 class VertexBufferLayout 
 {
 public:
-    VertexBufferLayout() : mStride(0) {}
+    VertexBufferLayout() : mStride(0) {
+		
+	}
 
-    void pushUint(uint count, bool normalized = false)
+    void pushUint(uint count, const char* attributeName, bool normalized = false)
     {
-        mElements.push_back({GL_UNSIGNED_INT, count, normalized});
+		VertexBufferElement element;
+		element.type = GL_UNSIGNED_INT;
+		element.count = count;
+		element.normalized = normalized ? GL_TRUE : GL_FALSE;
+		memcpy(element.attributeName, attributeName, strlen(attributeName) + 1);
+
+        mElements.push_back(element);
         mStride += count * VertexBufferElement::GetSizeOfType(GL_INT);
     }
 
-    void pushFloat(uint count, bool normalized = false)
+    void pushFloat(uint count, const char* attributeName, bool normalized = false)
     {
-        mElements.push_back({GL_FLOAT, count, normalized});
+		VertexBufferElement element;
+		element.type = GL_FLOAT;
+		element.count = count;
+		element.normalized = normalized ? GL_TRUE : GL_FALSE;
+		memcpy(element.attributeName, attributeName, strlen(attributeName) + 1);
+
+        mElements.push_back(element);
         mStride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
     }
+
+	inline void replaceElementsWith(const std::vector<VertexBufferElement>& newElements)
+	{
+		mElements = newElements;
+	}
 
     inline const std::vector<VertexBufferElement>& getElements() const  { return mElements; }
     inline uint getStride() const { return mStride; }

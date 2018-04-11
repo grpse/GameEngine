@@ -8,6 +8,8 @@
 
 #define STRINGIFY(value) (#value)
 
+ShaderProgram* mCurrentBoundShaderProgram = nullptr;
+
 ShaderProgram::ShaderProgram() 
 {
 	VERSION = STRINGIFY(#version 430\n);
@@ -156,14 +158,14 @@ void ShaderProgram::setWorldViewProjectionMatrix(const Matrix4& worldViewProject
 	setUniform(mUniformsUse.WorldViewProjection, worldViewProjection);
 }
 
-uint ShaderProgram::getUniformLocation(const char* uniform)
+int ShaderProgram::getUniformLocation(const char* uniform)
 {
 	GLCall(uint uniformLocation = glGetUniformLocation(mShaderProgram, uniform));
 	//std::cout << "Uniform location: " << uniform << " " << uniformLocation << std::endl;
 	return uniformLocation;
 }
 
-uint ShaderProgram::getAttributeLocation(const char* uniform)
+int ShaderProgram::getAttributeLocation(const char* uniform)
 {
 	GLCall(uint attributeLocation = glGetAttribLocation(mShaderProgram, uniform));
 	return attributeLocation;
@@ -172,6 +174,11 @@ uint ShaderProgram::getAttributeLocation(const char* uniform)
 void ShaderProgram::setCustomUniform(std::string customUniform)
 {
 	PRECODE_VERTEX += customUniform + STRINGIFY(\n);
+}
+
+ShaderProgram& ShaderProgram::getCurrentBound()
+{
+	return *mCurrentBoundShaderProgram;
 }
 
 void ShaderProgram::buildShadersFromSource(std::string shaderSource) 
@@ -198,14 +205,26 @@ void ShaderProgram::buildShadersFromSource(std::string shaderSource)
 	buildFragShaderFromSource(fragShaderSourceStr);
 
 	link();
+
+	//TODO: use already bound location
+	bind();
+	mAttributesUse.Position = getAttributeLocation(POSITION);
+	mAttributesUse.Normal = getAttributeLocation(NORMAL);
+	mAttributesUse.Tangent = getAttributeLocation(TANGENT);
+	mAttributesUse.Bitangent = getAttributeLocation(BITANGENT);
+	mAttributesUse.TextureCoord0 = getAttributeLocation(POSITION);
+	mAttributesUse.TextureCoord1 = getAttributeLocation(POSITION);
+	mAttributesUse.TextureCoord2 = getAttributeLocation(POSITION);
+	unbind();
 }
 
-void ShaderProgram::start() const
+void ShaderProgram::bind() const
 {
 	GLCall(glUseProgram(mShaderProgram));
+	mCurrentBoundShaderProgram = (ShaderProgram*)this;
 }
 
-void ShaderProgram::stop() const
+void ShaderProgram::unbind() const
 {
 	GLCall(glUseProgram(0));
 }

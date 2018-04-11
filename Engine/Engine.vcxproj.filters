@@ -115,9 +115,6 @@
     <ClInclude Include="include\Transform.h">
       <Filter>Source\maths</Filter>
     </ClInclude>
-    <ClInclude Include="include\RendererOpenGL.h">
-      <Filter>Source\graphics\low-level</Filter>
-    </ClInclude>
     <ClInclude Include="include\Renderer.h">
       <Filter>Source\graphics\low-level</Filter>
     </ClInclude>
@@ -229,9 +226,6 @@
       <Filter>Source\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer.cpp">
-      <Filter>Source\graphics\low-level</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RendererOpenGL.cpp">
       <Filter>Source\graphics\low-level</Filter>
     </ClCompile>
     <ClCompile Include="src\ShaderProgram.cpp">

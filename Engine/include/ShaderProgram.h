@@ -36,16 +36,15 @@ public:
 	void setProjectionMatrix(const Matrix4& projection);
 	void setWorldViewProjectionMatrix(const Matrix4& worldViewProjection);
 
-	uint getUniformLocation(const char* uniform);
-	uint getAttributeLocation(const char* uniform);
+	int getUniformLocation(const char* uniform);
+	int getAttributeLocation(const char* uniform);
 
 	void setCustomUniform(std::string customUniform);
 
 	void buildShadersFromSource(std::string shaderSource);
-	void start() const;
-	void stop() const;
+	void bind() const;
+	void unbind() const;
 
-private:
 	struct UniformsUse {
 		int World = -1;
 		int View = -1;
@@ -57,13 +56,18 @@ private:
 	};
 
 	struct AttributesUse {
-		int Vertex = -1;
+		int Position = -1;
 		int Normal = -1;
+		int Tangent = -1;
+		int Bitangent = -1;
 		int TextureCoord0 = -1;
 		int TextureCoord1 = -1;
 		int TextureCoord2 = -1;
 	};
 
+	static ShaderProgram& getCurrentBound();
+
+private:	
 	void buildVertShaderFromSource(const char* vertShaderSource);
 	void buildFragShaderFromSource(const char* fragShaderSource);
 	uint compileShaderFromSource(uint shaderType, const char* source);

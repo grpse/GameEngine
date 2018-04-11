@@ -125,7 +125,7 @@ void GameLoop::start()
 	//ParticleRenderer particleRenderer;
 	MeshRenderer meshRenderer;
 
-	Mesh suzanne = Loader::loadMeshAsArray("cow_up.in");
+	Mesh suzanne = Loader::loadMesh("cow_up.in");
 	//Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
 	Transform suzanneTransform;
 
@@ -149,8 +149,10 @@ void GameLoop::start()
 		Input::getScrollOffsetDelta(scrollX, scrollY);
 		if (scrollY > 0 || scrollY < 0) {
 			distanceFromCow += scrollY * 10 * Time::getDeltaTime();
-			mCamera.transform.getWorldMatrix();
+			distanceFromCow = Math::max(1.0f, distanceFromCow);
 		}
+
+		mCamera.transform.getWorldMatrix();
 	};
 
 	auto updateCameraOrientationAndPositionLookAtCow = [&]() {
@@ -192,12 +194,27 @@ void GameLoop::start()
 
 	uint renderModeIndex = 1;
 
+	bool UsingCCW = false;
+
 	auto changeRenderModeAndFrontFacing = [&]() -> void 
 	{
 		if (Input::wasReleasedKey(M))
 		{
 			renderModeIndex = (renderModeIndex + 1) % 3;
 			renderer.setRenderMode(renderMode[renderModeIndex]);
+		}
+
+		if (Input::wasReleasedKey(C))
+		{
+			UsingCCW = !UsingCCW;
+			if (UsingCCW) 
+			{
+				renderer.setFrontCounterClockwise();
+			}
+			else 
+			{
+				renderer.setFrontClockwise();
+			}
 		}
 	};
 
@@ -255,9 +272,6 @@ void GameLoop::start()
 
 		renderer.setRenderMode(Renderer::Mode::Triangles);
 		skyboxRenderer.render(mCamera, renderer);
-
-		renderer.enableDepthTest();
-		renderer.disableBlend();
 
 		renderer.setRenderMode(renderMode[renderModeIndex]);
 		meshRenderer.render(mCamera, quad, quadTransform, directional, renderer);

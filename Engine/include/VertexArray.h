@@ -3,6 +3,9 @@
 #include "Typedefs.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include <vector>
+
+class Renderer;
 
 class VertexArray {
 public:
@@ -10,17 +13,22 @@ public:
 	VertexArray(const VertexArray& other);
     ~VertexArray();
 
-    void setVertexBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
+    void addVertexBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
 
 	void generateBuffer();
 	void deleteBuffer();
 
-    void bind() const;
-    void unbind() const;
 
 private:
     uint mID;
 	bool mWasGenerated;
-    VertexBufferLayout mVertexBufferLayout;
+	mutable bool mWasSetLayout = false;
+    mutable std::vector<VertexBufferLayout> mVertexBufferLayouts;
+	mutable std::vector<VertexBuffer> mVertexBuffers;
 
+	void setupLayout() const;
+    void bind() const;
+    void unbind() const;
+
+	friend class Renderer;
 };
