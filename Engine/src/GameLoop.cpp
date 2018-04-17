@@ -22,11 +22,12 @@
 #include "Input.h"
 #include "Light.h"
 #include "SkyboxRenderer.h"
+#include "ServiceLocator.h"
 
 double deltaTimeInSecondsFraction = 0;
 double mElapsedSecond = 0;
 
-Window mWindow;
+//Window mWindow;
 Camera mCamera;
 Matrix4 mProjectionMatrix;
 
@@ -41,10 +42,11 @@ static Vector3 quadVertices[] = {
 
 void GameLoop::start()
 {
-
 	Rect viewport = { 0, 0, 800, 600 };
-	mWindow.setViewport(viewport);
-	mWindow.start();
+	ServiceLocator<Window>::getService().setViewport(viewport);
+	ServiceLocator<Window>::getService().start();
+
+	Window& mWindow = ServiceLocator<Window>::getService();
 	
 	Camera::Format cameraFormat;
 	cameraFormat.fieldOfView = 45.0f;
@@ -125,7 +127,7 @@ void GameLoop::start()
 	//ParticleRenderer particleRenderer;
 	MeshRenderer meshRenderer;
 
-	Mesh suzanne = Loader::loadMesh("cow_up.in");
+	Mesh suzanne = Loader::loadMesh("cow_up.in", 0.001f, true);
 	//Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
 	Transform suzanneTransform;
 
@@ -136,8 +138,7 @@ void GameLoop::start()
 	quadTransform.setLocalRotation(Vector3(Math::radians(180.0), 0, 0));
 
 	suzanneTransform.setLocalPosition({ 0, 0, 0 });
-	suzanneTransform.setLocalScale({ 0.001, 0.001, 0.001 });
-	//suzanneTransform.setLocalScale({1, 1, 1 });
+	suzanneTransform.setLocalScale({1, 1, 1 });
 	suzanneTransform.setLocalRotation(Vector3(0, 0, 0));
 
 	double xAngle = 0;
@@ -149,7 +150,7 @@ void GameLoop::start()
 		Input::getScrollOffsetDelta(scrollX, scrollY);
 		if (scrollY > 0 || scrollY < 0) {
 			distanceFromCow += scrollY * 10 * Time::getDeltaTime();
-			distanceFromCow = Math::max(1.0f, distanceFromCow);
+			distanceFromCow = Math::max(0.01f, distanceFromCow);
 		}
 
 		mCamera.transform.getWorldMatrix();
@@ -192,7 +193,7 @@ void GameLoop::start()
 		Renderer::Mode::Points
 	};
 
-	uint renderModeIndex = 1;
+	uint renderModeIndex = 0;
 
 	bool UsingCCW = false;
 
@@ -218,7 +219,7 @@ void GameLoop::start()
 		}
 	};
 
-	renderer.setFrontClockwise();
+	renderer.setFrontCounterClockwise();
 	
 	BillboardRenderer billboardRenderer;
 	ShadowRenderer shadowRenderer;
@@ -241,6 +242,8 @@ void GameLoop::start()
 	
 	Time::startDeltaTime();
 
+	mWindow.setTitle("Game Loop!");
+
 	while (mWindow.isOpen()) {
 		
 		/*
@@ -262,10 +265,11 @@ void GameLoop::start()
 		//// TODO: in order to draw shadow map, we need a shadow renderer
 		////			where geometries, lights and camera will create the
 		////			depth buffer appropriated to use on shadow projection.
+		//renderer.setRenderMode(Renderer::Mode::Triangles);
 		//shadowRenderer.renderShadowMap(mCamera, suzanne, suzanneTransform, directional, renderer);
 		//shadowRenderer.renderShadowMap(mCamera, quad, quadTransform, directional, renderer);
 		//
-		//shadowRenderer.getFrameBuffer().unbind();
+		//shadowRenderer.getShadowBuffer().unbind();
 
 		renderer.clearColorAndDepth();
 		renderer.setViewport(viewport);
@@ -285,13 +289,13 @@ void GameLoop::start()
 		
 		//particleRenderer.render(mParticleSystem, mCamera, renderer);
 
-		/*
-		if (shadowRenderer.getShadowBuffer().isComplete())
-		{
-			renderer.setRenderMode(Renderer::Mode::Quads);
-			billboardRenderer.render(shadowRenderer.getShadowMap(), { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
-		}
-		*/
+		
+		//if (shadowRenderer.getShadowBuffer().isComplete())
+		//{
+		//	renderer.setRenderMode(Renderer::Mode::Quads);
+		//	billboardRenderer.render(shadowRenderer.getShadowMap(), { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
+		//}
+		
 		//billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 
 		

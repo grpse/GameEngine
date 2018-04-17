@@ -51,44 +51,26 @@ Texture2D Loader::loadRGBATexture2D(const char* filepath)
 Mesh Loader::loadSimpleMesh(const char* filepath)
 {
 	Mesh mesh;
-	std::vector<Vector3> positions;
-	std::vector<Vector2> uvs;
-	std::vector<Vector3> normals;
-	loadOBJ(filepath, positions, uvs, normals);
+	std::vector<Vertex> vertices;
+	loadOBJ(filepath, vertices);
 
-	std::vector<Vector3> out_positions;
-	std::vector<Vector2> out_uvs;
-	std::vector<Vector3> out_normals;
-	std::vector<unsigned short> mesh_indices;
+	std::vector<Vertex> out_vertices;
+	std::vector<uint> out_indices;
 
-	indexVBO(
-		positions,
-		uvs,
-		normals, mesh_indices, out_positions, out_uvs, out_normals);
+	indexVBO(vertices, out_indices, out_vertices);
 
 	VertexArray vao;
 	VertexBuffer vbo;
 	VertexBufferLayout layout;
 	IndexBuffer ibo;
 
-	std::vector<Vertex> vertexData;
 
-	for (uint i = 0; i < out_positions.size(); i++)
-	{
-		Vertex vertex;
-		vertex.position = out_positions[mesh_indices[i]];
-		vertex.texturecoord0 = out_uvs[mesh_indices[i]];
-		vertex.normal = out_normals[mesh_indices[i]];
-		vertexData.push_back(vertex);
-	}
-
-
-	vbo.load<Vertex>(vertexData.data(), vertexData.size());
+	vbo.load<Vertex>(out_vertices.data(), out_vertices.size());
 	layout.pushFloat(3, POSITION);
 	layout.pushFloat(3, NORMAL, true);
 	layout.pushFloat(2, TEXCOORD0);
 
-	ibo.load<uint>(mesh_indices.data(), mesh_indices.size());
+	ibo.load<uint>(out_indices.data(), out_indices.size());
 
 	vao.generateBuffer();
 	vao.addVertexBuffer(vbo, layout);
@@ -99,7 +81,7 @@ Mesh Loader::loadSimpleMesh(const char* filepath)
 	return mesh;
 }
 
-Mesh Loader::loadMesh(const char* filepath)
+Mesh Loader::loadMesh(const char* filepath, float scaleFactor = 1.0f, bool reverseClockwise = false)
 {
 	Vector3 ambient[MAX_MATERIAL_COUNT], diffuse[MAX_MATERIAL_COUNT], specular[MAX_MATERIAL_COUNT];
 	float shine[MAX_MATERIAL_COUNT];
@@ -150,12 +132,20 @@ Mesh Loader::loadMesh(const char* filepath)
 			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
 			&(color_index[0]));
 
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
+
 		vertices.push_back(vertice);
 
 		fscanf(fp, "v1 %f %f %f %f %f %f %d\n",
 			&vertice.position.x, &vertice.position.y, &vertice.position.z,
 			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
 			&(color_index[1]));
+
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
 
 		vertices.push_back(vertice);
 
@@ -164,12 +154,20 @@ Mesh Loader::loadMesh(const char* filepath)
 			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
 			&(color_index[2]));
 
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
+
 		vertices.push_back(vertice);
 
 		fscanf(fp, "face normal %f %f %f\n", &vertice.normal.x, &vertice.normal.y, &vertice.normal.z);
 	}
 
 	fclose(fp);
+
+	if (reverseClockwise) {
+		std::reverse(std::begin(vertices), std::end(vertices));
+	}
 
 	std::vector<Vertex> out_vertices;
 	std::vector<uint> out_indices;

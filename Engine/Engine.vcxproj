@@ -185,6 +185,7 @@
     <ClInclude Include="include\ParticleSystem.h" />
     <ClInclude Include="include\Rect.h" />
     <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\ServiceLocator.h" />
     <ClInclude Include="include\ShaderParser.h" />
     <ClInclude Include="include\ShaderProgram.h" />
     <ClInclude Include="include\ShadowRenderer.h" />

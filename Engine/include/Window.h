@@ -17,6 +17,7 @@ public:
 	void finish();
 	void pollEvents();
 	bool isOpen();
+	void setTitle(const std::string& title);
 	
 private:
 	GLFWwindow* mWindow;

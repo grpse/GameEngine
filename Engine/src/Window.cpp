@@ -38,6 +38,8 @@ void Window::start()
 	glfwSetCursorPosCallback(mWindow, Window::MousePositionCallback);
 	glfwSetMouseButtonCallback(mWindow, Window::MouseButtonCallback);
 	glfwSetScrollCallback(mWindow, Window::ScrollCallback);
+
+	glfwSwapInterval(1);
 }
 
 
@@ -71,6 +73,12 @@ void Window::pollEvents()
 bool Window::isOpen()
 {
 	return !glfwWindowShouldClose(mWindow);
+}
+
+void Window::setTitle(const std::string & title)
+{
+	const char* titlePtr = title.c_str();
+	glfwSetWindowTitle(mWindow, titlePtr);
 }
 
 void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
