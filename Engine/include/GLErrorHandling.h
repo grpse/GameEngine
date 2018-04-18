@@ -4,6 +4,8 @@
 #include <cassert>
 #include <iostream>
 
+static bool GameLoopRunning;
+
 static void GLClearError();
 static bool GLLogCall(const char *function, const char *filename, int line);
 static const char *GLErrorCodeToString(GLenum error);
@@ -12,7 +14,7 @@ static const char *GLErrorCodeToString(GLenum error);
 
 inline static void GLClearError()
 {
-	while (glGetError() != GL_NO_ERROR);
+	while (glGetError() != GL_NO_ERROR && GameLoopRunning);
 }
 
 inline static bool GLLogCall(const char *function, const char *filename, int line)

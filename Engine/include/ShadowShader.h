@@ -3,25 +3,20 @@ char ShadowShader[] = R"(
 
 #queue Opaque
 
-#begin vertexshader
+#vertex vertProgram
+#fragment fragProgram
 
-uniform mat4 depthMVP;
+#begin uniforms
+Vector4 depthMVP;
+#end uniforms
 
-void main() {
-	gl_Position = depthMVP * vec4(POSITION, 1);
+Vector4 vertProgram() {
+	return depthMVP * vec4(POSITION, 1);
 }
 
-#end vertexshader
-
-#begin fragmentshader
-
-out float fragmentDepth;
-
-void main() {
-	fragmentDepth = gl_FragCoord.z;
+Vector4 fragProgram() {
+	return Vector4(gl_FragCoord.z, gl_FragCoord.z, gl_FragCoord.z, gl_FragCoord.z);
 }
-
-#end fragmentshader
 
 )";
 
@@ -29,39 +24,37 @@ char ShadowMapShaderAdditive[] = R"(
 
 #queue Opaque
 
-#begin vertexshader
+#vertex vertProgram
+#fragment fragProgram
 
+#begin uniforms
 uniform mat4 DepthMVPBias;
-
-out vec4 ShadowCoord;
-
-void main()
-{
-	gl_Position = WORLDVIEWPROJECTION * vec4(POSITION, 1);	
-	ShadowCoord = DepthMVPBias * vec4(POSITION, 1);
-}
-
-#end vertexshader
-
-#begin fragmentshader
-
 uniform float ShadowIntensity;
 uniform sampler2D ShadowMap;
+#end uniforms
 
+#begin vertex_variables
+out vec4 ShadowCoord;
+#end vertex_variables
+
+Vector4 vertProgram()
+{
+	ShadowCoord = DepthMVPBias * vec4(POSITION, 1);
+	return WORLDVIEWPROJECTION * vec4(POSITION, 1);	
+}
+
+#begin fragment_variables
 in vec4 ShadowCoord;
+#end fragment_variables
 
-void main() 
+Vector4 fragProgram() 
 {
 	float visibility = 1.0;
 	float bias = 0.005;
 
-	if (texture(ShadowMap, ShadowCoord.xy).z  <  ShadowCoord.z - bias) {
-		visibility = 0.1;
-	}
+	if (texture(ShadowMap, ShadowCoord.xy).z  <  ShadowCoord.z - bias) visibility = 0.1;
 	
-	gl_FragColor = vec4(1, 1, 1, 1) * visibility * ShadowIntensity;
+	return vec4(1, 1, 1, 1) * visibility * ShadowIntensity;
 }
-
-#end fragmentshader
 
 )";

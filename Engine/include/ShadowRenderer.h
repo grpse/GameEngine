@@ -17,6 +17,8 @@ public:
 	ShadowRenderer();
 	ShadowRenderer(const ShadowRenderer& other);
 	~ShadowRenderer();
+
+	void setup();
 	void renderShadowMap(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer)
 	{
 		ShadowBuffer.bind();

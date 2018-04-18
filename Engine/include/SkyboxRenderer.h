@@ -12,6 +12,7 @@ class SkyboxRenderer
 public:
 	SkyboxRenderer();
 	void setCubeMap(const CubeMap& cubeMap);
+	void setup();
 	void render(const Camera& camera, const Renderer& renderer) const;
 
 private:

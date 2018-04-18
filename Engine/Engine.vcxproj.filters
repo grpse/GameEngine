@@ -276,6 +276,9 @@
     <ClCompile Include="src\SkyboxRenderer.cpp">
       <Filter>Source\renderables</Filter>
     </ClCompile>
+    <ClCompile Include="src\GLErrorHandling.cpp">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />

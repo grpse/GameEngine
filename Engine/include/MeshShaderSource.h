@@ -3,30 +3,22 @@
 
 const char* MeshShaderSource = R"(
 
-#queue Transparent
+#vertex vertProgram
+#fragment fragProgram
 
-#begin vertexshader
-
+#begin vertex_variables
 out vec3 PASS_POSITION;
 out vec3 PASS_NORMAL;
+#end vertex_variables
 
-void main()
+Vector4 vertProgram()
 {
-	TEXCOORD0;
 	PASS_POSITION = POSITION;
 	PASS_NORMAL = NORMAL;
-	gl_Position = WORLDVIEWPROJECTION * vec4(POSITION, 1);
-
-	//TEXCOORD0
+	return WORLDVIEWPROJECTION * vec4(POSITION, 1);
 }
 
-#end vertexshader
-
-
-
-
-
-#begin fragmentshader
+#begin fragment_variables
 
 #define MAX_LIGHTS_COUNT 10
 
@@ -45,7 +37,9 @@ in vec3 PASS_NORMAL;
 //uniform int LIGHTS_COUNT = 0;
 uniform Light directional;
 
-void main() {
+#end fragment_variables
+
+Vector4 fragProgram() {
 	vec4 AmbientLightColor = vec4(0.3, 0.3, 0.3, 1);
 	vec4 SpecularColor = vec4(1, 1, 1, 1);
 	vec4 DiffuseColor = vec4(1, 1, 1, 1);
@@ -62,8 +56,7 @@ void main() {
 	float diff = max(0, dot(N, L));
 	float spec = pow(max(0, dot(N, H)), directional.intensity);
 	
-	if(diff <= 0)
-	{
+	if(diff <= 0) {
 		spec = 0;
 	}
 
@@ -72,8 +65,7 @@ void main() {
 
 	//output specular
 	vec4 specColor = SpecularColor * directional.color * spec;
-	gl_FragColor = vec4((AmbientLightColor + specColor + diffColor).rgb, 1);
+	return vec4((AmbientLightColor + specColor + diffColor).rgb, 1);
 }
-#end fragmentshader
 
 )";

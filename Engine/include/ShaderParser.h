@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include <algorithm> 
 #include <cctype>
@@ -11,9 +10,6 @@
 #include "LinearMath.h"
 #include "MatricesNamesDefines.h"
 #include "AttributesNamesDefines.h"
-
-
-typedef unsigned int uint;
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
@@ -35,9 +31,15 @@ static inline void trim(std::string &s) {
 	rtrim(s);
 }
 
-// TODO: before render, after binding a shader, try set uniforms 
+static inline bool replace(std::string& str, const std::string& from, const std::string& to) {
+	size_t start_pos = str.find(from);
+	if (start_pos == std::string::npos)
+		return false;
+	str.replace(start_pos, from.length(), to);
+	return true;
+}
 
-#define STRINGIFY(x) (#x)
+// TODO: before render, after binding a shader, try set uniforms 
 
 namespace Shader {
 
@@ -105,53 +107,60 @@ namespace Shader {
 
 	*/
 
+	struct Identifier
+	{
+		std::string VertexProgramID;
+		std::string FragmentProgramID;
+	};
+
 	class Parser {
 
 	public:
-		void parse(const char* source) {
+		Parser() {
+			mVertexShaderSource = extractVertexShaderSourceFrom(mBaseGLSLShader);
+			mFragmentShaderSource = extractFragmentShaderSourceFrom(mBaseGLSLShader);
+			mVertexVariables = "";
+			mFragmentVariables = "";
+		}
 
-			std::string shader = source;
+		Identifier addProgram(const std::string& shader)
+		{
 
-			// SETUP ALL DEFAULT MATRICES USED IN SHADER CODE
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLD, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDVIEW, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDVIEWPROJECTION, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDVIEWTRANSPOSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDVIEWINVERSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDVIEWINVERSETRANSPOSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDTRANSPOSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDINVERSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(WORLDINVERSETRANSPOSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(VIEW, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(VIEWTRANSPOSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(VIEWINVERSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(VIEWINVERSETRANSPOSE, shader);
-			usingUniformOnShaderSourceSetUniform<Matrix4>(PROJECTION, shader);
+			std::string vertexProgramName;
+			std::string fragmentProgramName;
+			std::string vertexProgram = extractProgramFunction("vertex", shader, vertexProgramName);
+			std::string fragmentProgram = extractProgramFunction("fragment", shader, fragmentProgramName);
 
-			// RESPECT THIS FIXED ORDER ON SHADER
-			usingAttributeOnShaderSourceSetUniform<Vector3>(POSITION, shader);
-			usingAttributeOnShaderSourceSetUniform<Vector3>(NORMAL, shader);
-			usingAttributeOnShaderSourceSetUniform<Vector3>(TANGENT, shader);
-			usingAttributeOnShaderSourceSetUniform<Vector3>(BITANGENT, shader);
-			usingAttributeOnShaderSourceSetUniform<Vector2>(TEXCOORD0, shader);
-			usingAttributeOnShaderSourceSetUniform<Vector2>(TEXCOORD1, shader);
-			usingAttributeOnShaderSourceSetUniform<Vector2>(TEXCOORD2, shader);
-			usingAttributeOnShaderSourceSetUniform<Vector2>(TEXCOORD3, shader);
+			Identifier program;
+			std::string generatedVertexProgram = generateProgram(vertexProgram, vertexProgramName, program.VertexProgramID);
+			std::string generatedFragmentProgram = generateProgram(fragmentProgram, fragmentProgramName, program.FragmentProgramID);
+			assert(generatedVertexProgram.length());
+			assert(generatedFragmentProgram.length());
+			mVertexPrograms.push_back(generatedVertexProgram);
+			mFragmentPrograms.push_back(generatedFragmentProgram);
 
+			std::string uniforms = extractStringFromBeginEndBlock(shader, "#begin uniforms", "#end uniforms");
 
-			mVertexShaderSource = extractVertexShaderSourceFrom(shader);
-			mFragmentShaderSource = extractFragmentShaderSourceFrom(shader);
-			mQueue = extractShaderQueue(shader);
+			mVertexVariables += extractStringFromBeginEndBlock(shader, "#begin vertex_variables", "#end vertex_variables") + "\n";
+			mFragmentVariables += extractStringFromBeginEndBlock(shader, "#begin fragment_variables", "#end fragment_variables") + "\n";
+
+			mUniforms.push_back(uniforms);
+
+			return program;
 		}
 
 		std::string getVertexShaderSource() const
 		{
-			return mAttributesBlock + mUniformsBlock + mVertexShaderSource;
+			std::string generatedVertexShaderSource = buildProgramShader(mVertexPrograms, mVertexShaderSource);
+			replace(generatedVertexShaderSource, "#VERTEX_VARIABLES", mVertexVariables);
+			return generatedVertexShaderSource;
 		}
 
 		std::string getFragmentShaderSource() const
 		{
-			return mUniformsBlock + mFragmentShaderSource;
+			std::string generatedFragmentShaderSource = buildProgramShader(mFragmentPrograms, mFragmentShaderSource);
+			replace(generatedFragmentShaderSource, "#FRAGMENT_VARIABLES", mFragmentVariables);
+			return generatedFragmentShaderSource;
 		}
 
 		const Shader::Queue getQueue() const
@@ -167,29 +176,234 @@ namespace Shader {
 		std::vector<std::string> mAttributes;
 		std::vector<std::string> mUniforms;
 		uint mAttributeLocation = 0;
+		uint mShaderProgramID = 0;
+
+		std::string mVertexVariables;
+		std::string mFragmentVariables;
+
+		std::vector<std::string> mVertexPrograms;
+		std::vector<std::string> mFragmentPrograms;
+
+		std::string mBaseGLSLShader = R"(
+		
+#begin vertexshader 
+
+// Vertex
+in vec3 POSITION;
+in vec3 NORMAL;
+in vec3 TANGENT;
+in vec3 BITANGENT;
+in vec3 TEXCOORD0;
+in vec3 TEXCOORD1;
+in vec3 TEXCOORD2;
+in vec3 TEXCOORD3;
+
+// Basic uniforms
+uniform mat4 WORLD;
+uniform mat4 WORLDVIEW;
+uniform mat4 WORLDVIEWPROJECTION;
+uniform mat4 WORLDVIEWTRANSPOSE;
+uniform mat4 WORLDVIEWINVERSE;
+uniform mat4 WORLDVIEWINVERSETRANSPOSE;
+uniform mat4 WORLDTRANSPOSE;
+uniform mat4 WORLDINVERSE;
+uniform mat4 WORLDINVERSETRANSPOSE;
+uniform mat4 VIEW;
+uniform mat4 VIEWTRANSPOSE;
+uniform mat4 VIEWINVERSE;
+uniform mat4 VIEWINVERSETRANSPOSE;
+uniform mat4 PROJECTION;
+
+#VERTEX_VARIABLES
+
+#UNIFORMS
+
+subroutine vec4 programSubroutine();
+
+subroutine uniform programSubroutine vertexProgramSubroutineInstance;
+
+#PROGRAMS
+
+void main()
+{
+	gl_Position = vertexProgramSubroutineInstance();
+}
+
+#end vertexshader
+
+
+
+#begin fragmentshader
+
+// Basic uniforms
+uniform mat4 WORLD;
+uniform mat4 WORLDVIEW;
+uniform mat4 WORLDVIEWPROJECTION;
+uniform mat4 WORLDVIEWTRANSPOSE;
+uniform mat4 WORLDVIEWINVERSE;
+uniform mat4 WORLDVIEWINVERSETRANSPOSE;
+uniform mat4 WORLDTRANSPOSE;
+uniform mat4 WORLDINVERSE;
+uniform mat4 WORLDINVERSETRANSPOSE;
+uniform mat4 VIEW;
+uniform mat4 VIEWTRANSPOSE;
+uniform mat4 VIEWINVERSE;
+uniform mat4 VIEWINVERSETRANSPOSE;
+uniform mat4 PROJECTION;
+
+#FRAGMENT_VARIABLES
+
+#UNIFORMS
+
+subroutine vec4 programSubroutine();
+
+subroutine uniform programSubroutine fragmentProgramSubroutineInstance;
+
+#PROGRAMS
+
+void main()
+{
+	gl_FragColor = fragmentProgramSubroutineInstance();
+}
+#end fragmentshader
+
+)";
 
 		Shader::Queue mQueue;
 
-		std::vector<std::string> extractUniforms(const std::string& shader)
+		std::string buildProgramShader(const std::vector<std::string>& programs, const std::string& baseProgramSource) const
 		{
-			const std::string UNIFORM = "uniform";
+			std::string programsSource = "";
 
+			for (auto program : programs)
+			{
+				programsSource += program + "\n\n";
+			}
+
+			std::string shaderSourceCopy(baseProgramSource.begin(), baseProgramSource.end());
+
+
+			std::string uniformsSource = "";
+
+			for (auto uniformDef : mUniforms)
+			{
+				uniformsSource += uniformDef + "\n";
+			}
+
+			// TODO: replace all types from GENERIC SHADER TYPES TO SPECIFIC PLATFORM (GLSL, HLSL)
+			transformInfoApiLanguageSpecificTypeUniforms(uniformsSource);
+			transformInfoApiLanguageSpecificTypeProgram(programsSource);
+
+			replace(shaderSourceCopy, "#UNIFORMS", uniformsSource + "\n");
+			replace(shaderSourceCopy, "#PROGRAMS", programsSource + "\n");
+
+			return shaderSourceCopy;
+		}
+
+		void transformInfoApiLanguageSpecificTypeUniforms(std::string& uniforms) const
+		{
+			if (Shader::getApiName() == ApiName::OpenGL)
+			{
+				while (replace(uniforms, "Matrix4", "uniform mat4"));
+				while (replace(uniforms, "Color32", "uniform vec4"));
+				while (replace(uniforms, "Vector4", "uniform vec4"));
+				while (replace(uniforms, "Vector3", "uniform vec3"));
+				while (replace(uniforms, "Vector2", "uniform vec2"));
+				while (replace(uniforms, "Texture2D", "uniform sampler2D"));
+				while (replace(uniforms, "CubeMap", "uniform samplerCube"));
+			}
+		}
+
+		void transformInfoApiLanguageSpecificTypeProgram(std::string& program) const
+		{
+			if (Shader::getApiName() == ApiName::OpenGL)
+			{
+				while (replace(program, "Matrix4", "mat4"));
+				while (replace(program, "Color32", "vec4"));
+				while (replace(program, "Vector4", "vec4"));
+				while (replace(program, "Vector3", "vec3"));
+				while (replace(program, "Vector2", "vec2"));
+				while (replace(program, "Texture2D", "sampler2D"));
+				while (replace(program, "CubeMap", "samplerCube"));
+			}
+		}
+
+		std::string extractProgramFunction(const std::string& program, const std::string& shader, std::string& programName)
+		{
+			std::string programMacro = "#" + program;
+			size_t lastPositionOfMacroDefinition;
+			programName = extractMacroValue(programMacro, shader, lastPositionOfMacroDefinition);
+
+			std::string afterMacroDefinition = shader.substr(lastPositionOfMacroDefinition + programMacro.length());
+
+			size_t startPositionOfProgramFunction = afterMacroDefinition.find(programName);
+			if (startPositionOfProgramFunction == std::string::npos) return "";
+
+
+			startPositionOfProgramFunction += programName.length();
+
+			size_t endPositionOfVertexShaderFunction = 0;
+
+			// find first \n that comes before the vertex function definition
+			for (size_t i = startPositionOfProgramFunction; i >= 0; i--)
+			{
+				if (afterMacroDefinition[i] == '\n')
+				{
+					startPositionOfProgramFunction = i + 1;
+					break;
+				}
+				else
+				{
+					startPositionOfProgramFunction = i;
+				}
+			}
+
+			// find {} matchs to substring the full vertex shader function
+			size_t curlyBracesCount = 0;
+			for (size_t i = startPositionOfProgramFunction; i < afterMacroDefinition.length(); i++)
+			{
+				if (afterMacroDefinition[i] == '{')
+				{
+					curlyBracesCount++;
+
+				}
+				else if (afterMacroDefinition[i] == '}')
+				{
+					curlyBracesCount--;
+
+					if (curlyBracesCount == 0)
+					{
+						endPositionOfVertexShaderFunction = i + 1;
+						break;
+					}
+				}
+			}
+
+			if (curlyBracesCount != 0)
+			{
+				return "";
+			}
+
+			return afterMacroDefinition.substr(startPositionOfProgramFunction, endPositionOfVertexShaderFunction - startPositionOfProgramFunction);
+		}
+
+		std::string generateProgram(std::string program, std::string programName, std::string& outProgramID)
+		{
+			outProgramID = "__program_" + std::to_string(mShaderProgramID++);
+
+			std::string programCopy(program.begin(), program.end());
+
+			replace(programCopy, programName, outProgramID);
+
+			programCopy = "subroutine (programSubroutine)\n" + programCopy;
+
+			return programCopy;
 		}
 
 		Shader::Queue extractShaderQueue(const std::string& shader)
 		{
-			const std::string BEGIN_QUEUE = "#queue";
-			size_t beginPosition = shader.find(BEGIN_QUEUE);
-			if (beginPosition == std::string::npos) return Shader::Queue::Opaque;
-
-
-			const std::string& partialCodeFromShader = shader.substr(beginPosition + BEGIN_QUEUE.size());
-			size_t endPosition = partialCodeFromShader.find("\n");
-
-			std::string queueDescription = partialCodeFromShader.substr(0, endPosition);
-
-			trim(queueDescription);
-
+			size_t lastPosition;
+			std::string queueDescription = extractMacroValue("#queue", shader, lastPosition);
 			if (queueDescription == "Opaque")
 				return Shader::Queue::Opaque;
 			else if (queueDescription == "Cutoff")
@@ -198,6 +412,22 @@ namespace Shader {
 				return Shader::Queue::Transparent;
 			else
 				return Shader::Queue::Opaque;
+		}
+
+		std::string extractMacroValue(const std::string& MACRO, const std::string& shader, size_t& lastPosition)
+		{
+			size_t beginPosition = shader.find(MACRO);
+			if (beginPosition == std::string::npos) return "";
+
+
+			const std::string& partialCodeFromShader = shader.substr(beginPosition + MACRO.size());
+			size_t endPosition = partialCodeFromShader.find("\n");
+			lastPosition = beginPosition + endPosition;
+			std::string macroValue = partialCodeFromShader.substr(0, endPosition);
+
+			trim(macroValue);
+
+			return macroValue;
 		}
 
 		std::string extractVertexShaderSourceFrom(const std::string& shader)
@@ -284,7 +514,7 @@ namespace Shader {
 					return "vec4";
 
 				//if (typeid(Vector4).hash_code() == typeHash)
-					//return "vec4";
+				//return "vec4";
 
 				if (typeid(Vector3).hash_code() == typeHash)
 					return "vec3";

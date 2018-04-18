@@ -26,11 +26,7 @@ static Vector2 uvs[] = {
 ParticleRenderer::ParticleRenderer()
 {
 
-	mShader.buildShadersFromSource(ParticleShaderStr);
-
-	mShader.bind();
-	mTextureUniformLocation = mShader.getUniformLocation("tex");
-	mShader.unbind();
+	mShader.addProgram(ParticleShaderStr);
 
 	VertexBuffer vertexBuffer(quadVertices, sizeof(quadVertices));
 	VertexBufferLayout layout;
@@ -42,6 +38,12 @@ ParticleRenderer::ParticleRenderer()
 ParticleRenderer::~ParticleRenderer()
 {
 	mVertexArray.deleteBuffer();
+}
+
+void ParticleRenderer::setup()
+{
+	mShader.bind();
+	mTextureUniformLocation = mShader.getUniformLocation("tex");
 }
 
 void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera & camera, const Renderer& renderer) const

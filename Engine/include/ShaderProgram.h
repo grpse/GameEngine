@@ -6,6 +6,10 @@
 #include <string>
 #include <map>
 
+#ifndef STRINGIFY
+	#define STRINGIFY(value) (#value)
+#endif
+
 class ShaderProgram {
 
 public:
@@ -39,9 +43,8 @@ public:
 	int getUniformLocation(const char* uniform);
 	int getAttributeLocation(const char* uniform);
 
-	void setCustomUniform(std::string customUniform);
+	void addProgram(std::string shaderSource);
 
-	void buildShadersFromSource(std::string shaderSource);
 	void bind() const;
 	void unbind() const;
 
@@ -66,29 +69,33 @@ public:
 	};
 
 	static ShaderProgram& getCurrentBound();
+	static void build();
 
 private:	
-	void buildVertShaderFromSource(const char* vertShaderSource);
-	void buildFragShaderFromSource(const char* fragShaderSource);
-	uint compileShaderFromSource(uint shaderType, const char* source);
-	void link();
+	static void buildVertShaderFromSource(const char* vertShaderSource);
+	static void buildFragShaderFromSource(const char* fragShaderSource);
+	static int compileShaderFromSource(uint shaderType, const char* source);
+	static void link();
 
-	uint mShaderProgram;
-	uint mVertShader;
-	uint mFragShader;
+	static int mShaderProgram;
+	static int mVertShader;
+	static int mFragShader;
 
-	std::string VERSION;
+	static std::string VERSION;
 
-	std::string PRECODE_VERTEX;
-	std::string PRECODE_FRAGMENT;
-	
-	std::string ATTRIBUTE_VERTEX_POSITION;
-	std::string ATTRIBUTE_NORMAL_POSITION;
-	std::string ATTRIBUTE_TEXTURECOORD0;
-	std::string ATTRIBUTE_TEXTURECOORD1;
-	std::string ATTRIBUTE_TEXTURECOORD2;
+	static UniformsUse mUniformsUse;
+	static AttributesUse mAttributesUse;
 
-	UniformsUse mUniformsUse;
-	AttributesUse mAttributesUse;
+	struct ProgramIndexLocation {
+		uint index;
+		int location;
+	};
+
+	static std::map<std::string, ProgramIndexLocation > mFragProgramName_ID;
+	static std::map<std::string, ProgramIndexLocation > mVertProgramName_ID;
+
+	std::string mFragmentShaderID;
+	std::string mVertexShaderID;
+
 };
 

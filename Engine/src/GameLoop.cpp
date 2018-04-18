@@ -15,9 +15,9 @@
 #include "MeshRenderer.h"
 #include "Transform.h"
 #include "Renderer.h"
-#include "ParticleRenderer.h"
+//#include "ParticleRenderer.h"
 #include "FrameBuffer.h"
-#include "BillboardRenderer.h"
+//#include "BillboardRenderer.h"
 #include "ShadowRenderer.h"
 #include "Input.h"
 #include "Light.h"
@@ -27,7 +27,7 @@
 double deltaTimeInSecondsFraction = 0;
 double mElapsedSecond = 0;
 
-//Window mWindow;
+Window mWindow;
 Camera mCamera;
 Matrix4 mProjectionMatrix;
 
@@ -43,10 +43,12 @@ static Vector3 quadVertices[] = {
 void GameLoop::start()
 {
 	Rect viewport = { 0, 0, 800, 600 };
-	ServiceLocator<Window>::getService().setViewport(viewport);
-	ServiceLocator<Window>::getService().start();
+	//ServiceLocator<Window>::getService().setViewport(viewport);
+	//ServiceLocator<Window>::getService().start();
+	mWindow.setViewport(viewport);
+	mWindow.start();
 
-	Window& mWindow = ServiceLocator<Window>::getService();
+	//Window& mWindow = ServiceLocator<Window>::getService();
 	
 	Camera::Format cameraFormat;
 	cameraFormat.fieldOfView = 45.0f;
@@ -221,7 +223,7 @@ void GameLoop::start()
 
 	renderer.setFrontCounterClockwise();
 	
-	BillboardRenderer billboardRenderer;
+	//BillboardRenderer billboardRenderer;
 	ShadowRenderer shadowRenderer;
 
 
@@ -243,6 +245,16 @@ void GameLoop::start()
 	Time::startDeltaTime();
 
 	mWindow.setTitle("Game Loop!");
+	
+	// FIRST
+	ShaderProgram::build();
+
+	meshRenderer.setup();
+	skyboxRenderer.setup();
+	shadowRenderer.setup();
+
+	uint FPS = 0;
+	double SecondsCount = 0;
 
 	while (mWindow.isOpen()) {
 		
@@ -270,6 +282,15 @@ void GameLoop::start()
 		//shadowRenderer.renderShadowMap(mCamera, quad, quadTransform, directional, renderer);
 		//
 		//shadowRenderer.getShadowBuffer().unbind();
+
+		SecondsCount += Time::getDeltaTime();
+		FPS += 1;
+		if (SecondsCount >= 1)
+		{
+			mWindow.setTitle("FPS: " + std::to_string(FPS));
+			SecondsCount = 0;
+			FPS = 0;
+		}
 
 		renderer.clearColorAndDepth();
 		renderer.setViewport(viewport);
@@ -309,6 +330,9 @@ void GameLoop::start()
 		changeRenderModeAndFrontFacing();
 		resetButtom();
 	}
+
+	// TODO: finish systems and release resources properly
+	//GameLoopRunning = false;
 
 	//TwTerminate();
 	mWindow.finish();

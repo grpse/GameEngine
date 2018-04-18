@@ -39,7 +39,8 @@ void Window::start()
 	glfwSetMouseButtonCallback(mWindow, Window::MouseButtonCallback);
 	glfwSetScrollCallback(mWindow, Window::ScrollCallback);
 
-	glfwSwapInterval(1);
+	//TODO: reflect display refresh rate to swap buffers delayed time
+	//glfwSwapInterval(1);
 }
 
 

@@ -17,19 +17,21 @@ public:
 	MeshRenderer()
 	{
 
-		mShader.buildShadersFromSource(MeshShaderSource);
-
-		mShader.bind();
-		mLightUniforms.position = mShader.getUniformLocation("directional.position");
-		mLightUniforms.direction = mShader.getUniformLocation("directional.direction");
-		mLightUniforms.color = mShader.getUniformLocation("directional.color");
-		mLightUniforms.intensity = mShader.getUniformLocation("directional.intensity");
-		mShader.unbind();
+		mShader.addProgram(MeshShaderSource);
 	}
 
 	~MeshRenderer()
 	{
 
+	}
+
+	void setup()
+	{
+		mShader.bind();
+		mLightUniforms.position = mShader.getUniformLocation("directional.position");
+		mLightUniforms.direction = mShader.getUniformLocation("directional.direction");
+		mLightUniforms.color = mShader.getUniformLocation("directional.color");
+		mLightUniforms.intensity = mShader.getUniformLocation("directional.intensity");
 	}
 	
     void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
@@ -86,6 +88,5 @@ private:
 	{
 		renderer.disableCullFace();
 		renderer.disableDepthTest();
-		mShader.unbind();
 	}
 };

@@ -8,27 +8,30 @@ const char SkyboxShader[] = R"(
 
 #queue Opaque
 
-#begin vertexshader
+#vertex vertProgram
+#fragment fragProgram
 
+#begin uniforms
 uniform vec3 CameraPosition;
+uniform samplerCube Skycube;
+#end uniforms
 
+#begin vertex_variables
 out vec3 texcoords;
+#end vertex_variables
 
-void main() {
+Vector4 vertProgram() {
   texcoords = POSITION;
-  gl_Position = WORLDVIEWPROJECTION * vec4(POSITION + CameraPosition, 1.0);
+  return WORLDVIEWPROJECTION * vec4(POSITION + CameraPosition, 1.0);
 }
-#end vertexshader
 
-#begin fragmentshader
+#begin fragment_variables
 in vec3 texcoords;
-uniform samplerCube CubeMap;
-out vec4 frag_colour;
+#end fragment_variables
 
-void main() {
-  frag_colour = texture(CubeMap, texcoords);
+Vector4 fragProgram() {
+	return texture(Skycube, texcoords);
 }
-#end fragmentshader
 
 )";
 
@@ -78,11 +81,8 @@ float points[] = {
 
 SkyboxRenderer::SkyboxRenderer()
 {
-	mShader.buildShadersFromSource(SkyboxShader);
-	mShader.bind();
-	mCubeMapLocation = mShader.getUniformLocation("CubeMap");
-	mCameraPositionLocation = mShader.getUniformLocation("CameraPosition");
-	mShader.unbind();
+	mShader.addProgram(SkyboxShader);
+
 
 	VertexBuffer vbo;
 	VertexBufferLayout layout;
@@ -98,6 +98,13 @@ SkyboxRenderer::SkyboxRenderer()
 void SkyboxRenderer::setCubeMap(const CubeMap& cubeMap)
 {
 	mCubeMap = cubeMap;
+}
+
+void SkyboxRenderer::setup()
+{
+	mShader.bind();
+	mCubeMapLocation = mShader.getUniformLocation("Skycube");
+	mCameraPositionLocation = mShader.getUniformLocation("CameraPosition");
 }
 
 void SkyboxRenderer::render(const Camera& camera, const Renderer& renderer) const

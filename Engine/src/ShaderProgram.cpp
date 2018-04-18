@@ -6,23 +6,35 @@
 #include "ShaderProgram.h"
 #include "ShaderParser.h"
 
-#define STRINGIFY(value) (#value)
-
 ShaderProgram* mCurrentBoundShaderProgram = nullptr;
+Shader::Parser parser;
+int ShaderProgram::mShaderProgram = -1;
+int ShaderProgram::mVertShader = -1;
+int ShaderProgram::mFragShader = -1;
+std::string ShaderProgram::VERSION = STRINGIFY(#version 430\n);
+ShaderProgram::UniformsUse ShaderProgram::mUniformsUse = { -1, -1, -1, -1, -1, -1, -1 };
+ShaderProgram::AttributesUse ShaderProgram::mAttributesUse = { -1, -1, -1, -1, -1, -1, -1 };
+std::map<std::string, ShaderProgram::ProgramIndexLocation > ShaderProgram::mVertProgramName_ID;
+std::map<std::string, ShaderProgram::ProgramIndexLocation > ShaderProgram::mFragProgramName_ID;
+
 
 ShaderProgram::ShaderProgram() 
 {
-	VERSION = STRINGIFY(#version 430\n);
-	PRECODE_VERTEX = "";
-	PRECODE_FRAGMENT = "";
-
 	memset(&mUniformsUse, -1, sizeof(mUniformsUse));
 	memset(&mAttributesUse, -1, sizeof(mAttributesUse));
 }
 
 ShaderProgram::~ShaderProgram() 
 {
-	GLCall(glDeleteShader(mShaderProgram));
+	//TODO: Should delete program, but only when no one will use it
+	/*
+
+	if (mShaderProgram >= 0)
+	{
+		GLCall(glDeleteProgram(mShaderProgram));
+		mShaderProgram = -1;
+	}
+	*/
 }
 
 void ShaderProgram::setUniform(uint uniform, uint i)
@@ -171,57 +183,63 @@ int ShaderProgram::getAttributeLocation(const char* uniform)
 	return attributeLocation;
 }
 
-void ShaderProgram::setCustomUniform(std::string customUniform)
-{
-	PRECODE_VERTEX += customUniform + STRINGIFY(\n);
-}
-
 ShaderProgram& ShaderProgram::getCurrentBound()
 {
 	return *mCurrentBoundShaderProgram;
 }
 
-void ShaderProgram::buildShadersFromSource(std::string shaderSource) 
+void ShaderProgram::build()
 {
 	//TODO: Generalize BEGIN/END codes to remove get from shader source resource the distinction
 	//		on what shader is going to be compiled and linked.
 	//TODO: Link method should also be able to receive multiples shaders to link to shader program
 	GLCall(mShaderProgram = glCreateProgram());
-
-	Shader::Parser parser;
-
-	parser.parse(shaderSource.c_str());
-		
-	//std::cout << "VERTEX SHADER" << std::endl;
+	
+	std::cout << "VERTEX SHADER" << std::endl;
 	std::string& vertShaderSource = VERSION + parser.getVertexShaderSource();
-	//std::cout << vertShaderSource << std::endl;
+	std::cout << vertShaderSource << std::endl;
 	const char* vertShaderSourceStr = vertShaderSource.c_str();
 	buildVertShaderFromSource(vertShaderSourceStr);
 
-	//std::cout << "FRAGMENT SHADER" << std::endl;
+	std::cout << "FRAGMENT SHADER" << std::endl;
 	std::string& fragShaderSource = VERSION + parser.getFragmentShaderSource();
-	//std::cout << fragShaderSource << std::endl;
+	std::cout << fragShaderSource << std::endl;
 	const char* fragShaderSourceStr = fragShaderSource.c_str();
 	buildFragShaderFromSource(fragShaderSourceStr);
 
 	link();
 
-	//TODO: use already bound location
-	bind();
-	mAttributesUse.Position = getAttributeLocation(POSITION);
-	mAttributesUse.Normal = getAttributeLocation(NORMAL);
-	mAttributesUse.Tangent = getAttributeLocation(TANGENT);
-	mAttributesUse.Bitangent = getAttributeLocation(BITANGENT);
-	mAttributesUse.TextureCoord0 = getAttributeLocation(POSITION);
-	mAttributesUse.TextureCoord1 = getAttributeLocation(POSITION);
-	mAttributesUse.TextureCoord2 = getAttributeLocation(POSITION);
-	unbind();
+	GLCall(glUseProgram(mShaderProgram));
+
+	for (auto& keyPair : mVertProgramName_ID)
+	{
+		const char* vertProgramNamePtr = keyPair.first.c_str();
+		GLCall(keyPair.second.index = glGetSubroutineIndex(mShaderProgram, GL_VERTEX_SHADER, vertProgramNamePtr));
+	}
+
+	for (auto& keyPair : mFragProgramName_ID)
+	{
+		const char* fragProgramNamePtr = keyPair.first.c_str();
+		GLCall(keyPair.second.index = glGetSubroutineIndex(mShaderProgram, GL_FRAGMENT_SHADER, fragProgramNamePtr));
+	}
+}
+
+void ShaderProgram::addProgram(std::string shaderSource)
+{
+	Shader::Identifier identifier = parser.addProgram(shaderSource);
+	mFragmentShaderID = identifier.FragmentProgramID;
+	mVertexShaderID = identifier.VertexProgramID;
+
+	mFragProgramName_ID[mFragmentShaderID] = { 1, -1 };
+	mVertProgramName_ID[mVertexShaderID] = { 1, -1 };
 }
 
 void ShaderProgram::bind() const
 {
 	GLCall(glUseProgram(mShaderProgram));
 	mCurrentBoundShaderProgram = (ShaderProgram*)this;
+	GLCall(glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &mVertProgramName_ID[mVertexShaderID].index));
+	GLCall(glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mFragProgramName_ID[mFragmentShaderID].index));
 }
 
 void ShaderProgram::unbind() const
@@ -239,7 +257,7 @@ void ShaderProgram::buildFragShaderFromSource(const char * fragShaderSource)
 	mFragShader = compileShaderFromSource(GL_FRAGMENT_SHADER, fragShaderSource);
 }
 
-uint ShaderProgram::compileShaderFromSource(uint shaderType, const char* source) 
+int ShaderProgram::compileShaderFromSource(uint shaderType, const char* source) 
 {
 	GLCall(uint shader = glCreateShader(shaderType));
 	GLCall(glShaderSource(shader, 1, &source, 0));	
