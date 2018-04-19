@@ -24,6 +24,9 @@
 #include "Light.h"
 #include "SkyboxRenderer.h"
 #include "ServiceLocator.h"
+#include <AntTweakBar.h>
+
+bool shouldReset = false;
 
 static Vector3 quadVertices[] = {
 	Vector3(-0.5, -0.5, 0),
@@ -177,7 +180,7 @@ void GameLoop::start()
 		mCamera.transform.lookAt(suzanneTransform.getLocalPosition());
 		mCamera.transform.getWorldMatrix();
 	};
-
+	
 
 	Renderer renderer;
 	Renderer::Mode renderMode[3] = {
@@ -212,25 +215,8 @@ void GameLoop::start()
 		}
 	};
 
-	bool apiOrSoftwareRenderer = true;
-	std::string renderName = "OpenGL ";
 
-	auto changeRendererBetweenAPIandSoftwareRenderer = [&]() -> void
-	{
-		if (Input::wasReleasedKey(R))
-		{
-			apiOrSoftwareRenderer = !apiOrSoftwareRenderer;
-			if (apiOrSoftwareRenderer)
-			{
-				renderName = "OpenGL";
-				suzanne.getVertexArray().updateBuffer(0, suzanne.getVertices().data(), suzanne.getVertices().size() * sizeof(Vertex));
-			}
-			else
-			{
-				renderName = "Close2GL";
-			}
-		}
-	};
+
 
 	renderer.setFrontCounterClockwise();
 	
@@ -270,6 +256,68 @@ void GameLoop::start()
 
 	uint FPS = 0;
 	double SecondsCount = 0;
+	
+	mWindow.toogleTweakBar();
+	
+	// TWEAKABLE VARIABLES
+	Color32 cowColor = { 1, 1, 1, 1 };
+	bool apiOrSoftwareRenderer = true;
+	bool hasUploadedToOpenGLVerticesAgain = false;
+
+	typedef enum { Phong, GouraudAD, GouraudADS } ShadingType;
+	ShadingType shadingType = Phong;
+
+	TwEnumVal shadingTypesArray[] = { { Phong, "Phong" },{ GouraudAD, "GouraudAD" },{ GouraudADS, "GouraudADS" }};
+	TwType shadiningTypeValue = TwDefineEnum("ShadingType", shadingTypesArray, 3);
+
+	TwBar* tweakBar = TwNewBar("TWEAK");
+
+	TwAddSeparator(tweakBar, "Renderer Stuff", "label='Renderer Stuff'");
+	TwAddVarRW(tweakBar, "Render Mode", TW_TYPE_BOOL32, &apiOrSoftwareRenderer, "label='Change Render Mode'");
+	// Defining season enum type
+	
+	// Adding season to bar
+	TwAddVarRW(tweakBar, "Shading Type", shadiningTypeValue, &shadingType, NULL);
+
+	TwAddSeparator(tweakBar, "Cow Stuff", "label='Cow Stuff'");
+	TwAddVarRW(tweakBar, "CowDiffuseColor", TW_TYPE_COLOR4F, &cowColor, "label='Color'");
+	
+	TwAddSeparator(tweakBar, "Camera Stuff", "label='Camera Stuff'");
+
+	TwAddVarRW(tweakBar, "Reset", TW_TYPE_BOOL32, &shouldReset, "label='Reset'");
+
+	auto VerifyIfShouldReset = [&]()
+	{
+		if (shouldReset)
+		{
+			cowColor = { 1, 1, 1, 1 };
+			apiOrSoftwareRenderer = true;
+			shadingType = Phong;
+			shouldReset = false;
+		}
+	};
+
+	
+	std::string renderName = "OpenGL ";
+
+	auto VerifyRenderMode = [&]() -> void
+	{
+		if (apiOrSoftwareRenderer)
+		{
+			renderName = "OpenGL";
+			if (!hasUploadedToOpenGLVerticesAgain)
+			{
+				suzanne.getVertexArray().updateBuffer(0, suzanne.getVertices().data(), suzanne.getVertices().size() * sizeof(Vertex));
+				hasUploadedToOpenGLVerticesAgain = true;
+			}
+		}
+		else
+		{
+			renderName = "Close2GL";
+			hasUploadedToOpenGLVerticesAgain = false;
+		}
+	};
+
 
 	while (mWindow.isOpen()) {
 		
@@ -315,17 +363,43 @@ void GameLoop::start()
 		//
 		renderer.setRenderMode(renderMode[renderModeIndex]);
 		meshRenderer.render(mCamera, quad, quadTransform, directional, renderer);
-
+		
 		if (apiOrSoftwareRenderer)
 		{
+			if (shadingType == Phong)
+			{
+				meshRenderer.usePhong();
+			}
+			else if (shadingType == GouraudAD)
+			{
+				meshRenderer.useGouraudAD();
+			}
+			else if (shadingType == GouraudADS)
+			{
+				meshRenderer.useGouraudADS();
+			}
+
+			meshRenderer.setDiffuseColor(cowColor);
 			meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
 		}
 		else
 		{
+			if (shadingType == Phong)
+			{
+				meshSoftwareRenderer.usePhong();
+			}
+			else if (shadingType == GouraudAD)
+			{
+				meshSoftwareRenderer.useGouraudAD();
+			}
+			else if (shadingType == GouraudADS)
+			{
+				meshSoftwareRenderer.useGouraudADS();
+			}
+			meshSoftwareRenderer.setDiffuseColor(cowColor);
 			meshSoftwareRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
 		}
-
-
+		
 		//shadowRenderer.renderAdditiveShadow(mCamera, suzanne, suzanneTransform, directional, renderer);
 		//shadowRenderer.renderAdditiveShadow(mCamera, quad, quadTransform, directional, renderer);
 		//meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, shadowRenderer.getShadowMap(), renderer);
@@ -343,7 +417,6 @@ void GameLoop::start()
 		//billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 
 		
-		mWindow.swapBuffers();
 		mWindow.pollEvents();
 		Time::updateDeltaTime();
 		//updateCameraPositionAndRotation();
@@ -351,8 +424,11 @@ void GameLoop::start()
 		updateDistanceFromCow();
 		updateCameraOrientationAndPositionLookAtCow();
 		changeRenderModeAndFrontFacing();
-		changeRendererBetweenAPIandSoftwareRenderer();
+		
 		//resetButtom();
+		mWindow.swapBuffers();
+		VerifyIfShouldReset();
+		VerifyRenderMode();
 	}
 
 	// TODO: finish systems and release resources properly

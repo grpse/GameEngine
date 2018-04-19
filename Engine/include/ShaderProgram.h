@@ -14,6 +14,7 @@ class ShaderProgram {
 
 public:
 	ShaderProgram();
+	ShaderProgram(const ShaderProgram& other);
 	~ShaderProgram();
 
 	void setUniform(uint uniform, uint i);

@@ -17,7 +17,11 @@ public:
 	MeshRenderer()
 	{
 
-		mShader.addProgram(MeshShaderSource);
+		mPhong.addProgram(PhongShading);
+		mGouraudAD.addProgram(GouraudAD);
+		mGouraudADS.addProgram(GouraudADS);
+
+		mShader = mPhong;
 	}
 
 	~MeshRenderer()
@@ -28,10 +32,11 @@ public:
 	void setup()
 	{
 		mShader.bind();
-		mLightUniforms.position = mShader.getUniformLocation("directional.position");
-		mLightUniforms.direction = mShader.getUniformLocation("directional.direction");
-		mLightUniforms.color = mShader.getUniformLocation("directional.color");
-		mLightUniforms.intensity = mShader.getUniformLocation("directional.intensity");
+		mLightUniforms.position = mShader.getUniformLocation("light.position");
+		mLightUniforms.direction = mShader.getUniformLocation("light.direction");
+		mLightUniforms.color = mShader.getUniformLocation("light.color");
+		mLightUniforms.intensity = mShader.getUniformLocation("light.intensity");
+		mDiffuseColorLocation = mShader.getUniformLocation("DiffuseColor");
 	}
 	
     void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
@@ -61,9 +66,37 @@ public:
 		finishRendering(renderer);
     }
 
+	void setDiffuseColor(Color32 color)
+	{
+		mShader.setUniform(mDiffuseColorLocation, color);
+	}
+
+	inline ShaderProgram& getShaderProgram()
+	{
+		return mShader;
+	}
+
+	void usePhong()
+	{
+		mShader = mPhong;
+	}
+
+	void useGouraudAD()
+	{
+		mShader = mGouraudAD;
+	}
+
+	void useGouraudADS()
+	{
+		mShader = mGouraudADS;
+	}
+
 
 private:
-	ShaderProgram mShader;	
+	ShaderProgram mShader;
+	ShaderProgram mPhong;
+	ShaderProgram mGouraudAD;
+	ShaderProgram mGouraudADS;
 
 
 	struct LightUniforms {
@@ -74,6 +107,8 @@ private:
 	};
 
 	LightUniforms mLightUniforms;
+
+	uint mDiffuseColorLocation;
 
 	void prepare(const Renderer& renderer)
 	{

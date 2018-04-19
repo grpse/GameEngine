@@ -18,15 +18,21 @@ public:
 	void pollEvents();
 	bool isOpen();
 	void setTitle(const std::string& title);
+	void toogleTweakBar();
+	void* createTweak(const char* title);
 	
 private:
 	GLFWwindow* mWindow;
 	Rect mViewport;
 
 	bool mIsOpen;
+	static bool mShowTweak;
 
 	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void MousePositionCallback(GLFWwindow* window, double xpos, double ypos);
 	static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
 	static void ScrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+	static void CharCallback(GLFWwindow* window, uint codepoint, int mods);
+
+	void setupInputEventCallers();
 };

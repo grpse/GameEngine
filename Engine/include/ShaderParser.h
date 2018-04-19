@@ -188,6 +188,8 @@ namespace Shader {
 		
 #begin vertexshader 
 
+#define MAX_LIGHTS_COUNT 10
+
 // Vertex
 layout(location = 0) in vec3 POSITION;
 layout(location = 1) in vec3 NORMAL;
@@ -214,6 +216,23 @@ uniform mat4 VIEWINVERSE;
 uniform mat4 VIEWINVERSETRANSPOSE;
 uniform mat4 PROJECTION;
 
+uniform vec4 AmbientColor = vec4(0.3, 0.3, 0.3, 0.3);
+uniform vec4 SpecularColor = vec4(1, 1, 1, 1);
+uniform vec4 DiffuseColor = vec4(1, 1, 1, 1);
+
+out vec3 PASS_POSITION;
+out vec3 PASS_NORMAL;
+
+struct Light {
+	vec3 position;
+	vec3 direction;
+	vec4 color;
+	float intensity;
+	int type;
+};
+
+uniform Light light;
+
 #VERTEX_VARIABLES
 
 #UNIFORMS
@@ -235,6 +254,8 @@ void main()
 
 #begin fragmentshader
 
+#define MAX_LIGHTS_COUNT 10
+
 // Basic uniforms
 uniform mat4 WORLD;
 uniform mat4 WORLDVIEW;
@@ -250,6 +271,23 @@ uniform mat4 VIEWTRANSPOSE;
 uniform mat4 VIEWINVERSE;
 uniform mat4 VIEWINVERSETRANSPOSE;
 uniform mat4 PROJECTION;
+
+uniform vec4 AmbientColor = vec4(0.3, 0.3, 0.3, 0.3);
+uniform vec4 SpecularColor = vec4(1, 1, 1, 1);
+uniform vec4 DiffuseColor = vec4(1, 1, 1, 1);
+
+in vec3 PASS_POSITION;
+in vec3 PASS_NORMAL;
+
+struct Light {
+	vec3 position;
+	vec3 direction;
+	vec4 color;
+	float intensity;
+	int type;
+};
+
+uniform Light light;
 
 #FRAGMENT_VARIABLES
 

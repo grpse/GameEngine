@@ -24,6 +24,12 @@ ShaderProgram::ShaderProgram()
 	memset(&mAttributesUse, -1, sizeof(mAttributesUse));
 }
 
+ShaderProgram::ShaderProgram(const ShaderProgram & other)
+{
+	mFragmentShaderID = other.mFragmentShaderID;
+	mVertexShaderID = other.mVertexShaderID;
+}
+
 ShaderProgram::~ShaderProgram() 
 {
 	//TODO: Should delete program, but only when no one will use it

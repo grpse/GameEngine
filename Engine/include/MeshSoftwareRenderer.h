@@ -16,7 +16,11 @@ public:
 
 	MeshSoftwareRenderer()
 	{
-		mShader.addProgram(MeshSoftwareShaderSource);
+		mPhong.addProgram(PhongSoftwareShading);
+		mGouraudAD.addProgram(GouraudSoftwareADShading);
+		mGouraudADS.addProgram(GouraudSoftwareADSShading);
+
+		mShader = mPhong;
 	}
 
 	~MeshSoftwareRenderer()
@@ -27,10 +31,12 @@ public:
 	void setup()
 	{
 		mShader.bind();
-		mLightUniforms.position = mShader.getUniformLocation("directional_software.position");
-		mLightUniforms.direction = mShader.getUniformLocation("directional_software.direction");
-		mLightUniforms.color = mShader.getUniformLocation("directional_software.color");
-		mLightUniforms.intensity = mShader.getUniformLocation("directional_software.intensity");
+		mLightUniforms.position = mShader.getUniformLocation("light.position");
+		mLightUniforms.direction = mShader.getUniformLocation("light.direction");
+		mLightUniforms.color = mShader.getUniformLocation("light.color");
+		mLightUniforms.intensity = mShader.getUniformLocation("light.intensity");
+		mDiffuseColorLocation = mShader.getUniformLocation("DiffuseColor");
+
 	}
 
 	void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
@@ -57,28 +63,53 @@ public:
 
 		mTempVertices.resize(mesh.getVertices().size());
 
-		
+
 
 		for (uint i = 0; i < mTempVertices.size(); i++)
 		{
-			mTempVertices[i]= mesh.getVertices()[i];
+			mTempVertices[i] = mesh.getVertices()[i];
 			Vector4 v = (WorldViewProjection * Vector4(mTempVertices[i].position, 1));
 			Vector4 n = (NormalMatrix * Vector4(mTempVertices[i].normal, 1));
-			mTempVertices[i].position = Vector3(v.x, v.y, v.z) / v.w;
+			mTempVertices[i].position = v / v.w;
 			mTempVertices[i].normal = Math::normalize(n);
 		}
-		
-		//multiply
-		//multiplyByMatrix4AndDivideByW(mTempVertices, WorldViewProjection);
+
 		mesh.getVertexArray().updateBuffer(0, mTempVertices.data(), mTempVertices.size() * sizeof(Vertex));
 		renderer.render(mesh);
 
 		finishRendering(renderer);
 	}
 
+	void setDiffuseColor(Color32 color)
+	{
+		mShader.setUniform(mDiffuseColorLocation, color);
+	}
+
+	void usePhong()
+	{
+		mShader = mPhong;
+	}
+
+	void useGouraudAD()
+	{
+		mShader = mGouraudAD;
+	}
+
+	void useGouraudADS()
+	{
+		mShader = mGouraudADS;
+	}
+
+	inline ShaderProgram& getShaderProgram()
+	{
+		return mShader;
+	}
 
 private:
 	ShaderProgram mShader;
+	ShaderProgram mPhong;
+	ShaderProgram mGouraudAD;
+	ShaderProgram mGouraudADS;
 
 	std::vector<Vertex> mTempVertices;
 
@@ -90,17 +121,10 @@ private:
 		uint intensity;
 	};
 
+	uint mDiffuseColorLocation;
+
 	LightUniforms mLightUniforms;
-
-	void multiplyByMatrix4AndDivideByW(std::vector<Vertex>& vertices, const Matrix4& m)
-	{
-		for (auto& vertice : vertices)
-		{
-			Vector4 v = (m * Vector4(vertice.position, 1));
-			vertice.position = Vector3(v.x, v.y, v.z) / v.w;
-		}
-	}
-
+	
 	void prepare(const Renderer& renderer)
 	{
 		mShader.bind();
