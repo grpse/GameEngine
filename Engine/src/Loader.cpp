@@ -50,7 +50,6 @@ Texture2D Loader::loadRGBATexture2D(const char* filepath)
 
 Mesh Loader::loadSimpleMesh(const char* filepath)
 {
-	Mesh mesh;
 	std::vector<Vertex> vertices;
 	loadOBJ(filepath, vertices);
 
@@ -60,25 +59,17 @@ Mesh Loader::loadSimpleMesh(const char* filepath)
 	indexVBO(vertices, out_indices, out_vertices);
 
 	VertexArray vao;
-	VertexBuffer vbo;
-	VertexBufferLayout layout;
 	IndexBuffer ibo;
 
-
-	vbo.load<Vertex>(out_vertices.data(), out_vertices.size());
-	layout.pushFloat(3, POSITION);
-	layout.pushFloat(3, NORMAL, true);
-	layout.pushFloat(2, TEXCOORD0);
+	vao.createVertexBuffer<Vertex>(out_vertices.data(), out_vertices.size(), {
+		{ 3, POSITION, false },
+		{ 3, NORMAL, true },
+		{ 2, TEXCOORD0, false }
+	});
 
 	ibo.load<uint>(out_indices.data(), out_indices.size());
 
-	vao.generateBuffer();
-	vao.addVertexBuffer(vbo, layout);
-
-	mesh.markAsCopy();
-	mesh.load(vao, ibo);
-
-	return mesh;
+	return Mesh(vao, ibo);
 }
 
 Mesh Loader::loadMesh(const char* filepath, float scaleFactor = 1.0f, bool reverseClockwise = false)
@@ -174,33 +165,20 @@ Mesh Loader::loadMesh(const char* filepath, float scaleFactor = 1.0f, bool rever
 
 	indexVBO(vertices, out_indices, out_vertices);
 
-	Mesh mesh;
-
 	VertexArray vao;
-	VertexBuffer vbo;
-	VertexBufferLayout layout;
 	IndexBuffer ibo;
 
-	vbo.load(out_vertices.data(), out_vertices.size() * sizeof(Vertex));
-
-	layout.pushFloat(3, POSITION);
-	layout.pushFloat(3, NORMAL, true);
-	layout.pushFloat(2, TEXCOORD0);
-
-	vao.generateBuffer();
-	vao.addVertexBuffer(vbo, layout);
-
-	ibo.generateBuffer();
-	ibo.bind();
+	vao.createVertexBuffer<Vertex>(out_vertices.data(), out_vertices.size(), {
+		{ 3, POSITION, false },
+		{ 3, NORMAL, true },
+		{ 2, TEXCOORD0, false }
+	});
 	ibo.load<uint>(out_indices.data(), out_indices.size());
-
-	mesh.markAsCopy();
-	mesh.load(vao, ibo);
-
-	return mesh;
+	
+	return Mesh(vao, ibo);
 }
 
-Mesh Loader::loadMeshAsArray(const char* filepath)
+Mesh Loader::loadMeshAsArray(const char* filepath, float scaleFactor, bool reverseClockwise)
 {
 	Vector3 ambient[MAX_MATERIAL_COUNT], diffuse[MAX_MATERIAL_COUNT], specular[MAX_MATERIAL_COUNT];
 	float shine[MAX_MATERIAL_COUNT];
@@ -240,7 +218,6 @@ Mesh Loader::loadMeshAsArray(const char* filepath)
 
 	std::vector<Vertex> vertices;
 
-	//
 	for (i = 0; i < NumTris; i++) // read triangles
 	{
 		Vertex vertice;
@@ -251,12 +228,20 @@ Mesh Loader::loadMeshAsArray(const char* filepath)
 			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
 			&(color_index[0]));
 
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
+
 		vertices.push_back(vertice);
 
 		fscanf(fp, "v1 %f %f %f %f %f %f %d\n",
 			&vertice.position.x, &vertice.position.y, &vertice.position.z,
 			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
 			&(color_index[1]));
+
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
 
 		vertices.push_back(vertice);
 
@@ -265,35 +250,129 @@ Mesh Loader::loadMeshAsArray(const char* filepath)
 			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
 			&(color_index[2]));
 
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
+
 		vertices.push_back(vertice);
 
 		fscanf(fp, "face normal %f %f %f\n", &vertice.normal.x, &vertice.normal.y, &vertice.normal.z);
 	}
 
 	fclose(fp);
+
+	if (reverseClockwise) {
+		std::reverse(std::begin(vertices), std::end(vertices));
+	}
 	
 	VertexArray vao;
-	VertexBuffer vbo;
-	VertexBufferLayout layout;
 
-	vbo.load<Vertex>(vertices.data(), vertices.size());
+	vao.createVertexBuffer<Vertex>(vertices.data(), vertices.size(), {
+		{ 3, POSITION, false },
+		{ 3, NORMAL, true },
+		{ 2, TEXCOORD0, false }
+	});
 
-	layout.pushFloat(3, POSITION);
-	layout.pushFloat(3, NORMAL, true);
-	layout.pushFloat(2, TEXCOORD0);
-
-	vao.generateBuffer();
-	vao.addVertexBuffer(vbo, layout);
-
-	Mesh mesh(vao);
-	mesh.markAsCopy();
-
-	mesh.mIndexStart = 0;
-	mesh.mIndexEnd = vertices.size();
-
-	return mesh;
+	return Mesh(vao, 0, vertices.size());
 }
 
+Mesh Loader::loadMeshAsArrayForDynamic(const char* filepath, float scaleFactor, bool reverseClockwise)
+{
+	Vector3 ambient[MAX_MATERIAL_COUNT], diffuse[MAX_MATERIAL_COUNT], specular[MAX_MATERIAL_COUNT];
+	float shine[MAX_MATERIAL_COUNT];
+	int material_count, color_index[3], i, NumTris;
+	char ch;
+
+	FILE* fp = fopen(filepath, "r");
+	if (fp == NULL)
+	{
+		printf("ERROR: unable to open TriObj [%s]!\n", filepath);
+		exit(1);
+	}
+
+	fscanf(fp, "%c", &ch);
+	while (ch != '\n') // skip the first line – object’s name
+		fscanf(fp, "%c", &ch);
+	//
+	fscanf(fp, "# triangles = %d\n", &NumTris); // read # of triangles
+	fscanf(fp, "Material count = %d\n", &material_count); // read material count
+														  //
+	for (i = 0; i < material_count; i++)
+	{
+		fscanf(fp, "ambient color %f %f %f\n", &(ambient[i].x), &(ambient[i].y), &(ambient[i].z));
+		fscanf(fp, "diffuse color %f %f %f\n", &(diffuse[i].x), &(diffuse[i].y), &(diffuse[i].z));
+		fscanf(fp, "specular color %f %f %f\n", &(specular[i].x), &(specular[i].y), &(specular[i].z));
+		fscanf(fp, "material shine %f\n", &(shine[i]));
+	}
+
+	//
+	fscanf(fp, "%c", &ch);
+	while (ch != '\n') // skip documentation line
+		fscanf(fp, "%c", &ch);
+	//
+	// allocate triangles for tri model
+	//		
+	printf("Reading in %s (%d triangles). . .\n", filepath, NumTris);
+
+	std::vector<Vertex> vertices;
+
+	for (i = 0; i < NumTris; i++) // read triangles
+	{
+		Vertex vertice;
+		vertice.texturecoord0 = Vector2(0, 0);
+
+		fscanf(fp, "v0 %f %f %f %f %f %f %d\n",
+			&vertice.position.x, &vertice.position.y, &vertice.position.z,
+			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
+			&(color_index[0]));
+
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
+
+		vertices.push_back(vertice);
+
+		fscanf(fp, "v1 %f %f %f %f %f %f %d\n",
+			&vertice.position.x, &vertice.position.y, &vertice.position.z,
+			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
+			&(color_index[1]));
+
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
+
+		vertices.push_back(vertice);
+
+		fscanf(fp, "v2 %f %f %f %f %f %f %d\n",
+			&vertice.position.x, &vertice.position.y, &vertice.position.z,
+			&vertice.normal.x, &vertice.normal.y, &vertice.normal.z,
+			&(color_index[2]));
+
+		vertice.position.x *= scaleFactor;
+		vertice.position.y *= scaleFactor;
+		vertice.position.z *= scaleFactor;
+
+		vertices.push_back(vertice);
+
+		fscanf(fp, "face normal %f %f %f\n", &vertice.normal.x, &vertice.normal.y, &vertice.normal.z);
+	}
+
+	fclose(fp);
+
+	if (reverseClockwise) {
+		std::reverse(std::begin(vertices), std::end(vertices));
+	}
+
+	VertexArray vao;
+
+	vao.createVertexBuffer<Vertex>(vertices.data(), vertices.size(), {
+		{ 3, POSITION, false },
+		{ 3, NORMAL, true },
+		{ 2, TEXCOORD0, false }
+		});
+
+	return Mesh(vao, 0, vertices.size(), vertices);
+}
 CubeMap Loader::loadCubeMap(const char* basefilepathname, const std::string& extension)
 {
 	std::string basepath = basefilepathname;

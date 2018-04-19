@@ -6,6 +6,7 @@
 #include "Renderer.h"
 #include <iostream>
 #include "AttributesNamesDefines.h"
+#include <vector>
 
 //#pragma pack(push, 1)
 
@@ -51,19 +52,25 @@ public:
         load(vertexArray, indexBuffer);
     }
 
-	Mesh(VertexArray& vertexArray)
+	Mesh(VertexArray& vertexArray, uint indexStart, uint indexEnd)
 	{
 		mIsIndexed = false;
 		mVertexArray = vertexArray;
+		mIndexStart = indexStart;
+		mIndexEnd = indexEnd;
+	}
+
+	Mesh(VertexArray& vertexArray, uint indexStart, uint indexEnd, std::vector<Vertex> vertices)
+	{
+		mIsIndexed = false;
+		mVertexArray = vertexArray;
+		mIndexStart = indexStart;
+		mIndexEnd = indexEnd;
+		mVertices = vertices;
 	}
 
     ~Mesh()
     {
-		if (!mMarkedAsCopy)
-		{
-			//mVertexArray.deleteBuffer();
-			//mIndexBuffer.deleteBuffer();
-		}
     }
 
 	void render(const Renderer& renderer) const
@@ -86,9 +93,9 @@ public:
 		mIsIndexed = true;
     }
 
-	void markAsCopy()
+	const std::vector<Vertex>& getVertices() const
 	{
-		mMarkedAsCopy = true;
+		return mVertices;
 	}
 
     const VertexArray& getVertexArray() const
@@ -102,12 +109,7 @@ public:
     }
 
 	static Mesh createQuad() {
-		Mesh quad;
-		quad.markAsCopy();
-
 		VertexArray vao;
-		VertexBuffer vbo;
-		VertexBufferLayout layout;
 		IndexBuffer ibo;
 
 		Vertex v1, v2, v3, v4;
@@ -135,20 +137,15 @@ public:
 			0, 1, 2, 0, 2, 3
 		};
 
-		vbo.load(description, sizeof(description));
-
-		layout.pushFloat(3, POSITION);
-		layout.pushFloat(3, NORMAL, true);
-		layout.pushFloat(2, TEXCOORD0);
-
-		vao.generateBuffer();
-		vao.addVertexBuffer(vbo, layout);
-
+		vao.createVertexBuffer<Vertex>(description, 4, {
+			{3, POSITION, false},
+			{3, NORMAL, true},
+			{2, TEXCOORD0, false}
+		});
+		
 		ibo.load<uint>(indices, 6);
 
-		quad.load(vao, ibo);
-
-		return quad;
+		return Mesh(vao, ibo);
 	}
 
 	uint mIndexStart;
@@ -159,5 +156,8 @@ private:
     VertexArray mVertexArray;
 	bool mIsIndexed;
 	bool mMarkedAsCopy;
+	std::vector<Vertex> mVertices;
+
+	friend class Renderer;
 };
 

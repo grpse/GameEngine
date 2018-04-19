@@ -28,8 +28,25 @@ struct VertexBufferElement
 class VertexBufferLayout 
 {
 public:
-    VertexBufferLayout() : mStride(0) {
+
+	struct ElementDescription
+	{
+		uint count;
+		const char* attributeName;
+		bool normalized;
+	};
+
+    VertexBufferLayout() : mStride(0) 
+	{
 		
+	}
+
+	VertexBufferLayout(std::initializer_list<ElementDescription> descriptions) : mStride(0)
+	{
+		for (auto& description : descriptions)
+		{
+			pushFloat(description.count, description.attributeName, description.normalized);
+		}
 	}
 
     void pushUint(uint count, const char* attributeName, bool normalized = false)

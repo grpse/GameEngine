@@ -8,7 +8,6 @@ class VertexBuffer {
 public:
     VertexBuffer();
 	VertexBuffer(const VertexBuffer& other);
-    VertexBuffer(const void* data, uint size);
     ~VertexBuffer();
 
 	template<typename Type>
@@ -17,7 +16,11 @@ public:
 		load(data, count * sizeof(Type));
 	}
 
-    void load(const void* data, uint size);
+	template<typename Type>
+	void loadDynamic(const void* data, uint count)
+	{
+		loadDynamic(data, count * sizeof(count));
+	}
 
     void bind() const;
     void unbind() const;
@@ -25,4 +28,8 @@ public:
 private:
     uint mID;
 
+    void load(const void* data, uint size);
+	void loadDynamic(const void* data, uint size);
+
+	friend class VertexArray;
 };

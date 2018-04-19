@@ -184,6 +184,12 @@
     <ClInclude Include="include\ServiceLocator.h">
       <Filter>Source\memory</Filter>
     </ClInclude>
+    <ClInclude Include="include\MeshSoftwareRenderer.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MeshSoftwareRendererShader.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\objloader\objloader.cpp">

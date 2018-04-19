@@ -8,11 +8,7 @@ class IndexBuffer {
 public:
     IndexBuffer();
 	IndexBuffer(const IndexBuffer& other);
-    IndexBuffer(const uint* data, uint count);
     ~IndexBuffer();
-
-	void generateBuffer();
-	void deleteBuffer();
 
 	template<typename Type>
 	inline void load(const void* data, uint count)

@@ -4,6 +4,8 @@
 #include "Rect.h"
 #include "LinearMath.h"
 
+class Mesh;
+
 class Renderer {
 
 public:
@@ -23,6 +25,7 @@ public:
 	virtual void clearColorAndDepth() const;
 	virtual void render(const VertexArray& vao, const IndexBuffer& ibo) const;
 	virtual void render(const VertexArray& vao, uint startIndex, uint count) const;
+	virtual void render(const Mesh& mesh) const;
 	virtual void cullBackFace() const;
 	virtual void cullFrontFace() const;
 	virtual void enableCullFace() const;

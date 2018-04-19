@@ -13,7 +13,7 @@ using namespace glm;
 namespace Math = glm;
 typedef Math::mediump_vec4 Color32;
 typedef Math::ivec3 Color;
-//typedef Math::vec4 Vector4;
+typedef Math::vec4 Vector4;
 typedef Math::vec3 Vector3;
 typedef Math::vec2 Vector2;
 typedef Math::mat4 Matrix4;

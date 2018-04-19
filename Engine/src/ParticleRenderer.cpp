@@ -27,17 +27,14 @@ ParticleRenderer::ParticleRenderer()
 {
 
 	mShader.addProgram(ParticleShaderStr);
-
-	VertexBuffer vertexBuffer(quadVertices, sizeof(quadVertices));
 	VertexBufferLayout layout;
 	layout.pushFloat(3, POSITION);
-	mVertexArray.generateBuffer();
-	mVertexArray.addVertexBuffer(vertexBuffer, layout);
+	mVertexArray.createVertexBuffer<Vector3>(quadVertices, sizeof(quadVertices) / sizeof(Vector3), layout);
 }
 
 ParticleRenderer::~ParticleRenderer()
 {
-	mVertexArray.deleteBuffer();
+
 }
 
 void ParticleRenderer::setup()

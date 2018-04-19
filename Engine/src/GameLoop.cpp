@@ -13,6 +13,7 @@
 #include <SOIL.h>
 #include "Mesh.h"
 #include "MeshRenderer.h"
+#include "MeshSoftwareRenderer.h"
 #include "Transform.h"
 #include "Renderer.h"
 //#include "ParticleRenderer.h"
@@ -24,15 +25,6 @@
 #include "SkyboxRenderer.h"
 #include "ServiceLocator.h"
 
-double deltaTimeInSecondsFraction = 0;
-double mElapsedSecond = 0;
-
-Window mWindow;
-Camera mCamera;
-Matrix4 mProjectionMatrix;
-
-
-
 static Vector3 quadVertices[] = {
 	Vector3(-0.5, -0.5, 0),
 	Vector3( 0.5, -0.5, 0),
@@ -42,13 +34,13 @@ static Vector3 quadVertices[] = {
 
 void GameLoop::start()
 {
+	Window mWindow;
+	Camera mCamera;
+	Matrix4 mProjectionMatrix;
+
 	Rect viewport = { 0, 0, 800, 600 };
-	//ServiceLocator<Window>::getService().setViewport(viewport);
-	//ServiceLocator<Window>::getService().start();
 	mWindow.setViewport(viewport);
 	mWindow.start();
-
-	//Window& mWindow = ServiceLocator<Window>::getService();
 	
 	Camera::Format cameraFormat;
 	cameraFormat.fieldOfView = 45.0f;
@@ -127,9 +119,8 @@ void GameLoop::start()
 	};
 
 	//ParticleRenderer particleRenderer;
-	MeshRenderer meshRenderer;
 
-	Mesh suzanne = Loader::loadMesh("cow_up.in", 0.001f, true);
+	Mesh suzanne = Loader::loadMeshAsArrayForDynamic("cow_up.in", 0.001f, true);
 	//Mesh suzanne = Loader::loadSimpleMesh("suzanne.obj");
 	Transform suzanneTransform;
 
@@ -197,7 +188,7 @@ void GameLoop::start()
 
 	uint renderModeIndex = 0;
 
-	bool UsingCCW = false;
+	bool UsingCCW = true;
 
 	auto changeRenderModeAndFrontFacing = [&]() -> void 
 	{
@@ -221,10 +212,29 @@ void GameLoop::start()
 		}
 	};
 
+	bool apiOrSoftwareRenderer = true;
+	std::string renderName = "OpenGL ";
+
+	auto changeRendererBetweenAPIandSoftwareRenderer = [&]() -> void
+	{
+		if (Input::wasReleasedKey(R))
+		{
+			apiOrSoftwareRenderer = !apiOrSoftwareRenderer;
+			if (apiOrSoftwareRenderer)
+			{
+				renderName = "OpenGL";
+			}
+			else
+			{
+				renderName = "Close2GL";
+			}
+		}
+	};
+
 	renderer.setFrontCounterClockwise();
 	
 	//BillboardRenderer billboardRenderer;
-	ShadowRenderer shadowRenderer;
+	//ShadowRenderer shadowRenderer;
 
 
 	Light directional;
@@ -245,13 +255,17 @@ void GameLoop::start()
 	Time::startDeltaTime();
 
 	mWindow.setTitle("Game Loop!");
-	
+	MeshRenderer meshRenderer;
+	MeshSoftwareRenderer meshSoftwareRenderer;
+
 	// FIRST
 	ShaderProgram::build();
+	
 
 	meshRenderer.setup();
+	meshSoftwareRenderer.setup();
 	skyboxRenderer.setup();
-	shadowRenderer.setup();
+	//shadowRenderer.setup();
 
 	uint FPS = 0;
 	double SecondsCount = 0;
@@ -287,7 +301,7 @@ void GameLoop::start()
 		FPS += 1;
 		if (SecondsCount >= 1)
 		{
-			mWindow.setTitle("FPS: " + std::to_string(FPS));
+			mWindow.setTitle(renderName + " - FPS: " + std::to_string(FPS));
 			SecondsCount = 0;
 			FPS = 0;
 		}
@@ -297,10 +311,18 @@ void GameLoop::start()
 
 		renderer.setRenderMode(Renderer::Mode::Triangles);
 		skyboxRenderer.render(mCamera, renderer);
-
+		//
 		renderer.setRenderMode(renderMode[renderModeIndex]);
 		meshRenderer.render(mCamera, quad, quadTransform, directional, renderer);
-		meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
+
+		if (apiOrSoftwareRenderer)
+		{
+			meshRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
+		}
+		else
+		{
+			meshSoftwareRenderer.render(mCamera, suzanne, suzanneTransform, directional, renderer);
+		}
 
 
 		//shadowRenderer.renderAdditiveShadow(mCamera, suzanne, suzanneTransform, directional, renderer);
@@ -328,7 +350,8 @@ void GameLoop::start()
 		updateDistanceFromCow();
 		updateCameraOrientationAndPositionLookAtCow();
 		changeRenderModeAndFrontFacing();
-		resetButtom();
+		changeRendererBetweenAPIandSoftwareRenderer();
+		//resetButtom();
 	}
 
 	// TODO: finish systems and release resources properly

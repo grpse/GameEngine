@@ -5,22 +5,21 @@
 #include "Mesh.h"
 #include "Camera.h"
 #include "ShaderProgram.h"
-#include "GLErrorHandling.h"
-#include "MeshShaderSource.h"
+#include "MeshSoftwareRendererShader.h"
 #include "Transform.h"
 #include "Light.h"
+#include <algorithm>
 
-class MeshRenderer{
+class MeshSoftwareRenderer {
 
 public:
 
-	MeshRenderer()
+	MeshSoftwareRenderer()
 	{
-
-		mShader.addProgram(MeshShaderSource);
+		mShader.addProgram(MeshSoftwareShaderSource);
 	}
 
-	~MeshRenderer()
+	~MeshSoftwareRenderer()
 	{
 
 	}
@@ -28,14 +27,14 @@ public:
 	void setup()
 	{
 		mShader.bind();
-		mLightUniforms.position = mShader.getUniformLocation("directional.position");
-		mLightUniforms.direction = mShader.getUniformLocation("directional.direction");
-		mLightUniforms.color = mShader.getUniformLocation("directional.color");
-		mLightUniforms.intensity = mShader.getUniformLocation("directional.intensity");
+		mLightUniforms.position = mShader.getUniformLocation("directional_software.position");
+		mLightUniforms.direction = mShader.getUniformLocation("directional_software.direction");
+		mLightUniforms.color = mShader.getUniformLocation("directional_software.color");
+		mLightUniforms.intensity = mShader.getUniformLocation("directional_software.intensity");
 	}
-	
-    void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
-    {
+
+	void render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
+	{
 		prepare(renderer);
 
 		const Matrix4& NormalMatrix = transform.getWorldInverseTranspose();
@@ -55,15 +54,22 @@ public:
 		mShader.setUniform(mLightUniforms.direction, directional.direction);
 		mShader.setUniform(mLightUniforms.color, directional.color);
 		mShader.setUniform(mLightUniforms.intensity, directional.intensity);
-		
+
+		mTempVertices.assign(mesh.getVertices().begin(), mesh.getVertices().end());
+
+		//multiply
+		multiplyByMatrix4AndDivideByW(mTempVertices, WorldViewProjection);
+		mesh.getVertexArray().updateBuffer(0, mTempVertices.data(), mTempVertices.size() * sizeof(Vertex));
 		renderer.render(mesh);
 
 		finishRendering(renderer);
-    }
+	}
 
 
 private:
-	ShaderProgram mShader;	
+	ShaderProgram mShader;
+
+	std::vector<Vertex> mTempVertices;
 
 
 	struct LightUniforms {
@@ -74,6 +80,15 @@ private:
 	};
 
 	LightUniforms mLightUniforms;
+
+	void multiplyByMatrix4AndDivideByW(std::vector<Vertex>& vertices, const Matrix4& m)
+	{
+		for (auto& vertice : vertices)
+		{
+			Vector4 v = (m * Vector4(vertice.position, 1));
+			vertice.position = -Vector3(v.x, v.y, v.z) / v.w;
+		}
+	}
 
 	void prepare(const Renderer& renderer)
 	{

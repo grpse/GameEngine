@@ -177,6 +177,8 @@
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshRenderer.h" />
     <ClInclude Include="include\MeshShaderSource.h" />
+    <ClInclude Include="include\MeshSoftwareRenderer.h" />
+    <ClInclude Include="include\MeshSoftwareRendererShader.h" />
     <ClInclude Include="include\OSExport.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\ParticleBasicShader.h" />

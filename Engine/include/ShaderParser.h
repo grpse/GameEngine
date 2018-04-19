@@ -189,14 +189,14 @@ namespace Shader {
 #begin vertexshader 
 
 // Vertex
-in vec3 POSITION;
-in vec3 NORMAL;
-in vec3 TANGENT;
-in vec3 BITANGENT;
-in vec3 TEXCOORD0;
-in vec3 TEXCOORD1;
-in vec3 TEXCOORD2;
-in vec3 TEXCOORD3;
+layout(location = 0) in vec3 POSITION;
+layout(location = 1) in vec3 NORMAL;
+layout(location = 2) in vec3 TANGENT;
+layout(location = 3) in vec3 BITANGENT;
+layout(location = 4) in vec3 TEXCOORD0;
+layout(location = 5) in vec3 TEXCOORD1;
+layout(location = 6) in vec3 TEXCOORD2;
+layout(location = 7) in vec3 TEXCOORD3;
 
 // Basic uniforms
 uniform mat4 WORLD;

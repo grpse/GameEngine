@@ -17,6 +17,10 @@ void Window::start()
 		std::cout << "GLFW ERROR" << std::endl;
 	}
 
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
 	/* Create a windowed mode window and its OpenGL context */
 	mWindow = glfwCreateWindow(mViewport.width, mViewport.height, "Commander", NULL, NULL);
 	if (!mWindow)

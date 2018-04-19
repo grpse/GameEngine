@@ -82,17 +82,11 @@ float points[] = {
 SkyboxRenderer::SkyboxRenderer()
 {
 	mShader.addProgram(SkyboxShader);
-
-
-	VertexBuffer vbo;
+	
 	VertexBufferLayout layout;
-
-	vbo.bind();
-	vbo.load(points, sizeof(points));
 	layout.pushFloat(3, POSITION);
 
-	mVAO.generateBuffer();
-	mVAO.addVertexBuffer(vbo, layout);
+	mVAO.createVertexBuffer<float>(points, sizeof(points)/sizeof(float), layout);
 }
 
 void SkyboxRenderer::setCubeMap(const CubeMap& cubeMap)

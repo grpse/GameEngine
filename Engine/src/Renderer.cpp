@@ -2,6 +2,7 @@
 
 #include "Renderer.h"
 #include "GLErrorHandling.h"
+#include "Mesh.h"
 
 Renderer::Renderer()
 {
@@ -37,9 +38,8 @@ void Renderer::render(const VertexArray & vao, const IndexBuffer & ibo) const
 {
 	vao.bind();
 	ibo.bind();
-
 	GLCall(glDrawElements((uint)mMode, ibo.getElementCount(), GL_UNSIGNED_INT, (const void*)0));
-
+	ibo.unbind();
 	vao.unbind();
 }
 
@@ -48,6 +48,18 @@ void Renderer::render(const VertexArray& vao, uint startIndex, uint count) const
 	vao.bind();
 	GLCall(glDrawArrays((uint)mMode, startIndex, count));
 	vao.unbind();
+}
+
+void Renderer::render(const Mesh& mesh) const
+{
+	if (mesh.mIsIndexed)
+	{
+		render(mesh.mVertexArray, mesh.mIndexBuffer);
+	}
+	else
+	{
+		render(mesh.mVertexArray, mesh.mIndexStart, mesh.mIndexEnd);
+	}
 }
 
 void Renderer::cullBackFace() const
