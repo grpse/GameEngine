@@ -12,8 +12,8 @@ out vec3 PASS_NORMAL_SOFTWARE;
 
 Vector4 vertProgram()
 {
-	PASS_POSITION = POSITION;
-	PASS_NORMAL = NORMAL;
+	PASS_POSITION_SOFTWARE = POSITION;
+	PASS_NORMAL_SOFTWARE = NORMAL;
 	return vec4(POSITION, 1);
 }
 
@@ -21,7 +21,7 @@ Vector4 vertProgram()
 
 #define MAX_LIGHTS_COUNT 10
 
-struct Light {
+struct LightSoftware {
 	vec3 position;
 	vec3 direction;
 	vec4 color;
@@ -34,7 +34,7 @@ in vec3 PASS_NORMAL_SOFTWARE;
 
 //uniform Light LIGHTS[MAX_LIGHTS_COUNT];
 //uniform int LIGHTS_COUNT = 0;
-uniform Light directional_software;
+uniform LightSoftware directional_software;
 
 #end fragment_variables
 

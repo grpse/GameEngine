@@ -223,6 +223,7 @@ void GameLoop::start()
 			if (apiOrSoftwareRenderer)
 			{
 				renderName = "OpenGL";
+				suzanne.getVertexArray().updateBuffer(0, suzanne.getVertices().data(), suzanne.getVertices().size() * sizeof(Vertex));
 			}
 			else
 			{

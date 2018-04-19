@@ -35,12 +35,17 @@ void VertexArray::addVertexBuffer(const VertexBuffer& vb, const VertexBufferLayo
 {
     mVertexBufferLayouts.push_back(layout);
 	mVertexBuffers.push_back(vb);
+	mVBOs.push_back(vb.mID);
 }
 
 void VertexArray::updateBuffer(uint offset, const void* data, size_t size) const
 {
 	GLCall(glBindVertexArray(mID));
-	glBufferSubData(GL_ARRAY_BUFFER, offset, size, data);
+	for (uint vbo : mVBOs)
+	{
+		GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+	}
+	GLCall(glBufferSubData(GL_ARRAY_BUFFER, offset, size, data));
 }
 
 void VertexArray::generateBuffer()

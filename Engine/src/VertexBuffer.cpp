@@ -28,7 +28,7 @@ void VertexBuffer::loadDynamic(const void* data, uint size)
 {
 	GLCall(glGenBuffers(1, &mID));
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mID));
-	GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STREAM_DRAW));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW));
 }
 
 void VertexBuffer::bind() const

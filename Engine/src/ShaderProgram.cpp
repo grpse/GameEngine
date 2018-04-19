@@ -11,7 +11,7 @@ Shader::Parser parser;
 int ShaderProgram::mShaderProgram = -1;
 int ShaderProgram::mVertShader = -1;
 int ShaderProgram::mFragShader = -1;
-std::string ShaderProgram::VERSION = STRINGIFY(#version 430\n);
+std::string ShaderProgram::VERSION = STRINGIFY(#version 400\n);
 ShaderProgram::UniformsUse ShaderProgram::mUniformsUse = { -1, -1, -1, -1, -1, -1, -1 };
 ShaderProgram::AttributesUse ShaderProgram::mAttributesUse = { -1, -1, -1, -1, -1, -1, -1 };
 std::map<std::string, ShaderProgram::ProgramIndexLocation > ShaderProgram::mVertProgramName_ID;

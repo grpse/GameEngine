@@ -55,10 +55,21 @@ public:
 		mShader.setUniform(mLightUniforms.color, directional.color);
 		mShader.setUniform(mLightUniforms.intensity, directional.intensity);
 
-		mTempVertices.assign(mesh.getVertices().begin(), mesh.getVertices().end());
+		mTempVertices.resize(mesh.getVertices().size());
 
+		
+
+		for (uint i = 0; i < mTempVertices.size(); i++)
+		{
+			mTempVertices[i]= mesh.getVertices()[i];
+			Vector4 v = (WorldViewProjection * Vector4(mTempVertices[i].position, 1));
+			Vector4 n = (NormalMatrix * Vector4(mTempVertices[i].normal, 1));
+			mTempVertices[i].position = Vector3(v.x, v.y, v.z) / v.w;
+			mTempVertices[i].normal = Math::normalize(n);
+		}
+		
 		//multiply
-		multiplyByMatrix4AndDivideByW(mTempVertices, WorldViewProjection);
+		//multiplyByMatrix4AndDivideByW(mTempVertices, WorldViewProjection);
 		mesh.getVertexArray().updateBuffer(0, mTempVertices.data(), mTempVertices.size() * sizeof(Vertex));
 		renderer.render(mesh);
 
@@ -86,7 +97,7 @@ private:
 		for (auto& vertice : vertices)
 		{
 			Vector4 v = (m * Vector4(vertice.position, 1));
-			vertice.position = -Vector3(v.x, v.y, v.z) / v.w;
+			vertice.position = Vector3(v.x, v.y, v.z) / v.w;
 		}
 	}
 
