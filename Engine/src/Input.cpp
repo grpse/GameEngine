@@ -84,7 +84,7 @@ bool Input::isMouseButtonPress(uint mouseButton)
 
 bool Input::isMouseButtonRelease(uint mouseButton)
 {
-	return mMouseButtonRelease[mouseButton] = true;
+	return mMouseButtonRelease[mouseButton];
 }
 
 void Input::getScrollOffsetDelta(double & x, double & y)

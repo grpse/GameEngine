@@ -41,7 +41,7 @@ void GameLoop::start()
 	Camera mCamera;
 	Matrix4 mProjectionMatrix;
 
-	Rect viewport = { 0, 0, 800, 600 };
+	Rect viewport = { 0, 0, 800, 800 };
 	mWindow.setViewport(viewport);
 	mWindow.start();
 	
@@ -152,68 +152,47 @@ void GameLoop::start()
 		mCamera.transform.getWorldMatrix();
 	};
 
+	bool useCamera = false;
+
 	auto updateCameraOrientationAndPositionLookAtCow = [&]() {
 		double x, y;
 		Input::getMouseDelta(x, y);
+		
+		if (Input::isMouseButtonPress(MouseLeftButton) || useCamera)
+		{
+			useCamera = Input::isMouseButtonRelease(MouseLeftButton) ^ true;
 
-		float rotationDiff = (float)(5.0 * Time::getDeltaTime());
+			float rotationDiff = (float)(5.0 * Time::getDeltaTime());
 
-		if (x > 0 || x < 0) {
-			xAngle += Math::radians(x);
+			if (x > 0 || x < 0) {
+				xAngle += Math::radians(x);
 			
-			//xAngle += Math::radians(x);
-			position.x = Math::sin(xAngle) * distanceFromCow;
-			position.z = -Math::cos(xAngle) * distanceFromCow;
+				//xAngle += Math::radians(x);
+				position.x = Math::sin(xAngle) * distanceFromCow;
+				position.z = -Math::cos(xAngle) * distanceFromCow;
+			}
+
+			if (y > 0 || y < 0) {
+				//const float halfPi = Math::pi<float>() / 2.0f;
+				//float nextRotationOnX = rotation.x - y * rotationDiff;
+				//rotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
+				double tempYAngle = yAngle + Math::radians(y);
+				yAngle = Math::abs(tempYAngle) >= Math::pi<double>() / 2 ? yAngle : tempYAngle;
+				position.y = Math::sin(yAngle) * distanceFromCow;
+			}
+
+			// UPDATE ORIENTATION
+			mCamera.transform.setLocalPosition(position);
+			mCamera.transform.lookAt(suzanneTransform.getLocalPosition());
+			mCamera.transform.getWorldMatrix();
 		}
 
-		if (y > 0 || y < 0) {
-			//const float halfPi = Math::pi<float>() / 2.0f;
-			//float nextRotationOnX = rotation.x - y * rotationDiff;
-			//rotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
-			double tempYAngle = yAngle + Math::radians(y);
-			yAngle = Math::abs(tempYAngle) >= Math::pi<double>() / 2 ? yAngle : tempYAngle;
-			position.y = Math::sin(yAngle) * distanceFromCow;
-		}
-
-		// UPDATE ORIENTATION
-		mCamera.transform.setLocalPosition(position);
-		mCamera.transform.lookAt(suzanneTransform.getLocalPosition());
-		mCamera.transform.getWorldMatrix();
 	};
 	
 
 	Renderer renderer;
-	Renderer::Mode renderMode[3] = {
-		Renderer::Mode::Triangles,
-		Renderer::Mode::Lines,
-		Renderer::Mode::Points
-	};
+	
 
-	uint renderModeIndex = 0;
-
-	bool UsingCCW = true;
-
-	auto changeRenderModeAndFrontFacing = [&]() -> void 
-	{
-		if (Input::wasReleasedKey(M))
-		{
-			renderModeIndex = (renderModeIndex + 1) % 3;
-			renderer.setRenderMode(renderMode[renderModeIndex]);
-		}
-
-		if (Input::wasReleasedKey(C))
-		{
-			UsingCCW = !UsingCCW;
-			if (UsingCCW) 
-			{
-				renderer.setFrontCounterClockwise();
-			}
-			else 
-			{
-				renderer.setFrontClockwise();
-			}
-		}
-	};
 
 
 
@@ -260,29 +239,56 @@ void GameLoop::start()
 	mWindow.toogleTweakBar();
 	
 	// TWEAKABLE VARIABLES
+	bool UsingCCW = true;
 	Color32 cowColor = { 1, 1, 1, 1 };
+	Vector3 cowRotationOriginal, cowRotation;
+	cowRotationOriginal = cowRotation = Math::eulerAngles(suzanneTransform.getLocalRotation());
+	Vector3 cowPosition, cowPositionOriginal;
+	cowPosition = cowPositionOriginal = suzanneTransform.getLocalPosition();
+	Vector3 cowScale, cowScaleOriginal;
+	cowScale = cowScaleOriginal = suzanneTransform.getLocalScale();
+
+	float hfov = 60, vfov = 60, fov = 45.0f;
+	float nearPlane = 0.001, farPlane = 100;
+
 	bool apiOrSoftwareRenderer = true;
 	bool hasUploadedToOpenGLVerticesAgain = false;
 
 	typedef enum { Phong, GouraudAD, GouraudADS } ShadingType;
 	ShadingType shadingType = Phong;
 
+	Renderer::Mode renderMode = Renderer::Mode::Triangles;
+
 	TwEnumVal shadingTypesArray[] = { { Phong, "Phong" },{ GouraudAD, "GouraudAD" },{ GouraudADS, "GouraudADS" }};
 	TwType shadiningTypeValue = TwDefineEnum("ShadingType", shadingTypesArray, 3);
+
+	TwEnumVal renderTypeArray[] = { { (int)Renderer::Mode::Triangles, "Triangles"}, {(int)Renderer::Mode::Lines, "Lines"}, { (int)Renderer::Mode::Points, "Points"} };
+	TwType renderTypeValue = TwDefineEnum("RenderType", renderTypeArray, 3);
 
 	TwBar* tweakBar = TwNewBar("TWEAK");
 
 	TwAddSeparator(tweakBar, "Renderer Stuff", "label='Renderer Stuff'");
 	TwAddVarRW(tweakBar, "Render Mode", TW_TYPE_BOOL32, &apiOrSoftwareRenderer, "label='Change Render Mode'");
+	TwAddVarRW(tweakBar, "Clockwise Mode", TW_TYPE_BOOL32, &UsingCCW, "label='Clock Orientation'");
 	// Defining season enum type
 	
 	// Adding season to bar
 	TwAddVarRW(tweakBar, "Shading Type", shadiningTypeValue, &shadingType, NULL);
+	TwAddVarRW(tweakBar, "Render Type", renderTypeValue, &renderMode, NULL);
 
 	TwAddSeparator(tweakBar, "Cow Stuff", "label='Cow Stuff'");
 	TwAddVarRW(tweakBar, "CowDiffuseColor", TW_TYPE_COLOR4F, &cowColor, "label='Color'");
-	
+	TwAddVarRW(tweakBar, "CowPosition", TW_TYPE_DIR3F, &cowPosition, "label='Position'");
+	TwAddVarRW(tweakBar, "CowRotation", TW_TYPE_DIR3F, &cowRotation, "label='Rotation'");
+	TwAddVarRW(tweakBar, "CowScale", TW_TYPE_DIR3F, &cowScale, "label='Scale'");
+		
 	TwAddSeparator(tweakBar, "Camera Stuff", "label='Camera Stuff'");
+	TwAddVarRW(tweakBar, "Field of View", TW_TYPE_FLOAT, &fov, "label='Field of View' step=0.01");
+	TwAddVarRW(tweakBar, "HFOV", TW_TYPE_FLOAT, &hfov, "label='HFOV' step=0.01");
+	TwAddVarRW(tweakBar, "VFOV", TW_TYPE_FLOAT, &vfov, "label='VFOV' step=0.01");
+	TwAddVarRW(tweakBar, "Near Plane", TW_TYPE_FLOAT, &nearPlane, "label='Near Plane' step=0.01");
+	TwAddVarRW(tweakBar, "Far Plane", TW_TYPE_FLOAT, &farPlane, "label='Far Plane' step=0.01");
+
 
 	TwAddVarRW(tweakBar, "Reset", TW_TYPE_BOOL32, &shouldReset, "label='Reset'");
 
@@ -294,9 +300,26 @@ void GameLoop::start()
 			apiOrSoftwareRenderer = true;
 			shadingType = Phong;
 			shouldReset = false;
+			cowRotation = cowRotationOriginal;
+			cowPosition = cowPositionOriginal;
+			cowScale = cowScaleOriginal;
+			renderMode = Renderer::Mode::Triangles;
+			hfov = 60, vfov = 60, fov = 45.0f;
+			nearPlane = 0.001, farPlane = 100;
 		}
 	};
 
+	auto changeRenderModeAndFrontFacing = [&]() -> void 
+	{
+		if (UsingCCW) 
+		{
+			renderer.setFrontCounterClockwise();
+		}
+		else 
+		{
+			renderer.setFrontClockwise();
+		}
+	};
 	
 	std::string renderName = "OpenGL ";
 
@@ -321,6 +344,20 @@ void GameLoop::start()
 
 	while (mWindow.isOpen()) {
 		
+
+		// set cow transforms
+		suzanneTransform.setLocalPosition(cowPosition);
+		suzanneTransform.setLocalRotation(cowRotation);
+		suzanneTransform.setLocalScale(cowScale);
+
+		cameraFormat.fieldOfView = fov;
+		cameraFormat.aspectRatio = hfov / vfov;
+		cameraFormat.nearPlane = nearPlane;
+		cameraFormat.farPlane = farPlane;
+
+		mCamera.setFormat(cameraFormat, Camera::Type::Perspective);
+
+
 		/*
 		float dt = (float)Time::getDeltaTime();
 		angle += dt * 1;
@@ -356,12 +393,12 @@ void GameLoop::start()
 		}
 
 		renderer.clearColorAndDepth();
-		renderer.setViewport(viewport);
+		renderer.setViewport(mWindow.getViewport());
 
 		renderer.setRenderMode(Renderer::Mode::Triangles);
 		skyboxRenderer.render(mCamera, renderer);
 		//
-		renderer.setRenderMode(renderMode[renderModeIndex]);
+		renderer.setRenderMode(renderMode);
 		meshRenderer.render(mCamera, quad, quadTransform, directional, renderer);
 		
 		if (apiOrSoftwareRenderer)
