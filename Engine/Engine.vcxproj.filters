@@ -342,6 +342,9 @@
     <ClCompile Include="src\BillboardRenderer.cpp">
       <Filter>Source\renderables</Filter>
     </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>Source\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />
