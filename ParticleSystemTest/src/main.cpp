@@ -9,9 +9,19 @@ public:
 		std::cout << "Scene Started!" << std::endl;
 	}
 
+	virtual void onGUI()
+	{
+		ImGui::Begin("Controls");
+		if (ImGui::Button("Hit Button"))
+		{
+			std::cout << "Button Hitted!" << std::endl;
+		}
+		ImGui::End();
+	}
+
 	virtual void update(float dt)
 	{
-		std::cout << "Scene Update " << dt << " ms" << std::endl;
+		//std::cout << "Scene Update " << dt << " ms" << std::endl;
 	}
 };
 

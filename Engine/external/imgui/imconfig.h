@@ -11,6 +11,11 @@
 
 #pragma once
 
+#ifdef ENGINE_EXPORTING
+	#define IMGUI_API             __declspec(dllexport)
+#else
+	#define IMGUI_API             __declspec(dllimport)
+#endif
 //---- Define assertion handler. Defaults to calling assert().
 //#define IM_ASSERT(_EXPR)  MyAssert(_EXPR)
 

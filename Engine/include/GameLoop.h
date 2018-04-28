@@ -1,7 +1,7 @@
 #pragma once
 
 #include "OSExport.h"
-#include "Window.h"
+
 class Scene;
 
 class ENGINE_API GameLoop {

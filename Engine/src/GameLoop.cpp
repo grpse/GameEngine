@@ -1,7 +1,8 @@
 #include <GL/glew.h>
+#include "GameLoop.h"
+#include <imgui/imgui.h>
 #include <iostream>
 #include "LinearMath.h"
-#include "GameLoop.h"
 #include "Time.h"
 #include "ParticleSystem.h"
 #include "Camera.h"
@@ -26,6 +27,7 @@
 #include "ServiceLocator.h"
 #include <AntTweakBar.h>
 #include "Scene.h"
+#include "Window.h"
 
 bool shouldReset = false;
 
@@ -459,6 +461,7 @@ void GameLoop::start()
 		
 		//billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 
+		mCurrentScene->onGUI();
 		
 		mWindow.pollEvents();
 		Time::updateDeltaTime();

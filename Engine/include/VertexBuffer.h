@@ -2,7 +2,6 @@
 
 #include "Typedefs.h"
 
-
 class VertexBuffer {
 
 public:

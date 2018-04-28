@@ -3,12 +3,8 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "LinearMath.h"
-#include "Renderer.h"
-#include <iostream>
-#include "AttributesNamesDefines.h"
-#include <vector>
 
-//#pragma pack(push, 1)
+class Renderer;
 
 struct Vertex {
     Vector3 position;
@@ -27,7 +23,6 @@ struct Vertex {
 
 	}
 };
-//#pragma pack(pop)
 
 class Mesh {
 

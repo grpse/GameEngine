@@ -345,6 +345,9 @@
     <ClCompile Include="src\Mesh.cpp">
       <Filter>Source\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="src\VertexBufferLayout.cpp">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Engine.rc" />

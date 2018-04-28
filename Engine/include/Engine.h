@@ -1,7 +1,8 @@
 #pragma once
 #include "GameLoop.h"
 #include "Window.h"
-//#include "LinearMath.h" // TODO: solve folder inclusion
+#include "LinearMath.h"
 #include "Scene.h"
-#include "MeshRenderer.h" //TODO: same above
-//#include "Mesh.h" //TODO: same above
+#include "MeshRenderer.h"
+#include "Mesh.h"
+#include <imgui/imgui.h>

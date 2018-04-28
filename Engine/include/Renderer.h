@@ -11,10 +11,10 @@ class Renderer {
 public:
 
 	enum class Mode {
-		Quads = GL_QUADS,
-		Triangles = GL_TRIANGLES,
-		Lines = GL_LINES,
-		Points = GL_POINTS		
+		Quads = 0x0007, //GL_QUADS,
+		Triangles = 0x0004, //GL_TRIANGLES,
+		Lines = 0x0001, //GL_LINES,
+		Points = 0x0000 //GL_POINTS
 	};
 
 	Renderer();

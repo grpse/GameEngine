@@ -1,5 +1,4 @@
 #pragma once
-#include <GL/glew.h>
 #include <vector>
 #include "Typedefs.h"
 
@@ -13,16 +12,7 @@ struct VertexBufferElement
 	int attributeLocation = -1;
 	char attributeName[32] = "";
 
-    inline static uint GetSizeOfType(unsigned int type)
-    {
-        switch(type)
-        {
-            case GL_FLOAT: return sizeof(GLfloat);
-            case GL_UNSIGNED_INT: return sizeof(GLuint);
-            case GL_UNSIGNED_BYTE: return sizeof(GLbyte);
-        }
-        return 0;
-    }
+	static uint GetSizeOfType(unsigned int type);
 };
 
 class VertexBufferLayout 
@@ -36,42 +26,11 @@ public:
 		bool normalized;
 	};
 
-    VertexBufferLayout() : mStride(0) 
-	{
-		
-	}
+	VertexBufferLayout();
+	VertexBufferLayout(std::initializer_list<ElementDescription> descriptions);
 
-	VertexBufferLayout(std::initializer_list<ElementDescription> descriptions) : mStride(0)
-	{
-		for (auto& description : descriptions)
-		{
-			pushFloat(description.count, description.attributeName, description.normalized);
-		}
-	}
-
-    void pushUint(uint count, const char* attributeName, bool normalized = false)
-    {
-		VertexBufferElement element;
-		element.type = GL_UNSIGNED_INT;
-		element.count = count;
-		element.normalized = normalized ? GL_TRUE : GL_FALSE;
-		memcpy(element.attributeName, attributeName, strlen(attributeName) + 1);
-
-        mElements.push_back(element);
-        mStride += count * VertexBufferElement::GetSizeOfType(GL_INT);
-    }
-
-    void pushFloat(uint count, const char* attributeName, bool normalized = false)
-    {
-		VertexBufferElement element;
-		element.type = GL_FLOAT;
-		element.count = count;
-		element.normalized = normalized ? GL_TRUE : GL_FALSE;
-		memcpy(element.attributeName, attributeName, strlen(attributeName) + 1);
-
-        mElements.push_back(element);
-        mStride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
-    }
+	void pushUint(uint count, const char* attributeName, bool normalized = false);
+	void pushFloat(uint count, const char* attributeName, bool normalized = false);
 
 	inline void replaceElementsWith(const std::vector<VertexBufferElement>& newElements)
 	{

@@ -1,4 +1,8 @@
 #include "Mesh.h"
+#include "Renderer.h"
+#include <iostream>
+#include "AttributesNamesDefines.h"
+#include <vector>
 
 Mesh::Mesh()
 	: mMarkedAsCopy(false)
