@@ -8,6 +8,7 @@
 #include <imgui/imgui_impl_glfw_gl3.h>
 
 bool Window::mShowTweak = false;
+Rect lastViewport;
 
 Window::Window()
 {
@@ -25,6 +26,8 @@ void Window::start()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	lastViewport = mViewport;
 
 	/* Create a windowed mode window and its OpenGL context */
 	mWindow = glfwCreateWindow(mViewport.width, mViewport.height, "Commander", NULL, NULL);
@@ -69,6 +72,12 @@ void Window::swapBuffers()
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 	}
+	int width, height;
+	glfwGetWindowSize(mWindow, &width, &height);
+	mViewport.height = height;
+	mViewport.width = width;
+
+	setViewport(mViewport);
 
 	if (mShowTweak) TwDraw();
 	glfwSwapBuffers(mWindow);
@@ -142,7 +151,10 @@ void Window::MousePositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	if (mShowTweak)
 	{
-		TwEventMousePosGLFW(xpos, ypos);
+		if (!TwEventMousePosGLFW(xpos, ypos))
+		{
+			Input::setMousePosition(xpos, ypos);
+		}
 	}
 	else
 	{
@@ -154,24 +166,28 @@ void Window::MouseButtonCallback(GLFWwindow * window, int button, int action, in
 {
 	if (mShowTweak)
 	{
-		TwEventMouseButtonGLFW(button, action);
+		if (!TwEventMouseButtonGLFW(button, action))
+		{
+
+		}
 	}
-	else
-	{
-		if (action == GLFW_REPEAT)
-			Input::setMouseButtonPressedRepeat(button);
-		else if (action == GLFW_PRESS)
-			Input::setMouseButtonPress(button);
-		else if (action == GLFW_RELEASE)
-			Input::setMouseButtonRelease(button);
-	}
+	if (action == GLFW_REPEAT)
+		Input::setMouseButtonPressedRepeat(button);
+	else if (action == GLFW_PRESS)
+		Input::setMouseButtonPress(button);
+	else if (action == GLFW_RELEASE)
+		Input::setMouseButtonRelease(button);
+	
 }
 
 void Window::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	if (mShowTweak)
 	{
-		TwEventMouseWheelGLFW(xoffset);
+		if (!TwEventMouseWheelGLFW(xoffset))
+		{
+			Input::setScrollOffset(xoffset, yoffset);
+		}
 	}
 	else
 	{
