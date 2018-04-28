@@ -46,7 +46,8 @@ void Renderer::render(const VertexArray & vao, const IndexBuffer & ibo) const
 void Renderer::render(const VertexArray& vao, uint startIndex, uint count) const
 {
 	vao.bind();
-	GLCall(glDrawArrays((uint)mMode, startIndex, count));
+	//GLCall(glDrawArrays((uint)mMode, startIndex, count));
+	glDrawArrays((uint)mMode, startIndex, count);
 	vao.unbind();
 }
 

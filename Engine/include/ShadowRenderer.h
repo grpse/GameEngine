@@ -37,7 +37,7 @@ public:
 
 		mShadowMapShader.setUniform(mDepthMVPLocation, depthMVP);
 
-		renderer.render(mesh.getVertexArray(), mesh.getIndexBuffer());
+		mesh.render(renderer);
 
 		mShadowMapShader.unbind();
 

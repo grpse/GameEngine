@@ -152,6 +152,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\imgui\imconfig.h" />
+    <ClInclude Include="external\imgui\imgui.h" />
+    <ClInclude Include="external\imgui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="external\imgui\imgui_internal.h" />
+    <ClInclude Include="external\imgui\stb_rect_pack.h" />
+    <ClInclude Include="external\imgui\stb_textedit.h" />
+    <ClInclude Include="external\imgui\stb_truetype.h" />
     <ClInclude Include="external\objloader\objloader.hpp" />
     <ClInclude Include="external\objloader\tangentspace.hpp" />
     <ClInclude Include="external\objloader\vboindexer.hpp" />
@@ -163,8 +170,10 @@
     <ClInclude Include="external\SOIL\stb_image_aug.h" />
     <ClInclude Include="include\AttributesNamesDefines.h" />
     <ClInclude Include="include\BillboardRenderer.h" />
+    <ClInclude Include="include\BillboardShader.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\CubeMap.h" />
+    <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\FrameBuffer.h" />
     <ClInclude Include="include\GameLoop.h" />
     <ClInclude Include="include\GLErrorHandling.h" />
@@ -185,8 +194,10 @@
     <ClInclude Include="include\ParticleMaster.h" />
     <ClInclude Include="include\ParticleRenderer.h" />
     <ClInclude Include="include\ParticleSystem.h" />
+    <ClInclude Include="include\PoolAllocator.h" />
     <ClInclude Include="include\Rect.h" />
     <ClInclude Include="include\Renderer.h" />
+    <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\ServiceLocator.h" />
     <ClInclude Include="include\ShaderParser.h" />
     <ClInclude Include="include\ShaderProgram.h" />
@@ -205,6 +216,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\glew\src\glew.c" />
+    <ClCompile Include="external\imgui\imgui.cpp" />
+    <ClCompile Include="external\imgui\imgui_demo.cpp" />
+    <ClCompile Include="external\imgui\imgui_draw.cpp" />
+    <ClCompile Include="external\imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="external\objloader\objloader.cpp" />
     <ClCompile Include="external\objloader\tangentspace.cpp" />
     <ClCompile Include="external\objloader\vboindexer.cpp" />
@@ -212,6 +227,7 @@
     <ClCompile Include="external\SOIL\image_helper.c" />
     <ClCompile Include="external\SOIL\SOIL.c" />
     <ClCompile Include="external\SOIL\stb_image_aug.c" />
+    <ClCompile Include="src\BillboardRenderer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\CubeMap.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
@@ -221,11 +237,13 @@
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Loader.cpp" />
+    <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleMaster.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\ShadowRenderer.cpp" />
     <ClCompile Include="src\SkyboxRenderer.cpp" />

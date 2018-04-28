@@ -4,6 +4,8 @@
 #include "Input.h"
 #include <GLFW/glfw3.h>
 #include <AntTweakBar.h>
+#include <imgui/imgui.h>
+#include <imgui/imgui_impl_glfw_gl3.h>
 
 bool Window::mShowTweak = false;
 
@@ -46,13 +48,28 @@ void Window::start()
 
 	setupInputEventCallers();
 
+	// Setup ImGui binding
+	ImGui::CreateContext();
+	ImGui_ImplGlfwGL3_Init(mWindow, false);
+
+	// Setup style
+	ImGui::StyleColorsDark();
 	//TODO: reflect display refresh rate to swap buffers delayed time
 	//glfwSwapInterval(1);
 }
 
+void Window::GUIFrame()
+{
+	ImGui_ImplGlfwGL3_NewFrame();
+}
 
 void Window::swapBuffers()
 {
+	{
+		ImGui::Render();
+		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
 	if (mShowTweak) TwDraw();
 	glfwSwapBuffers(mWindow);
 }
@@ -71,6 +88,8 @@ Rect Window::getViewport()
 
 void Window::finish()
 {
+	ImGui_ImplGlfwGL3_Shutdown();
+	ImGui::DestroyContext();
 	TwTerminate();
 	glfwTerminate();
 }

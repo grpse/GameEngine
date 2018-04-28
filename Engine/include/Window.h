@@ -20,6 +20,8 @@ public:
 	void setTitle(const std::string& title);
 	void toogleTweakBar();
 	void* createTweak(const char* title);
+
+	void GUIFrame();
 	
 private:
 	GLFWwindow* mWindow;

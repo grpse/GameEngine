@@ -1,6 +1,5 @@
 #pragma once
 
-#include <GL/glew.h>
 #include "Typedefs.h"
 
 // target, level, internalFormat, width, height, border, format, type

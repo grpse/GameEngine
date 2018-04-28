@@ -7,7 +7,7 @@ char ShadowShader[] = R"(
 #fragment fragProgram
 
 #begin uniforms
-Vector4 depthMVP;
+Matrix4 depthMVP;
 #end uniforms
 
 Vector4 vertProgram() {

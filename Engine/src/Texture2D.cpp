@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "Texture2D.h"
 #include "GLErrorHandling.h"
 

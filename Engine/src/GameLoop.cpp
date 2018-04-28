@@ -18,13 +18,14 @@
 #include "Renderer.h"
 //#include "ParticleRenderer.h"
 #include "FrameBuffer.h"
-//#include "BillboardRenderer.h"
+#include "BillboardRenderer.h"
 #include "ShadowRenderer.h"
 #include "Input.h"
 #include "Light.h"
 #include "SkyboxRenderer.h"
 #include "ServiceLocator.h"
 #include <AntTweakBar.h>
+#include "Scene.h"
 
 bool shouldReset = false;
 
@@ -220,8 +221,8 @@ void GameLoop::start()
 
 	renderer.setFrontCounterClockwise();
 	
-	//BillboardRenderer billboardRenderer;
-	//ShadowRenderer shadowRenderer;
+	BillboardRenderer billboardRenderer;
+	ShadowRenderer shadowRenderer;
 
 
 	Light directional;
@@ -248,11 +249,12 @@ void GameLoop::start()
 	// FIRST
 	ShaderProgram::build();
 	
-
+	
 	meshRenderer.setup();
 	meshSoftwareRenderer.setup();
 	skyboxRenderer.setup();
-	//shadowRenderer.setup();
+	shadowRenderer.setup();
+	billboardRenderer.setup();
 
 	uint FPS = 0;
 	double SecondsCount = 0;
@@ -318,9 +320,12 @@ void GameLoop::start()
 		}
 	};
 
+	mCurrentScene->start();
 
 	while (mWindow.isOpen()) {
-		
+		mWindow.GUIFrame();
+
+		mCurrentScene->update((float)Time::getDeltaTime());
 		/*
 		float dt = (float)Time::getDeltaTime();
 		angle += dt * 1;
@@ -333,18 +338,18 @@ void GameLoop::start()
 		//mParticleSystem.emitParticle(Vector3(0, -5, 0));
 		// mParticleSystem.update();
 
-		//shadowRenderer.getShadowBuffer().setLayout({ 1024, 1024, 0 });
-		//shadowRenderer.getShadowBuffer().bind();
+		shadowRenderer.getShadowBuffer().setLayout({ 1024, 1024, 0 });
+		shadowRenderer.getShadowBuffer().bind();
 		//
-		//renderer.clearColorAndDepth();
+		renderer.clearColorAndDepth();
 		//// TODO: in order to draw shadow map, we need a shadow renderer
 		////			where geometries, lights and camera will create the
 		////			depth buffer appropriated to use on shadow projection.
-		//renderer.setRenderMode(Renderer::Mode::Triangles);
-		//shadowRenderer.renderShadowMap(mCamera, suzanne, suzanneTransform, directional, renderer);
+		renderer.setRenderMode(Renderer::Mode::Triangles);
+		shadowRenderer.renderShadowMap(mCamera, suzanne, suzanneTransform, directional, renderer);
 		//shadowRenderer.renderShadowMap(mCamera, quad, quadTransform, directional, renderer);
 		//
-		//shadowRenderer.getShadowBuffer().unbind();
+		shadowRenderer.getShadowBuffer().unbind();
 
 		SecondsCount += Time::getDeltaTime();
 		FPS += 1;
@@ -408,11 +413,11 @@ void GameLoop::start()
 		//particleRenderer.render(mParticleSystem, mCamera, renderer);
 
 		
-		//if (shadowRenderer.getShadowBuffer().isComplete())
-		//{
-		//	renderer.setRenderMode(Renderer::Mode::Quads);
-		//	billboardRenderer.render(shadowRenderer.getShadowMap(), { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
-		//}
+		if (shadowRenderer.getShadowBuffer().isComplete())
+		{
+			renderer.setRenderMode(Renderer::Mode::Quads);
+			billboardRenderer.render(shadowRenderer.getShadowMap(), { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
+		}
 		
 		//billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
 
@@ -436,4 +441,9 @@ void GameLoop::start()
 
 	//TwTerminate();
 	mWindow.finish();
+}
+
+void GameLoop::setScene(Scene* scene)
+{
+	mCurrentScene = scene;
 }

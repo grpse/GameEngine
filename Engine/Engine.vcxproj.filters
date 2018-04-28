@@ -40,6 +40,9 @@
     <Filter Include="Source\memory">
       <UniqueIdentifier>{026a10c9-b42a-4e8e-8966-6f4ece2515dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="_external\imgui">
+      <UniqueIdentifier>{bc49488f-a7ff-4b9a-8399-2f0ef21a95cb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -190,6 +193,39 @@
     <ClInclude Include="include\MeshSoftwareRendererShader.h">
       <Filter>Source\renderables</Filter>
     </ClInclude>
+    <ClInclude Include="external\imgui\imconfig.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui_impl_glfw_gl3.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui_internal.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\stb_rect_pack.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\stb_textedit.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\stb_truetype.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene.h">
+      <Filter>Source\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PoolAllocator.h">
+      <Filter>Source\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Engine.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BillboardShader.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\objloader\objloader.cpp">
@@ -284,6 +320,27 @@
     </ClCompile>
     <ClCompile Include="src\GLErrorHandling.cpp">
       <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_demo.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_draw.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_impl_glfw_gl3.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Source\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshRenderer.cpp">
+      <Filter>Source\renderables</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BillboardRenderer.cpp">
+      <Filter>Source\renderables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
