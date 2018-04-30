@@ -3,6 +3,7 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "LinearMath.h"
+#include "OSExport.h"
 
 class Renderer;
 
@@ -24,7 +25,7 @@ struct Vertex {
 	}
 };
 
-class Mesh {
+class ENGINE_API Mesh {
 
 public:
 	Mesh();

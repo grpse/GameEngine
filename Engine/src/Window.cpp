@@ -11,8 +11,17 @@ bool Window::mShowTweak = false;
 Rect lastViewport;
 
 Window::Window()
+	: mIsStarted(false)
 {
 
+}
+
+Window::Window(const Window & other)
+{
+	mViewport = other.mViewport;
+	mWindow = other.mWindow;
+	mIsOpen = other.mIsOpen;
+	mIsStarted = other.mIsStarted;
 }
 
 void Window::start()
@@ -59,6 +68,8 @@ void Window::start()
 	ImGui::StyleColorsDark();
 	//TODO: reflect display refresh rate to swap buffers delayed time
 	//glfwSwapInterval(1);
+
+	mIsStarted = true;
 }
 
 void Window::GUIFrame()

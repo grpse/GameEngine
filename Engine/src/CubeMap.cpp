@@ -3,9 +3,9 @@
 #include "CubeMap.h"
 
 CubeMap::CubeMap()
+	: mID(-1)
 {
 	mIndex = 0;
-	GLCall(glGenTextures(1, &mID));
 }
 
 CubeMap::CubeMap(const CubeMap& other)
@@ -17,6 +17,15 @@ CubeMap::CubeMap(const CubeMap& other)
 CubeMap::~CubeMap()
 {
 	// TODO: make a releaser
+}
+
+void CubeMap::generateBuffer()
+{
+	// Generate renderer id buffer, only if there is no generated yet
+	if (mID < 0)
+	{
+		GLCall(glGenTextures(1, (GLuint*)&mID));
+	}
 }
 
 void CubeMap::setParameter(uint name, uint value) const

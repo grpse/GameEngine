@@ -2,10 +2,9 @@
 #include "LinearMath.h"
 #include "Rect.h"
 #include "Transform.h"
+#include "OSExport.h"
 
-
-
-class Camera {
+class ENGINE_API Camera {
 public:
 
 	enum class Type {

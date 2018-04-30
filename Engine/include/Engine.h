@@ -5,4 +5,9 @@
 #include "Scene.h"
 #include "MeshRenderer.h"
 #include "Mesh.h"
+#include "MeshSoftwareRenderer.h"
+#include "Camera.h"
+#include "Loader.h"
+#include "Texture2D.h"
+#include "CubeMap.h"
 #include <imgui/imgui.h>

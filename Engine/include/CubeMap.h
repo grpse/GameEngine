@@ -1,14 +1,16 @@
 #pragma once
 #include "Typedefs.h"
 #include "Texture2D.h"
+#include "OSExport.h"
 
-class CubeMap
+class ENGINE_API CubeMap
 {
 public:
 	CubeMap();
 	CubeMap(const CubeMap& other);
 	~CubeMap();
 
+	void generateBuffer();
 	void setParameter(uint name, uint value) const;
 	uint getId() const;
 	void setIndex(uint index);
@@ -17,6 +19,6 @@ public:
 	void unbind() const;
 
 private:
-	uint mID;
-	uint mIndex;
+	int mID;
+	int mIndex;
 };

@@ -378,6 +378,7 @@ CubeMap Loader::loadCubeMap(const char* basefilepathname, const std::string& ext
 	std::string basepath = basefilepathname;
 
 	CubeMap cubeMap;
+	cubeMap.generateBuffer();
 
 	cubeMap.bind();
 	

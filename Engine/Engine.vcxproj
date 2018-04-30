@@ -239,6 +239,7 @@
     <ClCompile Include="src\Loader.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
+    <ClCompile Include="src\MeshSoftwareRenderer.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleMaster.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />

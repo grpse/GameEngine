@@ -38,19 +38,22 @@ static Vector3 quadVertices[] = {
 	Vector3(-0.5, 0.5, 0),
 };
 
+GameLoop::GameLoop()
+	: mWindowStarted(true)
+{
+
+}
+
 void GameLoop::start()
 {
-	Window mWindow;
+	// Don't open program if not started window
+	assert(mWindow.isStarted() && "SHOULD SET VIEWPORT AND START THE WINDOW FIRST");
 	Camera mCamera;
 	Matrix4 mProjectionMatrix;
-
-	Rect viewport = { 0, 0, 800, 800 };
-	mWindow.setViewport(viewport);
-	mWindow.start();
 	
 	Camera::Format cameraFormat;
 	cameraFormat.fieldOfView = 45.0f;
-	cameraFormat.aspectRatio = viewport.width / viewport.height;
+	cameraFormat.aspectRatio = mWindow.getViewport().width / mWindow.getViewport().height;
 	cameraFormat.nearPlane = 0.001f;
 	cameraFormat.farPlane = 10000.0;
 
@@ -229,7 +232,6 @@ void GameLoop::start()
 
 	// FIRST
 	ShaderProgram::build();
-	
 	
 	meshRenderer.setup();
 	meshSoftwareRenderer.setup();

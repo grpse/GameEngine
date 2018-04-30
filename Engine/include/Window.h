@@ -10,6 +10,7 @@ class ENGINE_API Window {
 
 public:
 	Window();
+	Window(const Window& other);
 	void start();
 	void swapBuffers();
 	void setViewport(Rect viewport);
@@ -22,12 +23,14 @@ public:
 	void* createTweak(const char* title);
 
 	void GUIFrame();
+	inline bool isStarted() { return mIsStarted; }
 	
 private:
 	GLFWwindow* mWindow;
 	Rect mViewport;
 
 	bool mIsOpen;
+	bool mIsStarted;
 	static bool mShowTweak;
 
 	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
