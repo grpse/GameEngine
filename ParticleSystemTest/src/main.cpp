@@ -14,17 +14,24 @@ public:
 	virtual void start()
 	{
 		std::cout << "Scene Started!" << std::endl;
+		Rect viewport = GameLoop::getInstance().getWindow().getViewport();
+		MainCameraFormat.fieldOfView = 45.0f;
+		MainCameraFormat.aspectRatio = viewport.width / viewport.height;
+		MainCameraFormat.nearPlane = 0.001f;
+		MainCameraFormat.farPlane = 10000.0;
+
+		MainCamera.setFormat(MainCameraFormat, Camera::Type::Perspective);
 	}
 
 	virtual void onGUI()
 	{
 		ImGui::Begin(WindowName.c_str());
 
+		ImGui::Text("FPS: %d", FPS);
 		ImGui::Separator();
 		ImGui::Text("Render Settings:");
 		int shadingTypeIndex = SelectShadingTypeFromComboBox();
 		int renderModeIndex = SelectRenderModeFromComboBox();
-
 		ImGui::Separator();
 
 		ImGui::End();
@@ -33,6 +40,19 @@ public:
 	virtual void update(float dt)
 	{
 		//std::cout << "Scene Update " << dt << " ms" << std::endl;
+		SecondsCount += dt;
+		FPS_Counter += 1;
+		if (SecondsCount >= 1)
+		{
+			FPS = FPS_Counter;
+			SecondsCount = 0;
+			FPS_Counter = 0;
+		}
+	}
+
+	virtual void render()
+	{
+
 	}
 
 private:
@@ -40,6 +60,10 @@ private:
 	Mesh Cow;
 	CubeMap SkyMap;
 	Camera MainCamera;
+	Camera::Format MainCameraFormat;
+	uint FPS = 0;
+	uint FPS_Counter = 0;
+	double SecondsCount = 0;
 
 	int SelectShadingTypeFromComboBox()
 	{

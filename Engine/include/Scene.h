@@ -6,4 +6,5 @@ public:
 	virtual void start() = 0;
 	virtual void onGUI() = 0;
 	virtual void update(float dt) = 0;
+	virtual void render() = 0;
 };

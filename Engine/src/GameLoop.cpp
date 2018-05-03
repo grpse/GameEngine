@@ -31,6 +31,8 @@
 
 bool shouldReset = false;
 
+GameLoop* GameLoop::mInstance = nullptr;
+
 static Vector3 quadVertices[] = {
 	Vector3(-0.5, -0.5, 0),
 	Vector3( 0.5, -0.5, 0),
@@ -41,7 +43,7 @@ static Vector3 quadVertices[] = {
 GameLoop::GameLoop()
 	: mWindowStarted(true)
 {
-
+	mInstance = this;
 }
 
 void GameLoop::start()
@@ -462,7 +464,7 @@ void GameLoop::start()
 		}
 		
 		//billboardRenderer.render(particleTexture, { 0.5f, -0.5f, 0.5f, 0.5f }, renderer);
-
+		mCurrentScene->render();
 		mCurrentScene->onGUI();
 		
 		mWindow.pollEvents();
@@ -489,4 +491,9 @@ void GameLoop::start()
 void GameLoop::setScene(Scene* scene)
 {
 	mCurrentScene = scene;
+}
+
+GameLoop& GameLoop::getInstance()
+{
+	return *mInstance;
 }

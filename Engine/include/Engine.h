@@ -10,4 +10,5 @@
 #include "Loader.h"
 #include "Texture2D.h"
 #include "CubeMap.h"
+#include "Rect.h"
 #include <imgui/imgui.h>

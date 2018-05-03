@@ -101,7 +101,7 @@ void Window::setViewport(Rect viewport)
 	TwWindowSize(viewport.width, viewport.height);
 }
 
-Rect Window::getViewport()
+Rect& Window::getViewport()
 {
 	return mViewport;
 }

@@ -14,7 +14,7 @@ public:
 	void start();
 	void swapBuffers();
 	void setViewport(Rect viewport);
-	Rect getViewport();
+	Rect& getViewport();
 	void finish();
 	void pollEvents();
 	bool isOpen();
