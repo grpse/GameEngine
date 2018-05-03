@@ -13,7 +13,7 @@ class ParticleRenderer {
 public:
 	ParticleRenderer();
 	~ParticleRenderer();
-
+	void setup();
 	void render(const ParticleSystem& particleSystem, const Camera & camera, const Renderer& renderer) const;
 
 private:

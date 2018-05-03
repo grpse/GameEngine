@@ -21,7 +21,7 @@ FrameBuffer::~FrameBuffer()
 {
 	if (mRefCount == 0)
 	{
-		//GLCall(glDeleteFramebuffers(1, &mFBO));
+		GLCall(glDeleteFramebuffers(1, &mFBO));
 	}
 }
 

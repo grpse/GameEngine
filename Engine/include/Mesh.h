@@ -3,31 +3,56 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "LinearMath.h"
+#include "OSExport.h"
+
+class Renderer;
 
 struct Vertex {
     Vector3 position;
     Vector3 normal;
     Vector2 texturecoord0;
+	
+	Vertex(const Vector3& p, const Vector2& uv, const Vector3& n)
+	{
+		position = p;
+		texturecoord0 = uv;
+		normal = n;
+	}
+
+	Vertex()
+	{
+
+	}
 };
 
-class Mesh {
+class ENGINE_API Mesh {
 
 public:
 	Mesh();
 	Mesh(const Mesh& other);
 	Mesh(VertexArray& vertexArray, IndexBuffer& indexBuffer);
-
+	Mesh(VertexArray& vertexArray, uint indexStart, uint indexEnd);
+	Mesh(VertexArray& vertexArray, uint indexStart, uint indexEnd, std::vector<Vertex> vertices);
 	~Mesh();
 
+	void render(const Renderer& renderer) const;
 	void load(VertexArray& vertexArray, IndexBuffer& indexBuffer);
-	void markAsCopy() const;
+	const std::vector<Vertex>& getVertices() const;
 	const VertexArray& getVertexArray() const;
 	const IndexBuffer& getIndexBuffer() const;
+
 	static Mesh createQuad();
 
 private:
     IndexBuffer mIndexBuffer;
     VertexArray mVertexArray;
-	mutable bool mMarkedAsCopy;
+	bool mIsIndexed;
+	bool mMarkedAsCopy;
+	std::vector<Vertex> mVertices;
+
+	uint mIndexStart;
+	uint mIndexEnd;
+
+	friend class Renderer;
 };
 

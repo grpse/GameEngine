@@ -1,14 +1,14 @@
 #pragma once
-
+#ifndef USE_GLFW
+	//#define USE_GLFW
+#endif
 class Time {
 
 public:
 	static double getDeltaTime();
 
 private:
-	static void start();
+	static void startDeltaTime();
 	static void updateDeltaTime();
-	static void setDeltaTime(double delta);
-
 	friend class GameLoop;
 };

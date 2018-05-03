@@ -2,8 +2,9 @@
 #include "LinearMath.h"
 #include "Rect.h"
 #include "Transform.h"
+#include "OSExport.h"
 
-class Camera {
+class ENGINE_API Camera {
 public:
 
 	enum class Type {
@@ -18,12 +19,12 @@ public:
 		float fieldOfView;
 		Rect viewport;
 	};
-	
-	Transform transform;
 
 	Camera();
+	Camera(const Camera& other);
 	~Camera();
-	
+
+	Transform transform;
 	void setFormat(const Camera::Format& format, const Camera::Type& type);
 	const Matrix4& getViewMatrix() const;
 	const Matrix4& getProjectionMatrix() const;

@@ -71,32 +71,33 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(ProjectDir)external\SOIL\src;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)external\SOIL\src;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)external\SOIL\src;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>$(ProjectDir)external\SOIL\src;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\SDL2\include;$(IncludePath)</IncludePath>
-    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</IncludePath>
+    <OutDir>$(SolutionDir)Build\$(Platform)\$(Configuration)</OutDir>
+    <IntDir>$(SolutionDir)Build\Intermediate\$(Platform)\$(Configuration)</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL2\include;$(ProjectDir)external\glew\include;$(ProjectDir)external;$(ProjectDir)external\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\AntTweakBar\include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -108,8 +109,8 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL2\include;$(ProjectDir)external\glew\include;$(ProjectDir)external;$(ProjectDir)external\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\AntTweakBar\include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>opengl32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -123,8 +124,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL2\include;$(ProjectDir)external\glew\include;$(ProjectDir)external;$(ProjectDir)external\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\AntTweakBar\include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -140,8 +141,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\SDL2\include;$(ProjectDir)external\glew\include;$(ProjectDir)external;$(ProjectDir)external\SOIL\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;ENGINE_EXPORTING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)external\SOIL;$(ProjectDir)external;$(ProjectDir)external\glew\include;$(ProjectDir)include;$(SolutionDir)Dependencies\AntTweakBar\include;$(SolutionDir)Dependencies\glfw\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -151,19 +152,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="external\imgui\imconfig.h" />
+    <ClInclude Include="external\imgui\imgui.h" />
+    <ClInclude Include="external\imgui\imgui_impl_glfw_gl3.h" />
+    <ClInclude Include="external\imgui\imgui_internal.h" />
+    <ClInclude Include="external\imgui\stb_rect_pack.h" />
+    <ClInclude Include="external\imgui\stb_textedit.h" />
+    <ClInclude Include="external\imgui\stb_truetype.h" />
     <ClInclude Include="external\objloader\objloader.hpp" />
     <ClInclude Include="external\objloader\tangentspace.hpp" />
     <ClInclude Include="external\objloader\vboindexer.hpp" />
-    <ClInclude Include="external\SOIL\src\image_DXT.h" />
-    <ClInclude Include="external\SOIL\src\image_helper.h" />
-    <ClInclude Include="external\SOIL\src\SOIL.h" />
-    <ClInclude Include="external\SOIL\src\stbi_DDS_aug.h" />
-    <ClInclude Include="external\SOIL\src\stbi_DDS_aug_c.h" />
-    <ClInclude Include="external\SOIL\src\stb_image_aug.h" />
-    <ClInclude Include="include\Actor.h" />
+    <ClInclude Include="external\SOIL\image_DXT.h" />
+    <ClInclude Include="external\SOIL\image_helper.h" />
+    <ClInclude Include="external\SOIL\SOIL.h" />
+    <ClInclude Include="external\SOIL\stbi_DDS_aug.h" />
+    <ClInclude Include="external\SOIL\stbi_DDS_aug_c.h" />
+    <ClInclude Include="external\SOIL\stb_image_aug.h" />
+    <ClInclude Include="include\AttributesNamesDefines.h" />
     <ClInclude Include="include\BillboardRenderer.h" />
+    <ClInclude Include="include\BillboardShader.h" />
     <ClInclude Include="include\Camera.h" />
-    <ClInclude Include="include\Component.h" />
+    <ClInclude Include="include\CubeMap.h" />
+    <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\FrameBuffer.h" />
     <ClInclude Include="include\GameLoop.h" />
     <ClInclude Include="include\GLErrorHandling.h" />
@@ -172,28 +182,28 @@
     <ClInclude Include="include\Light.h" />
     <ClInclude Include="include\LinearMath.h" />
     <ClInclude Include="include\Loader.h" />
-    <ClInclude Include="include\MainScene.h" />
-    <ClInclude Include="include\Material.h" />
+    <ClInclude Include="include\MatricesNamesDefines.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\MeshRenderer.h" />
     <ClInclude Include="include\MeshShaderSource.h" />
+    <ClInclude Include="include\MeshSoftwareRenderer.h" />
+    <ClInclude Include="include\MeshSoftwareRendererShader.h" />
     <ClInclude Include="include\OSExport.h" />
     <ClInclude Include="include\Particle.h" />
     <ClInclude Include="include\ParticleBasicShader.h" />
     <ClInclude Include="include\ParticleMaster.h" />
     <ClInclude Include="include\ParticleRenderer.h" />
     <ClInclude Include="include\ParticleSystem.h" />
+    <ClInclude Include="include\PoolAllocator.h" />
     <ClInclude Include="include\Rect.h" />
-    <ClInclude Include="include\Renderable.h" />
     <ClInclude Include="include\Renderer.h" />
-    <ClInclude Include="include\RendererOpenGL.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\ServiceLocator.h" />
+    <ClInclude Include="include\ShaderParser.h" />
     <ClInclude Include="include\ShaderProgram.h" />
     <ClInclude Include="include\ShadowRenderer.h" />
-    <ClInclude Include="include\ShadowShaders.h" />
-    <ClInclude Include="include\stdafx.h" />
-    <ClInclude Include="include\targetver.h" />
+    <ClInclude Include="include\ShadowShader.h" />
+    <ClInclude Include="include\SkyboxRenderer.h" />
     <ClInclude Include="include\Texture2D.h" />
     <ClInclude Include="include\Time.h" />
     <ClInclude Include="include\Transform.h" />
@@ -206,37 +216,39 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\glew\src\glew.c" />
+    <ClCompile Include="external\imgui\imgui.cpp" />
+    <ClCompile Include="external\imgui\imgui_demo.cpp" />
+    <ClCompile Include="external\imgui\imgui_draw.cpp" />
+    <ClCompile Include="external\imgui\imgui_impl_glfw_gl3.cpp" />
     <ClCompile Include="external\objloader\objloader.cpp" />
     <ClCompile Include="external\objloader\tangentspace.cpp" />
     <ClCompile Include="external\objloader\vboindexer.cpp" />
-    <ClCompile Include="external\SOIL\src\image_DXT.c" />
-    <ClCompile Include="external\SOIL\src\image_helper.c" />
-    <ClCompile Include="external\SOIL\src\SOIL.c" />
-    <ClCompile Include="external\SOIL\src\stb_image_aug.c" />
-    <ClCompile Include="src\Actor.cpp" />
+    <ClCompile Include="external\SOIL\image_DXT.c" />
+    <ClCompile Include="external\SOIL\image_helper.c" />
+    <ClCompile Include="external\SOIL\SOIL.c" />
+    <ClCompile Include="external\SOIL\stb_image_aug.c" />
+    <ClCompile Include="src\BillboardRenderer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\CubeMap.cpp" />
     <ClCompile Include="src\FrameBuffer.cpp" />
     <ClCompile Include="src\GameLoop.cpp" />
+    <ClCompile Include="src\GLErrorHandling.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Loader.cpp" />
-    <ClCompile Include="src\MainScene.cpp" />
-    <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\MeshRenderer.cpp" />
+    <ClCompile Include="src\MeshSoftwareRenderer.cpp" />
     <ClCompile Include="src\Particle.cpp" />
     <ClCompile Include="src\ParticleMaster.cpp" />
     <ClCompile Include="src\ParticleRenderer.cpp" />
     <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
-    <ClCompile Include="src\RendererOpenGL.cpp" />
     <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\ServiceLocator.cpp" />
     <ClCompile Include="src\ShaderProgram.cpp" />
     <ClCompile Include="src\ShadowRenderer.cpp" />
-    <ClCompile Include="src\stdafx.cpp" />
+    <ClCompile Include="src\SkyboxRenderer.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\Time.cpp" />
     <ClCompile Include="src\Transform.cpp" />
@@ -249,11 +261,11 @@
     <ResourceCompile Include="Engine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dependencies\SDL2\VisualC\SDLmain\SDLmain.vcxproj">
-      <Project>{da956fd3-e142-46f2-9dd5-c78bebb56b7a}</Project>
+    <ProjectReference Include="..\Dependencies\AntTweakBar\src\AntTweakBar.vcxproj">
+      <Project>{b99e1fa1-c30a-45f2-9d57-9e9c21b2df42}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Dependencies\SDL2\VisualC\SDL\SDL.vcxproj">
-      <Project>{81ce8daf-ebb2-4761-8e45-b71abcca8c68}</Project>
+    <ProjectReference Include="..\Dependencies\glfw\src\glfw.vcxproj">
+      <Project>{1be114d2-d8ea-3ee3-a4b5-dc1508266e92}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

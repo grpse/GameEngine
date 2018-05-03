@@ -1,4 +1,3 @@
-#include "Camera.h"
 #include "Renderer.h"
 #include "ParticleSystem.h"
 #include <vector>
@@ -8,6 +7,8 @@
 #include "ParticleBasicShader.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
+#include "AttributesNamesDefines.h"
+#include "Camera.h"
 #include "Particle.h"
 
 static Vector3 quadVertices[] = {
@@ -26,26 +27,22 @@ static Vector2 uvs[] = {
 
 ParticleRenderer::ParticleRenderer()
 {
-	mShader.useVertexAttribute();
-	mShader.useProjectionMatrix();
-	mShader.useWorldViewMatrix();
 
-	mShader.buildShadersFromSource(ParticleShaderStr);
-
-	mShader.start();
-	mTextureUniformLocation = mShader.getUniformLocation("tex");
-	mShader.stop();
-
-	VertexBuffer vertexBuffer(quadVertices, sizeof(quadVertices));
+	mShader.addProgram(ParticleShaderStr);
 	VertexBufferLayout layout;
-	layout.pushFloat(3);
-	mVertexArray.generateBuffer();
-	mVertexArray.setVertexBuffer(vertexBuffer, layout);
+	layout.pushFloat(3, POSITION);
+	mVertexArray.createVertexBuffer<Vector3>(quadVertices, sizeof(quadVertices) / sizeof(Vector3), layout);
 }
 
 ParticleRenderer::~ParticleRenderer()
 {
-	mVertexArray.deleteBuffer();
+
+}
+
+void ParticleRenderer::setup()
+{
+	mShader.bind();
+	mTextureUniformLocation = mShader.getUniformLocation("tex");
 }
 
 void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera & camera, const Renderer& renderer) const
@@ -53,28 +50,25 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 	const Texture2D& texture2d = particleSystem.getTexture2D();
 	const Matrix4& view = camera.getViewMatrix();
 	uint particleCount = particleSystem.getParticlesCount();
-	const Particle* particles = particleSystem.getParticles();
+	auto particles = particleSystem.getParticles();
 
 	prepare(renderer);
 	
 	mShader.setProjectionMatrix(camera.getProjectionMatrix());
 
 	texture2d.start();
-	mVertexArray.bind();
 
 	while(particleCount--) {
-		Particle particle = particles[particleCount];
-		mShader.setUniform(mTextureUniformLocation, (int)0);
+		mShader.setUniform(mTextureUniformLocation, (uint)0);
 
 		Vector3 position = particles[particleCount].getPosition();
 		float rotation = particles[particleCount].getRotation();
 		float scale = particles[particleCount].getScale();
 		updateModelViewMatrix(position, rotation, scale, view);
 
-		renderer.renderQuad(0, 4);
+		renderer.render(mVertexArray, 0, 4);
 	}
 	
-	mVertexArray.unbind();	
 	texture2d.stop();
 	finishRendering(renderer);
 }
@@ -108,7 +102,7 @@ void ParticleRenderer::updateModelViewMatrix(const Vector3& position, float rota
 
 void ParticleRenderer::prepare(const Renderer& renderer) const
 {
-	mShader.start();
+	mShader.bind();
 	
 	renderer.enableBlend();
 	renderer.enableDepthTest();
@@ -121,5 +115,5 @@ void ParticleRenderer::finishRendering(const Renderer& renderer) const
 	renderer.setDepthMask();
 	renderer.disableDepthTest();
 	renderer.disableBlend();
-	mShader.stop();
+	mShader.unbind();
 }

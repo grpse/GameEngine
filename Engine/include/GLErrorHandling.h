@@ -4,82 +4,10 @@
 #include <cassert>
 #include <iostream>
 
-inline const char *GLErrorCodeToString(GLenum error)
-{
+static bool GameLoopRunning;
 
-	switch (error)
-	{
-	case GL_INVALID_ENUM:
-		return "GL_INVALID_ENUM";
-		break;
-
-	case GL_INVALID_VALUE:
-		return "GL_INVALID_VALUE";
-		break;
-
-	case GL_INVALID_OPERATION:
-		return "GL_INVALID_OPERATION";
-		break;
-
-	case GL_STACK_OVERFLOW:
-		return "GL_STACK_OVERFLOW";
-		break;
-
-	case GL_STACK_UNDERFLOW:
-		return "GL_STACK_UNDERFLOW";
-		break;
-
-	case GL_OUT_OF_MEMORY:
-		return "GL_OUT_OF_MEMORY";
-		break;
-
-	case GL_INVALID_FRAMEBUFFER_OPERATION:
-		return "GL_INVALID_FRAMEBUFFER_OPERATION";
-		break;
-
-	case GL_CONTEXT_LOST:
-		return "GL_CONTEXT_LOST";
-		break;
-
-	case GL_TABLE_TOO_LARGE:
-		return "GL_TABLE_TOO_LARGE1";
-		break;
-
-	default:
-		return "UNKNOWN ERROR";
-		break;
-	}
-}
-
-inline void GLClearError()
-{
-	/*
-	while (glGetError() != GL_NO_ERROR)
-	{
-	std::cout << "GL ERROR" << std::endl;
-	}
-	*/
-	while (GLenum error = glGetError())
-	{
-		std::cout << "[OpenGL Error] (" << error << " = "
-			<< GLErrorCodeToString(error) << ") " << std::endl;
-	}
-}
-
-inline bool GLLogCall(const char *function, const char *filename, int line)
-{
-	while (GLenum error = glGetError())
-	{
-		std::cout << "[OpenGL Error] (" << error << " = "
-			<< GLErrorCodeToString(error) << ") "
-			<< function << " " << filename << ":"
-			<< line << std::endl;
-		return false;
-	}
-
-	return true;
-}
-
-
+void GLClearError();
+bool GLLogCall(const char *function, const char *filename, int line);
+const char *GLErrorCodeToString(GLenum error);
 
 #define GLCall(x) GLClearError(); x; assert(GLLogCall(#x, __FILE__, __LINE__));

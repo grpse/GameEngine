@@ -1,5 +1,4 @@
 #include "Light.h"
-#include "LinearMath.h"
 
 Matrix4 Light::getLightProjection(const Camera& camera, const Transform& transform) const
 {

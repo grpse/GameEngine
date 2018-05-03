@@ -4,13 +4,14 @@
 
 Texture2D::Texture2D()
 {
-	mRefCount = 0;
+	mWasCopied = false;
     GLCall(glGenTextures(1, &mID));
     setupDefaults();
 }
 
 Texture2D::Texture2D(uint id)
 {
+	mWasCopied = false;
     mID = id;
     setupDefaults();
 }
@@ -21,14 +22,14 @@ Texture2D::Texture2D(const Texture2D& other)
     mIndex = other.mIndex;
 	mIndex = other.mIndex;
 	mLayout = other.mLayout;
-	other.mRefCount++;
+	other.mWasCopied = true;
 }
 
 Texture2D::~Texture2D()
 {
-	if (mRefCount == 0)
+	if (!mWasCopied)
 	{
-		//GLCall(glDeleteTextures(1, &mID));
+		GLCall(glDeleteTextures(1, &mID));
 	}
 }
 
@@ -37,7 +38,7 @@ Texture2D& Texture2D::operator=(const Texture2D& other)
     mID = other.mID;
     mIndex = other.mIndex;
 	mLayout = other.mLayout;
-	other.mRefCount++;
+	other.mWasCopied = true;
     return *this;
 }
 

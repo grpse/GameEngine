@@ -7,10 +7,11 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/random.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 using namespace glm;
 namespace Math = glm;
-typedef Math::vec4 Color32;
+typedef Math::mediump_vec4 Color32;
 typedef Math::ivec3 Color;
 typedef Math::vec4 Vector4;
 typedef Math::vec3 Vector3;

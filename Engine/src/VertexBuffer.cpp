@@ -6,9 +6,15 @@ VertexBuffer::VertexBuffer()
 
 }
 
-VertexBuffer::VertexBuffer(const void* data, uint size)
+VertexBuffer::VertexBuffer(const VertexBuffer& other)
 {
-    load(data, size);
+	mID = other.mID;
+}
+
+VertexBuffer::~VertexBuffer()
+{
+	//TODO: Discover if deleting Vertex Array Object, deletes the Vertex Buffer Object
+	//GLCall(glDeleteBuffers(1, &mID));
 }
 
 void VertexBuffer::load(const void* data, uint size)
@@ -18,10 +24,11 @@ void VertexBuffer::load(const void* data, uint size)
     GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
 }
 
-VertexBuffer::~VertexBuffer()
+void VertexBuffer::loadDynamic(const void* data, uint size)
 {
-	//TODO: Discover if deleting Vertex Array Object, deletes the Vertex Buffer Object
-    //GLCall(glDeleteBuffers(1, &mID));
+	GLCall(glGenBuffers(1, &mID));
+	GLCall(glBindBuffer(GL_ARRAY_BUFFER, mID));
+	GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_DYNAMIC_DRAW));
 }
 
 void VertexBuffer::bind() const

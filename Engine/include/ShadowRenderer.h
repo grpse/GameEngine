@@ -5,23 +5,51 @@
 #include "OSExport.h"
 #include "Texture2D.h"
 #include "FrameBuffer.h"
-
-class Camera;
-class Light;
-class Transform;
-class Mesh;
-class Renderer;
+#include "Camera.h"
+#include "Light.h"
+#include "Transform.h"
+#include "Mesh.h"
+#include "Renderer.h"
 
 class ShadowRenderer {
 
 public:
 	ShadowRenderer();
+	ShadowRenderer(const ShadowRenderer& other);
 	~ShadowRenderer();
-	void renderShadowMap(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer);
+
+	void setup();
+	void renderShadowMap(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer)
+	{
+		ShadowBuffer.bind();
+
+		renderer.enableDepthTest();
+		renderer.enableCullFace();
+		renderer.cullBackFace();
+
+		Matrix4 projection = light.getLightProjection(camera, transform);
+		Matrix4 view = light.getLightView(camera, transform);
+		Matrix4 model = transform.getWorldMatrix();
+
+		Matrix4 depthMVP = projection * view * model;
+
+		mShadowMapShader.bind();
+
+		mShadowMapShader.setUniform(mDepthMVPLocation, depthMVP);
+
+		mesh.render(renderer);
+
+		mShadowMapShader.unbind();
+
+		renderer.disableCullFace();
+		renderer.disableDepthTest();
+
+		ShadowBuffer.unbind();
+	}
 	void renderAdditiveShadow(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& light, const Renderer& renderer);
-	const FrameBuffer& getShadowBuffer() const;
+	FrameBuffer& getShadowBuffer();
 	const Texture2D& getShadowMap() const;
-	const FrameBuffer& getFrameBuffer();
+	FrameBuffer& getFrameBuffer();
 
 private:
 	ShaderProgram mShadowMapShader;

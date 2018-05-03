@@ -4,55 +4,46 @@
 #include <iostream>
 #include "GLErrorHandling.h"
 #include "ShaderProgram.h"
+#include "ShaderParser.h"
 
-#define STRINGIFY(value) (#value)
+ShaderProgram* mCurrentBoundShaderProgram = nullptr;
+Shader::Parser parser;
+int ShaderProgram::mShaderProgram = -1;
+int ShaderProgram::mVertShader = -1;
+int ShaderProgram::mFragShader = -1;
+std::string ShaderProgram::VERSION = STRINGIFY(#version 400\n);
+ShaderProgram::UniformsUse ShaderProgram::mUniformsUse = { -1, -1, -1, -1, -1, -1, -1 };
+ShaderProgram::AttributesUse ShaderProgram::mAttributesUse = { -1, -1, -1, -1, -1, -1, -1 };
+std::map<std::string, ShaderProgram::ProgramIndexLocation > ShaderProgram::mVertProgramName_ID;
+std::map<std::string, ShaderProgram::ProgramIndexLocation > ShaderProgram::mFragProgramName_ID;
+
 
 ShaderProgram::ShaderProgram() 
 {
-	mRefCount = 0;
-	PRECODE_VERTEX = STRINGIFY(#version 330\n);
-	PRECODE_FRAGMENT = STRINGIFY(#version 330\n);
-
-	ATTRIBUTE_VERTEX_POSITION = "";
-	ATTRIBUTE_NORMAL_POSITION = "";
-	ATTRIBUTE_TEXTURECOORD0 = "";
-	ATTRIBUTE_TEXTURECOORD1 = "";
-	ATTRIBUTE_TEXTURECOORD2 = "";
-
-	//mUniformsUse = { -1, -1, -1, -1, -1 };
 	memset(&mUniformsUse, -1, sizeof(mUniformsUse));
-	//mAttributesUse = { -1, -1, -1, -1, -1 };
 	memset(&mAttributesUse, -1, sizeof(mAttributesUse));
 }
 
-ShaderProgram::ShaderProgram(const ShaderProgram& shaderProgram)
+ShaderProgram::ShaderProgram(const ShaderProgram & other)
 {
-	mShaderProgram = shaderProgram.mShaderProgram;
-	mVertShader = shaderProgram.mVertShader;
-	mFragShader = shaderProgram.mFragShader;
-	PRECODE_VERTEX = shaderProgram.PRECODE_VERTEX;
-	PRECODE_FRAGMENT = shaderProgram.PRECODE_FRAGMENT;
-	
-	ATTRIBUTE_VERTEX_POSITION = shaderProgram.ATTRIBUTE_VERTEX_POSITION;
-	ATTRIBUTE_NORMAL_POSITION = shaderProgram.ATTRIBUTE_NORMAL_POSITION;
-	ATTRIBUTE_TEXTURECOORD0   = shaderProgram.ATTRIBUTE_TEXTURECOORD0;
-	ATTRIBUTE_TEXTURECOORD1   = shaderProgram.ATTRIBUTE_TEXTURECOORD1;
-	ATTRIBUTE_TEXTURECOORD2   = shaderProgram.ATTRIBUTE_TEXTURECOORD2;
-
-	mUniformsUse = shaderProgram.mUniformsUse;
-	mAttributesUse = shaderProgram.mAttributesUse;
-	shaderProgram.mRefCount++;
+	mFragmentShaderID = other.mFragmentShaderID;
+	mVertexShaderID = other.mVertexShaderID;
 }
 
 ShaderProgram::~ShaderProgram() 
 {
-	if (mRefCount == 0)
+	//TODO: Should delete program, but only when no one will use it
+	/*
+
+	if (mShaderProgram >= 0)
 	{
-	//	GLCall(glDeleteProgram(mShaderProgram));
-	}	
+		GLCall(glDeleteProgram(mShaderProgram));
+		mShaderProgram = -1;
+	}
+	*/
 }
 
-void ShaderProgram::setUniform(uint uniform, int i)
+void ShaderProgram::setUniform(uint uniform, uint i)
 {
 	GLCall(glUniform1i(uniform, i));
 }
@@ -62,7 +53,7 @@ void ShaderProgram::setUniform(uint uniform, float v)
 	GLCall(glUniform1f(uniform, v));
 }
 
-void ShaderProgram::setUniform(uint uniform, const Vector4 & v)
+void ShaderProgram::setUniform(uint uniform, const Color32 & v)
 {
 	GLCall(glUniform4fv(uniform, 1, Math::value_ptr(v)));
 }
@@ -82,19 +73,30 @@ void ShaderProgram::setUniform(uint uniform, const Matrix4& m)
 	GLCall(glUniformMatrix4fv(uniform, 1, GL_FALSE, Math::value_ptr(m)));
 }
 
-void ShaderProgram::setUniform(const char * uniform, int i)
+void ShaderProgram::setUniform(uint uniform, const Texture2D& t)
+{
+	// TODO: This can only bind one texture to current shader program
+	GLCall(glUniform1i(uniform, t.getIndex()));
+}
+
+void ShaderProgram::setUniform(uint uniform, const CubeMap& c)
+{
+	c.bind();
+	GLCall(glUniform1i(uniform, c.getIndex()));
+}
+
+void ShaderProgram::setInteger(uint uniform, int i)
+{
+	GLCall(glUniform1i(uniform, i));
+}
+
+void ShaderProgram::setUniform(const char * uniform, uint i)
 {
 	uint uniformLocation = getUniformLocation(uniform);
 	setUniform(uniformLocation, i);
 }
 
-void ShaderProgram::setUniform(const char * uniform, float f)
-{
-	uint uniformLocation = getUniformLocation(uniform);
-	setUniform(uniformLocation, f);
-}
-
-void ShaderProgram::setUniform(const char * uniform, const Vector4 & v)
+void ShaderProgram::setUniform(const char * uniform, const Color32 & v)
 {
 	uint uniformLocation = getUniformLocation(uniform);
 	setUniform(uniformLocation, v);
@@ -121,7 +123,7 @@ void ShaderProgram::setUniform(const char * uniform, const Matrix4& m)
 void ShaderProgram::setProjectionMatrix(const Matrix4& projection)
 {
 	if (mUniformsUse.Projection < 0)
-		mUniformsUse.Projection = getUniformLocation(STRINGIFY(Projection));
+		mUniformsUse.Projection = getUniformLocation(PROJECTION);
 
 	setUniform(mUniformsUse.Projection, projection);
 }
@@ -129,15 +131,31 @@ void ShaderProgram::setProjectionMatrix(const Matrix4& projection)
 void ShaderProgram::setViewMatrix(const Matrix4& view)
 {
 	if (mUniformsUse.View < 0)
-		mUniformsUse.View = getUniformLocation(STRINGIFY(View));
+		mUniformsUse.View = getUniformLocation(VIEW);
 
 	setUniform(mUniformsUse.View, view);
+}
+
+void ShaderProgram::setWorldInverseTranspose(const Matrix4& worldInverseTranspose)
+{
+	if (mUniformsUse.WorldInverseTranspose < 0)
+		mUniformsUse.WorldInverseTranspose = getUniformLocation(WORLDINVERSETRANSPOSE);
+
+	setUniform(mUniformsUse.WorldInverseTranspose, worldInverseTranspose);
+}
+
+void ShaderProgram::setWorldViewInverseTranspose(const Matrix4& worldViewInverseTranspose)
+{
+	if (mUniformsUse.WorldViewInverseTranspose < 0)
+		mUniformsUse.WorldViewInverseTranspose = getUniformLocation(WORLDVIEWINVERSETRANSPOSE);
+
+	setUniform(mUniformsUse.WorldViewInverseTranspose, worldViewInverseTranspose);
 }
 
 void ShaderProgram::setWorldMatrix(const Matrix4 & world)
 {
 	if (mUniformsUse.World < 0)
-		mUniformsUse.World = getUniformLocation(STRINGIFY(World));
+		mUniformsUse.World = getUniformLocation(WORLD);
 
 	setUniform(mUniformsUse.World, world);
 }
@@ -145,7 +163,7 @@ void ShaderProgram::setWorldMatrix(const Matrix4 & world)
 void ShaderProgram::setWorldViewMatrix(const Matrix4 & worldView)
 {
 	if (mUniformsUse.WorldView < 0)
-		mUniformsUse.WorldView = getUniformLocation(STRINGIFY(WorldView));
+		mUniformsUse.WorldView = getUniformLocation(WORLDVIEW);
 
 	setUniform(mUniformsUse.WorldView, worldView);
 }
@@ -153,133 +171,84 @@ void ShaderProgram::setWorldViewMatrix(const Matrix4 & worldView)
 void ShaderProgram::setWorldViewProjectionMatrix(const Matrix4& worldViewProjection)
 {
 	if (mUniformsUse.WorldViewProjection < 0)
-		mUniformsUse.WorldViewProjection = getUniformLocation(STRINGIFY(WorldViewProjection));
+		mUniformsUse.WorldViewProjection = getUniformLocation(WORLDVIEWPROJECTION);
 
 	setUniform(mUniformsUse.WorldViewProjection, worldViewProjection);
 }
 
-uint ShaderProgram::getUniformLocation(const char* uniform)
+int ShaderProgram::getUniformLocation(const char* uniform)
 {
 	GLCall(uint uniformLocation = glGetUniformLocation(mShaderProgram, uniform));
 	//std::cout << "Uniform location: " << uniform << " " << uniformLocation << std::endl;
 	return uniformLocation;
 }
 
-uint ShaderProgram::getAttributeLocation(const char* uniform)
+int ShaderProgram::getAttributeLocation(const char* uniform)
 {
 	GLCall(uint attributeLocation = glGetAttribLocation(mShaderProgram, uniform));
 	return attributeLocation;
 }
 
-void ShaderProgram::useWorldMatrix() 
+ShaderProgram& ShaderProgram::getCurrentBound()
 {
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 World;\n);
+	return *mCurrentBoundShaderProgram;
 }
 
-void ShaderProgram::useViewMatrix() 
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 View;\n);
-}
-
-void ShaderProgram::useWorldViewMatrix() 
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 WorldView;\n);
-}
-
-void ShaderProgram::useProjectionMatrix() 
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 Projection;\n);
-}
-
-void ShaderProgram::useWorldViewProjectionMatrix()
-{
-	PRECODE_VERTEX += STRINGIFY(uniform mat4 WorldViewProjection; \n);
-}
-
-void ShaderProgram::useVertexAttribute() 
-{
-	ATTRIBUTE_VERTEX_POSITION += STRINGIFY(in vec3 VertexPosition_ModelSpace;\n);
-}
-
-void ShaderProgram::useNormalAttribute() 
-{
-	ATTRIBUTE_NORMAL_POSITION += STRINGIFY(in vec3 VertexNormal_ModelSpace;\n);
-}
-
-void ShaderProgram::useTextureCoord0Attribute()
-{
-	ATTRIBUTE_TEXTURECOORD0 += STRINGIFY(in vec2 TextureCoord0;\n);
-}
-
-void ShaderProgram::useTextureCoord1Attribute()
-{
-	ATTRIBUTE_TEXTURECOORD1 += STRINGIFY(in vec2 TextureCoord1;\n);
-}
-
-void ShaderProgram::useTextureCoord2Attribute()
-{
-	ATTRIBUTE_TEXTURECOORD2 += STRINGIFY(in vec2 TextureCoord2;\n);
-}
-
-void ShaderProgram::setCustomUniform(std::string customUniform)
-{
-	PRECODE_VERTEX += customUniform + STRINGIFY(\n);
-}
-
-void ShaderProgram::buildShadersFromSource(std::string shaderSource) 
+void ShaderProgram::build()
 {
 	//TODO: Generalize BEGIN/END codes to remove get from shader source resource the distinction
 	//		on what shader is going to be compiled and linked.
 	//TODO: Link method should also be able to receive multiples shaders to link to shader program
 	GLCall(mShaderProgram = glCreateProgram());
 	
-	std::string source;
-	source.assign(shaderSource.c_str(), shaderSource.length());
-
-	std::string BEGIN_VERTEXSHADER = STRINGIFY(#BEGIN VERTEXSHADER);
-	std::string END_VERTEXSHADER = STRINGIFY(#END VERTEXSHADER);
-
-	uint beginVertShaderPosition = source.find(BEGIN_VERTEXSHADER) + BEGIN_VERTEXSHADER.length();
-	uint endVertShaderPosition = source.find(END_VERTEXSHADER);
-	uint vertSourcePositionsCount = endVertShaderPosition - beginVertShaderPosition;
-	std::string vertShaderSource = 
-		PRECODE_VERTEX + 
-		ATTRIBUTE_VERTEX_POSITION +
-		ATTRIBUTE_NORMAL_POSITION +
-		ATTRIBUTE_TEXTURECOORD0 +
-		ATTRIBUTE_TEXTURECOORD1 +
-		ATTRIBUTE_TEXTURECOORD2 +
-		STRINGIFY(\n) + source.substr(beginVertShaderPosition, vertSourcePositionsCount);
-		
 	std::cout << "VERTEX SHADER" << std::endl;
+	std::string& vertShaderSource = VERSION + parser.getVertexShaderSource();
 	std::cout << vertShaderSource << std::endl;
 	const char* vertShaderSourceStr = vertShaderSource.c_str();
 	buildVertShaderFromSource(vertShaderSourceStr);
 
-	std::cout << std::endl;
-
-	std::string BEGIN_FRAGMENTSHADER = STRINGIFY(#BEGIN FRAGMENTSHADER);
-	std::string END_FRAGMENTSHADER = STRINGIFY(#END FRAGMENTSHADER);
-
-	uint beginFragShaderPosition = source.find(BEGIN_FRAGMENTSHADER) + BEGIN_FRAGMENTSHADER.length();
-	uint endFragShaderPosition = source.find(END_FRAGMENTSHADER);
-	uint fragSourcePositionsCount = endFragShaderPosition - beginFragShaderPosition;
-	std::string fragShaderSource = PRECODE_FRAGMENT + STRINGIFY(\n) + source.substr(beginFragShaderPosition, fragSourcePositionsCount);
-	
 	std::cout << "FRAGMENT SHADER" << std::endl;
+	std::string& fragShaderSource = VERSION + parser.getFragmentShaderSource();
 	std::cout << fragShaderSource << std::endl;
 	const char* fragShaderSourceStr = fragShaderSource.c_str();
 	buildFragShaderFromSource(fragShaderSourceStr);
 
 	link();
+
+	GLCall(glUseProgram(mShaderProgram));
+
+	for (auto& keyPair : mVertProgramName_ID)
+	{
+		const char* vertProgramNamePtr = keyPair.first.c_str();
+		GLCall(keyPair.second.index = glGetSubroutineIndex(mShaderProgram, GL_VERTEX_SHADER, vertProgramNamePtr));
+	}
+
+	for (auto& keyPair : mFragProgramName_ID)
+	{
+		const char* fragProgramNamePtr = keyPair.first.c_str();
+		GLCall(keyPair.second.index = glGetSubroutineIndex(mShaderProgram, GL_FRAGMENT_SHADER, fragProgramNamePtr));
+	}
 }
 
-void ShaderProgram::start()
+void ShaderProgram::addProgram(std::string shaderSource)
+{
+	Shader::Identifier identifier = parser.addProgram(shaderSource);
+	mFragmentShaderID = identifier.FragmentProgramID;
+	mVertexShaderID = identifier.VertexProgramID;
+
+	mFragProgramName_ID[mFragmentShaderID] = { 1, -1 };
+	mVertProgramName_ID[mVertexShaderID] = { 1, -1 };
+}
+
+void ShaderProgram::bind() const
 {
 	GLCall(glUseProgram(mShaderProgram));
+	mCurrentBoundShaderProgram = (ShaderProgram*)this;
+	GLCall(glUniformSubroutinesuiv(GL_VERTEX_SHADER, 1, &mVertProgramName_ID[mVertexShaderID].index));
+	GLCall(glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &mFragProgramName_ID[mFragmentShaderID].index));
 }
 
-void ShaderProgram::stop()
+void ShaderProgram::unbind() const
 {
 	GLCall(glUseProgram(0));
 }
@@ -294,7 +263,7 @@ void ShaderProgram::buildFragShaderFromSource(const char * fragShaderSource)
 	mFragShader = compileShaderFromSource(GL_FRAGMENT_SHADER, fragShaderSource);
 }
 
-uint ShaderProgram::compileShaderFromSource(uint shaderType, const char* source) 
+int ShaderProgram::compileShaderFromSource(uint shaderType, const char* source) 
 {
 	GLCall(uint shader = glCreateShader(shaderType));
 	GLCall(glShaderSource(shader, 1, &source, 0));	

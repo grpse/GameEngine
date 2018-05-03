@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Typedefs.h"
 
 // target, level, internalFormat, width, height, border, format, type
@@ -55,7 +56,8 @@ private:
     uint mID;
     uint mIndex;
 	Texture2DLayout mLayout;
-	mutable uint mRefCount;
+
+	mutable bool mWasCopied;
 
     void setupDefaults();
 };

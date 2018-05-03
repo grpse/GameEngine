@@ -1,73 +1,134 @@
 #pragma once
 
-const char* MeshShaderSource = R"(
+const char* PhongShading = R"(
 
-#BEGIN VERTEXSHADER
+#vertex vertProgram
+#fragment fragProgram
 
-out vec3 VertexPosition_WorldSpace;
-out vec3 VertexNormal_WorldSpace;
-out vec3 Eye_WorldSpace;
-
-void main()
+Vector4 vertProgram()
 {
-	VertexPosition_WorldSpace = (vec4(VertexPosition_ModelSpace, 1) * World).xyz;
-	VertexNormal_WorldSpace = (vec4(VertexNormal_ModelSpace, 1) * World).xyz;
-	Eye_WorldSpace = View[3].xyz;
-	gl_Position = WorldViewProjection * vec4(VertexPosition_ModelSpace, 1);	
+	PASS_POSITION = POSITION;
+	PASS_NORMAL = NORMAL;
+	return WORLDVIEWPROJECTION * vec4(POSITION, 1);
 }
 
-#END VERTEXSHADER
+Vector4 fragProgram() {
 
-#BEGIN FRAGMENTSHADER
+	vec3 WorldEyePosition = VIEW[3].xyz;
+	vec3 WorldVertexPosition = (WORLD * vec4(PASS_POSITION, 1)).xyz;
 
-#define MAX_LIGHTS_COUNT 10
+	vec3 N = normalize(WORLDINVERSETRANSPOSE * vec4(PASS_NORMAL, 1)).xyz;
+	vec3 E = normalize(WorldEyePosition - WorldVertexPosition);
+	vec3 L = normalize(-light.direction);
+	vec3 H = normalize(E + L);
 
-struct Light {
-	vec3 position;
-	vec3 direction;
-	vec4 color;
-	float intensity;
-	int type;
-};
-
-in vec3 VertexPosition_WorldSpace;
-in vec3 VertexNormal_WorldSpace;
-in vec3 Eye_WorldSpace;
-
-uniform Light LIGHTS[MAX_LIGHTS_COUNT];
-uniform int LIGHTS_COUNT = 0;
-
-vec4 CalculateDiffuseColor(Light light) {
-	float diffuseFactor = max(0, dot(-light.direction, VertexNormal_WorldSpace));
-	return light.color * light.intensity * diffuseFactor;
-}
-
-vec4 CalculateSpecularColor(Light light) {
-	vec3 E = normalize(Eye_WorldSpace - VertexPosition_WorldSpace);
-	vec3 R = normalize(reflect(light.direction, VertexNormal_WorldSpace));
-
-	float specularFactor = pow(max(0 , dot(E, R)), light.intensity);
-
-	return light.color * light.intensity * specularFactor;
-}
-
-void main() {
-
-	//calculate the diffuse and specular contributions	
-	// TODO: External set AmbienteLightColor
-	vec4 AmbientLightColor = vec4(0.3, 0.3, 0.3, 1);
-	vec4 SpecularColor = vec4(0, 0, 0, 0);
-	vec4 DiffuseColor = vec4(0, 0, 0, 0);
-
-	for (int i = 0; i < LIGHTS_COUNT; i++)
-	{
-		SpecularColor += CalculateSpecularColor(LIGHTS[i]);
-		DiffuseColor += CalculateDiffuseColor(LIGHTS[i]);
+	//calculate the diffuse and specular contributions
+	float diff = max(0, dot(N, L));
+	float spec = pow(max(0, dot(N, H)), light.intensity);
+	
+	if(diff <= 0) {
+		spec = 0;
 	}
 
-	gl_FragColor = AmbientLightColor + SpecularColor + DiffuseColor;
+	//output diffuse
+	vec4 diffColor = DiffuseColor * diff * light.color;
+
+	//output specular
+	vec4 specColor = SpecularColor * light.color * spec;
+	return vec4((AmbientColor + specColor + diffColor).rgb, 1);
 }
 
-#END FRAGMENTSHADER
+)";
+
+const char* GouraudADS = R"(
+
+#vertex vertProgram
+#fragment fragProgram
+
+// TODO: remove uniform duplications to avoid redefinitions errors
+// TODO: remove in/out duplications to avoid redefinitions errors
+// TODO: in/out definition could be preprocessed to create on vertex -> fragment context
+
+#begin vertex_variables
+out vec4 GouraudADSColor;
+#end vertex_variables
+
+Vector4 vertProgram()
+{
+	vec3 WorldEyePosition = VIEW[3].xyz;
+	vec3 WorldVertexPosition = (WORLD * vec4(POSITION, 1)).xyz;
+
+	vec3 N = normalize(WORLDINVERSETRANSPOSE * vec4(NORMAL, 1)).xyz;
+	vec3 E = normalize(WorldEyePosition - WorldVertexPosition);
+	vec3 L = normalize(-light.direction);
+	vec3 H = normalize(E + L);
+
+	//calculate the diffuse and specular contributions
+	float diff = max(0, dot(N, L));
+	float spec = pow(max(0, dot(N, H)), light.intensity);
+	
+	if(diff <= 0) {
+		spec = 0;
+	}
+
+	//output diffuse
+	vec4 diffColor = DiffuseColor * diff * light.color;
+
+	//output specular
+	vec4 specColor = SpecularColor * light.color * spec;
+	GouraudADSColor = vec4((AmbientColor + specColor + diffColor).rgb, 1);
+
+	return WORLDVIEWPROJECTION * vec4(POSITION, 1);
+}
+
+#begin fragment_variables
+in vec4 GouraudADSColor;
+#end fragment_variables
+
+Vector4 fragProgram() {
+	return GouraudADSColor;
+}
+
+)";
+
+
+const char* GouraudAD = R"(
+
+#vertex vertProgram
+#fragment fragProgram
+
+
+#begin vertex_variables
+out vec4 GouraudADColor;
+#end vertex_variables
+
+Vector4 vertProgram()
+{
+	vec3 WorldEyePosition = VIEW[3].xyz;
+	vec3 WorldVertexPosition = (WORLD * vec4(POSITION, 1)).xyz;
+
+	vec3 N = normalize(WORLDINVERSETRANSPOSE * vec4(NORMAL, 1)).xyz;
+	vec3 E = normalize(WorldEyePosition - WorldVertexPosition);
+	vec3 L = normalize(-light.direction);
+	vec3 H = normalize(E + L);
+
+	//calculate the diffuse 
+	float diff = max(0, dot(N, L));
+
+	//output diffuse
+	vec4 diffColor = DiffuseColor * diff * light.color;
+
+	GouraudADColor = vec4((AmbientColor + diffColor).rgb, 1);
+
+	return WORLDVIEWPROJECTION * vec4(POSITION, 1);
+}
+
+#begin fragment_variables
+in vec4 GouraudADColor;
+#end fragment_variables
+
+Vector4 fragProgram() {
+	return GouraudADColor;
+}
 
 )";

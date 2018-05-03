@@ -1,33 +1,26 @@
+#include "Typedefs.h"
 #include "Time.h"
-#include <SDL.h>
+#include <iostream>
+#include <chrono>
 
+using ms = std::chrono::duration<double, std::milli>;
+std::chrono::high_resolution_clock timer;
 double mDeltaTime;
-Uint64 NOW = 0;
-Uint64 LAST = 0;
-double deltaTimeInSecondsFraction = 0;
-double mElapsedSecond = 0;
-
+std::chrono::time_point<std::chrono::steady_clock> NOW, LAST;
 
 double Time::getDeltaTime()
 {
 	return mDeltaTime;
 }
 
-void Time::start()
+void Time::startDeltaTime()
 {
-	NOW = SDL_GetPerformanceCounter();
+	NOW = std::chrono::high_resolution_clock::now();
 }
 
 void Time::updateDeltaTime()
-{	
-	LAST = NOW;
-	NOW = SDL_GetPerformanceCounter();
-
-	deltaTimeInSecondsFraction = (double)((NOW - LAST) * 1000 / SDL_GetPerformanceFrequency()) / 1000;
-	setDeltaTime(deltaTimeInSecondsFraction);
-}
-
-void Time::setDeltaTime(double delta)
 {
-	mDeltaTime = delta;
+	LAST = NOW;
+	NOW = NOW = std::chrono::high_resolution_clock::now();
+	mDeltaTime = std::chrono::duration_cast<ms>(NOW - LAST).count() / 1000;
 }

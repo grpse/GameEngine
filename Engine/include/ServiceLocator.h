@@ -1,32 +1,15 @@
 #pragma once
 #include "OSExport.h"
 
-class Window;
-class ShadowRenderer;
+template <class Type>
+class ENGINE_API ServiceLocator {
 
-class ENGINE_API Locator {
-public:	
-	inline static void provideWindow(Window* window)
+public:
+	static Type& getService()
 	{
-		mWindow = window;
+		return mService;
 	}
 
-	inline static Window* locateWindow()
-	{
-		return mWindow;
-	}
-
-	inline static void provideShadowRenderer(ShadowRenderer* shadowRenderer)
-	{
-		mShadowRenderer = shadowRenderer;
-	}
-
-	inline static ShadowRenderer* locateShadowRenderer()
-	{
-		return mShadowRenderer;
-	}
-
-private:
-	static Window* mWindow;
-	static ShadowRenderer* mShadowRenderer;
+public:
+	static Type mService;
 };

@@ -2,15 +2,24 @@
 
 #include "Typedefs.h"
 
-
 class VertexBuffer {
 
 public:
     VertexBuffer();
-    VertexBuffer(const void* data, uint size);
+	VertexBuffer(const VertexBuffer& other);
     ~VertexBuffer();
 
-    void load(const void* data, uint size);
+	template<typename Type>
+	void load(const void* data, uint count)
+	{
+		load(data, count * sizeof(Type));
+	}
+
+	template<typename Type>
+	void loadDynamic(const void* data, uint count)
+	{
+		loadDynamic(data, count * sizeof(count));
+	}
 
     void bind() const;
     void unbind() const;
@@ -18,4 +27,8 @@ public:
 private:
     uint mID;
 
+    void load(const void* data, uint size);
+	void loadDynamic(const void* data, uint size);
+
+	friend class VertexArray;
 };

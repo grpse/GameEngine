@@ -1,18 +1,22 @@
-#include <GL/glew.h>
 #include "Mesh.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
+#include "Renderer.h"
+#include <iostream>
+#include "AttributesNamesDefines.h"
+#include <vector>
 
-Mesh::Mesh() : mMarkedAsCopy(false)
+Mesh::Mesh()
+	: mMarkedAsCopy(false)
 {
-
+	mIsIndexed = false;
 }
 
 Mesh::Mesh(const Mesh& other)
 {
 	mVertexArray = other.mVertexArray;
 	mIndexBuffer = other.mIndexBuffer;
-	other.mMarkedAsCopy = true;
+	mIsIndexed = other.mIsIndexed;
+	mIndexStart = other.mIndexStart;
+	mIndexEnd = other.mIndexEnd;
 }
 
 Mesh::Mesh(VertexArray& vertexArray, IndexBuffer& indexBuffer)
@@ -20,24 +24,50 @@ Mesh::Mesh(VertexArray& vertexArray, IndexBuffer& indexBuffer)
 	load(vertexArray, indexBuffer);
 }
 
+Mesh::Mesh(VertexArray& vertexArray, uint indexStart, uint indexEnd)
+{
+	mIsIndexed = false;
+	mVertexArray = vertexArray;
+	mIndexStart = indexStart;
+	mIndexEnd = indexEnd;
+}
+
+Mesh::Mesh(VertexArray& vertexArray, uint indexStart, uint indexEnd, std::vector<Vertex> vertices)
+{
+	mIsIndexed = false;
+	mVertexArray = vertexArray;
+	mIndexStart = indexStart;
+	mIndexEnd = indexEnd;
+	mVertices = vertices;
+}
+
 Mesh::~Mesh()
 {
-	if (!mMarkedAsCopy)
+}
+
+void Mesh::render(const Renderer& renderer) const
+{
+	if (mIsIndexed)
 	{
-	//	mVertexArray.deleteBuffer();
-	//	mIndexBuffer.deleteBuffer();
+		renderer.render(mVertexArray, mIndexBuffer);
 	}
+	else
+	{
+		renderer.render(mVertexArray, mIndexStart, mIndexEnd);
+	}
+
 }
 
 void Mesh::load(VertexArray& vertexArray, IndexBuffer& indexBuffer)
 {
 	mVertexArray = vertexArray;
 	mIndexBuffer = indexBuffer;
+	mIsIndexed = true;
 }
 
-void Mesh::markAsCopy() const
+const std::vector<Vertex>& Mesh::getVertices() const
 {
-	mMarkedAsCopy = true;
+	return mVertices;
 }
 
 const VertexArray& Mesh::getVertexArray() const
@@ -51,20 +81,20 @@ const IndexBuffer& Mesh::getIndexBuffer() const
 }
 
 Mesh Mesh::createQuad() {
-	Mesh quad;
-	quad.markAsCopy();
-
 	VertexArray vao;
-	VertexBuffer vbo;
-	VertexBufferLayout layout;
 	IndexBuffer ibo;
 
 	Vertex v1, v2, v3, v4;
 
-	v1.position = { -1, 0, -1 }; v1.texturecoord0 = { 0, 0 };
-	v2.position = { 1, 0, -1 }; v2.texturecoord0 = { 1, 0 };
-	v3.position = { 1, 0,  1 }; v3.texturecoord0 = { 1, 1 };
-	v4.position = { -1, 0,  1 }; v4.texturecoord0 = { 0, 1 };
+	v1.position = { -1, 0, -1 };
+	v2.position = { 1, 0, -1 };
+	v3.position = { 1, 0,  1 };
+	v4.position = { -1, 0,  1 };
+
+	v1.texturecoord0 = { 0, 0 };
+	v2.texturecoord0 = { 1, 0 };
+	v3.texturecoord0 = { 1, 1 };
+	v4.texturecoord0 = { 0, 1 };
 
 	v1.normal = { 0, 0, -1 };
 	v2.normal = { 0, 0, -1 };
@@ -79,18 +109,13 @@ Mesh Mesh::createQuad() {
 		0, 1, 2, 0, 2, 3
 	};
 
-	vbo.load(description, sizeof(description));
+	vao.createVertexBuffer<Vertex>(description, 4, {
+		{ 3, POSITION, false },
+		{ 3, NORMAL, true },
+		{ 2, TEXCOORD0, false }
+		});
 
-	layout.pushFloat(3);
-	layout.pushFloat(3);
-	layout.pushFloat(2);
+	ibo.load<uint>(indices, 6);
 
-	vao.generateBuffer();
-	vao.setVertexBuffer(vbo, layout);
-
-	ibo.load(indices, 6);
-
-	quad.load(vao, ibo);
-
-	return quad;
+	return Mesh(vao, ibo);
 }

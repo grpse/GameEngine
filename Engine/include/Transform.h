@@ -17,12 +17,13 @@ public:
     void setParent(Transform* parent);
     void addChild(Transform* child);
     void removeChild(Transform* child);
-    
+	void lookAt(Vector3 position);
     
     const Vector3& getLocalPosition() const;
     const Quaternion& getLocalRotation() const;
     const Vector3& getLocalScale() const;
     const Matrix4& getWorldMatrix() const;
+	const Matrix4& getWorldInverseTranspose() const;
     const Transform* const getParent() const;
     Transform* getChildren() const;
     uint getChildrenCount() const;
@@ -41,6 +42,7 @@ private:
     Quaternion mLocalRotation;
     Vector3 mLocalScale;
     mutable Matrix4 mWorldMatrix;
+	mutable Matrix4 mWorldInverseTransposeMatrix;
     mutable bool mValidCalcCachedMatrix;
 
 	uint mMaxChildren;

@@ -12,28 +12,41 @@ uint VertexBufferElement::GetSizeOfType(unsigned int type)
 	return 0;
 }
 
-VertexBufferLayout::VertexBufferLayout() : mStride(0) 
+
+VertexBufferLayout::VertexBufferLayout() 
+	: mStride(0)
 {
+
 }
 
-void VertexBufferLayout::pushUint(uint count, bool normalized)
+VertexBufferLayout::VertexBufferLayout(std::initializer_list<ElementDescription> descriptions) : mStride(0)
 {
-	mElements.push_back({ GL_UNSIGNED_INT, count, normalized });
+	for (auto& description : descriptions)
+	{
+		pushFloat(description.count, description.attributeName, description.normalized);
+	}
+}
+
+void VertexBufferLayout::pushUint(uint count, const char* attributeName, bool normalized)
+{
+	VertexBufferElement element;
+	element.type = GL_UNSIGNED_INT;
+	element.count = count;
+	element.normalized = normalized ? GL_TRUE : GL_FALSE;
+	memcpy(element.attributeName, attributeName, strlen(attributeName) + 1);
+
+	mElements.push_back(element);
 	mStride += count * VertexBufferElement::GetSizeOfType(GL_INT);
 }
 
-void VertexBufferLayout::pushFloat(uint count, bool normalized)
+void VertexBufferLayout::pushFloat(uint count, const char* attributeName, bool normalized)
 {
-	mElements.push_back({ GL_FLOAT, count, normalized });
+	VertexBufferElement element;
+	element.type = GL_FLOAT;
+	element.count = count;
+	element.normalized = normalized ? GL_TRUE : GL_FALSE;
+	memcpy(element.attributeName, attributeName, strlen(attributeName) + 1);
+
+	mElements.push_back(element);
 	mStride += count * VertexBufferElement::GetSizeOfType(GL_FLOAT);
-}
-
-const std::vector<VertexBufferElement>& VertexBufferLayout::getElements() const 
-{ 
-	return mElements; 
-}
-
-uint VertexBufferLayout::getStride() const 
-{ 
-	return mStride; 
 }

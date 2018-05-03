@@ -1,317 +1,355 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{e93cd8d3-ac8c-4837-b84d-e7073af1739a}</UniqueIdentifier>
+    <Filter Include="_external">
+      <UniqueIdentifier>{f621e78d-f810-488e-990f-8f0231b26af0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{f1a625c7-3e9e-47e9-8295-9e448e1c48fc}</UniqueIdentifier>
-      <Extensions>.cpp;.c</Extensions>
-    </Filter>
-    <Filter Include="Headers\objloader">
+    <Filter Include="_external\objloader">
       <UniqueIdentifier>{bb9bae6d-53cd-4709-8eb9-15fa686d5c21}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\scene">
-      <UniqueIdentifier>{79d20ec6-3c63-442c-9aa4-0ff554de2a5c}</UniqueIdentifier>
+    <Filter Include="_external\SOIL">
+      <UniqueIdentifier>{106d37d9-c46d-4c02-8a15-e858284baa77}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\scene">
-      <UniqueIdentifier>{1548a332-95a4-47aa-9b45-c820ebee3056}</UniqueIdentifier>
+    <Filter Include="_external\glew">
+      <UniqueIdentifier>{3162f8c9-69d6-4f5c-bf18-2909e817ab04}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\components">
-      <UniqueIdentifier>{35a2cb19-7b17-4bc7-8037-202cde241152}</UniqueIdentifier>
+    <Filter Include="Source">
+      <UniqueIdentifier>{5521795b-2164-40ef-b11e-eac73a5bf741}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\renderables">
-      <UniqueIdentifier>{6edda6d4-acac-4479-8cee-a9eb7098baaf}</UniqueIdentifier>
+    <Filter Include="Source\graphics">
+      <UniqueIdentifier>{a2911e0a-6be9-4232-8f0f-2f0c3995f358}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Headers\test_scenes">
-      <UniqueIdentifier>{bfe0602a-a89a-42a3-999b-3152cc27a1ff}</UniqueIdentifier>
+    <Filter Include="Source\graphics\low-level">
+      <UniqueIdentifier>{9d5a8f25-30ad-4959-908d-ce9df5061775}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sources\test_scenes">
-      <UniqueIdentifier>{4dee115d-fb2d-426d-b2bb-db863481041a}</UniqueIdentifier>
+    <Filter Include="Source\maths">
+      <UniqueIdentifier>{4218c834-fa90-4d6f-8b35-2cd40ac957b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="external">
-      <UniqueIdentifier>{937300c9-8972-44e5-ac04-3c212aa3e048}</UniqueIdentifier>
+    <Filter Include="Source\application">
+      <UniqueIdentifier>{dc79dfa5-4944-45c6-8fbe-3f15bd53e928}</UniqueIdentifier>
     </Filter>
-    <Filter Include="external\SOIL">
-      <UniqueIdentifier>{e3398a63-eec0-4240-a55d-80ca47b71818}</UniqueIdentifier>
+    <Filter Include="Source\common">
+      <UniqueIdentifier>{15a1c5fc-3e05-4927-96b8-4156548c9f06}</UniqueIdentifier>
     </Filter>
-    <Filter Include="external\glew">
-      <UniqueIdentifier>{da0702a2-a681-4d9c-8b47-a13ee40310de}</UniqueIdentifier>
+    <Filter Include="Source\scene">
+      <UniqueIdentifier>{2e16ad89-ac71-4a46-b642-30ced1380c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\renderables">
+      <UniqueIdentifier>{39b738f7-63ed-46ae-ac09-33448887cd47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\memory">
+      <UniqueIdentifier>{026a10c9-b42a-4e8e-8966-6f4ece2515dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="_external\imgui">
+      <UniqueIdentifier>{bc49488f-a7ff-4b9a-8399-2f0ef21a95cb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Camera.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GameLoop.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GLErrorHandling.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IndexBuffer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\LinearMath.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Loader.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Mesh.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MeshRenderer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\OSExport.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Particle.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ParticleBasicShader.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ParticleMaster.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ParticleRenderer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ParticleSystem.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Rect.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ShaderProgram.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Texture2D.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Time.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Transform.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Typedefs.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexArray.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexBuffer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\VertexBufferLayout.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Window.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h" />
-    <ClInclude Include="include\MeshShaderSource.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
     <ClInclude Include="external\objloader\objloader.hpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClInclude>
     <ClInclude Include="external\objloader\tangentspace.hpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClInclude>
     <ClInclude Include="external\objloader\vboindexer.hpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClInclude>
-    <ClInclude Include="include\RendererOpenGL.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="external\SOIL\image_DXT.h">
+      <Filter>_external\SOIL</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderer.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="external\SOIL\image_helper.h">
+      <Filter>_external\SOIL</Filter>
     </ClInclude>
-    <ClInclude Include="include\FrameBuffer.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="external\SOIL\SOIL.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\stb_image_aug.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\stbi_DDS_aug.h">
+      <Filter>_external\SOIL</Filter>
+    </ClInclude>
+    <ClInclude Include="external\SOIL\stbi_DDS_aug_c.h">
+      <Filter>_external\SOIL</Filter>
     </ClInclude>
     <ClInclude Include="include\BillboardRenderer.h">
-      <Filter>Headers</Filter>
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MeshRenderer.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MeshShaderSource.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParticleRenderer.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParticleBasicShader.h">
+      <Filter>Source\renderables</Filter>
     </ClInclude>
     <ClInclude Include="include\ShadowRenderer.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Input.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Component.h">
-      <Filter>Headers\components</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Actor.h">
-      <Filter>Headers\scene</Filter>
+      <Filter>Source\renderables</Filter>
     </ClInclude>
     <ClInclude Include="include\Light.h">
-      <Filter>Headers\scene</Filter>
+      <Filter>Source\scene</Filter>
     </ClInclude>
-    <ClInclude Include="include\Scene.h">
-      <Filter>Headers\scene</Filter>
+    <ClInclude Include="include\Camera.h">
+      <Filter>Source\scene</Filter>
     </ClInclude>
-    <ClInclude Include="include\Renderable.h">
-      <Filter>Headers\renderables</Filter>
+    <ClInclude Include="include\GLErrorHandling.h">
+      <Filter>Source\graphics\low-level</Filter>
     </ClInclude>
-    <ClInclude Include="include\Material.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="include\Mesh.h">
+      <Filter>Source\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="include\MainScene.h">
-      <Filter>Headers\test_scenes</Filter>
+    <ClInclude Include="include\Particle.h">
+      <Filter>Source\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="external\SOIL\src\image_DXT.h">
-      <Filter>external\SOIL</Filter>
+    <ClInclude Include="include\ParticleSystem.h">
+      <Filter>Source\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="external\SOIL\src\image_helper.h">
-      <Filter>external\SOIL</Filter>
+    <ClInclude Include="include\ParticleMaster.h">
+      <Filter>Source\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="external\SOIL\src\SOIL.h">
-      <Filter>external\SOIL</Filter>
+    <ClInclude Include="include\Rect.h">
+      <Filter>Source\maths</Filter>
     </ClInclude>
-    <ClInclude Include="external\SOIL\src\stb_image_aug.h">
-      <Filter>external\SOIL</Filter>
+    <ClInclude Include="include\LinearMath.h">
+      <Filter>Source\maths</Filter>
     </ClInclude>
-    <ClInclude Include="external\SOIL\src\stbi_DDS_aug.h">
-      <Filter>external\SOIL</Filter>
+    <ClInclude Include="include\Transform.h">
+      <Filter>Source\maths</Filter>
     </ClInclude>
-    <ClInclude Include="external\SOIL\src\stbi_DDS_aug_c.h">
-      <Filter>external\SOIL</Filter>
+    <ClInclude Include="include\Renderer.h">
+      <Filter>Source\graphics\low-level</Filter>
     </ClInclude>
-    <ClInclude Include="include\stdafx.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="include\VertexArray.h">
+      <Filter>Source\graphics\low-level</Filter>
     </ClInclude>
-    <ClInclude Include="include\targetver.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="include\VertexBuffer.h">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClInclude>
+    <ClInclude Include="include\VertexBufferLayout.h">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IndexBuffer.h">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderProgram.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Texture2D.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\FrameBuffer.h">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GameLoop.h">
+      <Filter>Source\application</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Input.h">
+      <Filter>Source\application</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Loader.h">
+      <Filter>Source\application</Filter>
+    </ClInclude>
+    <ClInclude Include="include\OSExport.h">
+      <Filter>Source\application</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Time.h">
+      <Filter>Source\application</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Window.h">
+      <Filter>Source\application</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Typedefs.h">
+      <Filter>Source\common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderParser.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MatricesNamesDefines.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AttributesNamesDefines.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShadowShader.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SkyboxRenderer.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CubeMap.h">
+      <Filter>Source\graphics</Filter>
     </ClInclude>
     <ClInclude Include="include\ServiceLocator.h">
-      <Filter>Headers</Filter>
+      <Filter>Source\memory</Filter>
     </ClInclude>
-    <ClInclude Include="include\ShadowShaders.h">
-      <Filter>Headers</Filter>
+    <ClInclude Include="include\MeshSoftwareRenderer.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MeshSoftwareRendererShader.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imconfig.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui_impl_glfw_gl3.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\imgui_internal.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\stb_rect_pack.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\stb_textedit.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="external\imgui\stb_truetype.h">
+      <Filter>_external\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene.h">
+      <Filter>Source\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PoolAllocator.h">
+      <Filter>Source\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Engine.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BillboardShader.h">
+      <Filter>Source\renderables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GameLoop.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\IndexBuffer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Loader.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Particle.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleMaster.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleRenderer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ParticleSystem.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ShaderProgram.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Texture2D.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Time.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Transform.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\VertexArray.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\VertexBuffer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Window.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
     <ClCompile Include="external\objloader\objloader.cpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClCompile>
     <ClCompile Include="external\objloader\tangentspace.cpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClCompile>
     <ClCompile Include="external\objloader\vboindexer.cpp">
-      <Filter>Headers\objloader</Filter>
+      <Filter>_external\objloader</Filter>
     </ClCompile>
-    <ClCompile Include="src\RendererOpenGL.cpp">
-      <Filter>Sources</Filter>
+    <ClCompile Include="external\SOIL\image_DXT.c">
+      <Filter>_external\SOIL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
-      <Filter>Sources</Filter>
+    <ClCompile Include="external\SOIL\image_helper.c">
+      <Filter>_external\SOIL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Input.cpp">
-      <Filter>Sources</Filter>
+    <ClCompile Include="external\SOIL\SOIL.c">
+      <Filter>_external\SOIL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Actor.cpp">
-      <Filter>Sources\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
-      <Filter>Sources\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Material.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MeshRenderer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ShadowRenderer.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MainScene.cpp">
-      <Filter>Sources\test_scenes</Filter>
-    </ClCompile>
-    <ClCompile Include="external\SOIL\src\image_DXT.c">
-      <Filter>external\SOIL</Filter>
-    </ClCompile>
-    <ClCompile Include="external\SOIL\src\image_helper.c">
-      <Filter>external\SOIL</Filter>
-    </ClCompile>
-    <ClCompile Include="external\SOIL\src\SOIL.c">
-      <Filter>external\SOIL</Filter>
-    </ClCompile>
-    <ClCompile Include="external\SOIL\src\stb_image_aug.c">
-      <Filter>external\SOIL</Filter>
+    <ClCompile Include="external\SOIL\stb_image_aug.c">
+      <Filter>_external\SOIL</Filter>
     </ClCompile>
     <ClCompile Include="external\glew\src\glew.c">
-      <Filter>external\glew</Filter>
+      <Filter>_external\glew</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source\scene</Filter>
     </ClCompile>
     <ClCompile Include="src\Light.cpp">
-      <Filter>Sources\scene</Filter>
+      <Filter>Source\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleRenderer.cpp">
+      <Filter>Source\renderables</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShadowRenderer.cpp">
+      <Filter>Source\renderables</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Particle.cpp">
+      <Filter>Source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleMaster.cpp">
+      <Filter>Source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderProgram.cpp">
+      <Filter>Source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture2D.cpp">
+      <Filter>Source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>Source\maths</Filter>
     </ClCompile>
     <ClCompile Include="src\FrameBuffer.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\IndexBuffer.cpp">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexArray.cpp">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexBuffer.cpp">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameLoop.cpp">
+      <Filter>Source\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input.cpp">
+      <Filter>Source\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Loader.cpp">
+      <Filter>Source\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Time.cpp">
+      <Filter>Source\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Window.cpp">
+      <Filter>Source\application</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CubeMap.cpp">
+      <Filter>Source\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SkyboxRenderer.cpp">
+      <Filter>Source\renderables</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLErrorHandling.cpp">
+      <Filter>Source\graphics\low-level</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_demo.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_draw.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_impl_glfw_gl3.cpp">
+      <Filter>_external\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>Source\scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshRenderer.cpp">
+      <Filter>Source\renderables</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BillboardRenderer.cpp">
+      <Filter>Source\renderables</Filter>
     </ClCompile>
     <ClCompile Include="src\Mesh.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source\graphics</Filter>
     </ClCompile>
     <ClCompile Include="src\VertexBufferLayout.cpp">
-      <Filter>Sources</Filter>
+      <Filter>Source\graphics\low-level</Filter>
     </ClCompile>
-    <ClCompile Include="src\dllmain.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\stdafx.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ServiceLocator.cpp">
-      <Filter>Sources</Filter>
+    <ClCompile Include="src\MeshSoftwareRenderer.cpp">
+      <Filter>Source\renderables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

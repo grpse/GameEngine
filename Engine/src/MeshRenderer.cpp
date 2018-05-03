@@ -1,38 +1,20 @@
-#include <GL/glew.h>
-#include "Renderer.h"
 #include "MeshRenderer.h"
-#include "MeshShaderSource.h"
+#include "Renderer.h"
 #include "Mesh.h"
-#include "Actor.h"
-#include "Light.h"
 #include "Camera.h"
-#include "ShaderProgram.h"
 #include "GLErrorHandling.h"
-#include "Material.h"
-#include "ShadowRenderer.h"
-#include "LinearMath.h"
+#include "MeshShaderSource.h"
 #include "Transform.h"
-#include "FrameBuffer.h"
+#include "Light.h"
 
 MeshRenderer::MeshRenderer()
 {
-	mShadowRenderer = new ShadowRenderer();
-	ShaderProgram Shader;
-	Shader.useVertexAttribute();
-	Shader.useNormalAttribute();
-	Shader.useTextureCoord0Attribute();
 
-	Shader.useProjectionMatrix();
-	Shader.useWorldViewMatrix();
-	Shader.useWorldViewProjectionMatrix();
-	Shader.useWorldMatrix();
-	Shader.useViewMatrix();
+	mPhong.addProgram(PhongShading);
+	mGouraudAD.addProgram(GouraudAD);
+	mGouraudADS.addProgram(GouraudADS);
 
-	Shader.buildShadersFromSource(MeshShaderSource);
-	mMaterial.setShaderProgram(Shader);
-
-	mShouldCastShadow = false;
-	mShouldReceiveShadow = false;
+	mShader = mPhong;
 }
 
 MeshRenderer::~MeshRenderer()
@@ -40,109 +22,82 @@ MeshRenderer::~MeshRenderer()
 
 }
 
-void MeshRenderer::setMesh(const Mesh& mesh)
+void MeshRenderer::setup()	
 {
-	mesh.markAsCopy();
-	mCurrentMesh = mesh;
+	mShader.bind();
+	mLightUniforms.position = mShader.getUniformLocation("light.position");
+	mLightUniforms.direction = mShader.getUniformLocation("light.direction");
+	mLightUniforms.color = mShader.getUniformLocation("light.color");
+	mLightUniforms.intensity = mShader.getUniformLocation("light.intensity");
+	mDiffuseColorLocation = mShader.getUniformLocation("DiffuseColor");
 }
 
-void MeshRenderer::setReceiveShadow(const bool shouldReceiveShadow)
-{
-	mShouldReceiveShadow = shouldReceiveShadow;
-}
 
-void MeshRenderer::setCastShadow(const bool shouldCastShadow)
-{
-	mShouldCastShadow = shouldCastShadow;
-}
-
-void MeshRenderer::preRender(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
-{
-	/*
-	mShadowRenderer->getShadowBuffer().bind();
-	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
-	{
-		mShadowRenderer->renderShadowMap(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
-	}
-	mShadowRenderer->getShadowBuffer().unbind();
-	*/
-}
-
-void MeshRenderer::render(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
+void MeshRenderer::render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
 {
 	prepare(renderer);
 
-	//TODO: render phong model (maybe), lit without shadows.
-	const auto& vao = mCurrentMesh.getVertexArray();
-	const auto& ibo = mCurrentMesh.getIndexBuffer();
-
-	const Matrix4& World = actor.transform.getWorldMatrix();
+	const Matrix4& NormalMatrix = transform.getWorldInverseTranspose();
+	const Matrix4& World = transform.getWorldMatrix();
 	const Matrix4& View = camera.getViewMatrix();
+	const Matrix4& Projection = camera.getProjectionMatrix();
 	const Matrix4 WorldView = View * World;
-	const Matrix4 WorldViewProjection = camera.getProjectionMatrix() * WorldView;
+	const Matrix4 WorldViewProjection = Projection * WorldView;
 
-	mMaterial.getShaderProgram().setWorldViewProjectionMatrix(WorldViewProjection);
-	mMaterial.getShaderProgram().setWorldViewMatrix(WorldView);
-	mMaterial.getShaderProgram().setWorldMatrix(World);
-	mMaterial.getShaderProgram().setViewMatrix(View);
+	mShader.setWorldMatrix(World);
+	mShader.setViewMatrix(View);
+	mShader.setWorldViewMatrix(WorldView);
+	mShader.setWorldViewProjectionMatrix(WorldViewProjection);
+	mShader.setWorldInverseTranspose(NormalMatrix);
 
-	renderer.render(vao, ibo);
+	mShader.setUniform(mLightUniforms.position, directional.position);
+	mShader.setUniform(mLightUniforms.direction, directional.direction);
+	mShader.setUniform(mLightUniforms.color, directional.color);
+	mShader.setUniform(mLightUniforms.intensity, directional.intensity);
+
+	renderer.render(mesh);
 
 	finishRendering(renderer);
 }
 
-void MeshRenderer::postRender(const Camera & camera, const Light * lights, uint lightsCount, const Actor & actor, const Renderer & renderer) const
+void MeshRenderer::setDiffuseColor(const Color32& color)
 {
-	//renderer.enableDepthTest();
-	//renderer.enableBlend();
-	// TODO: apply only shadows on this model using blending
-	// TODO: set right blend function
-	//renderer.setBlendSrcAlpha_One();
-
-	/*
-	for (uint lightIndex = 0; lightIndex < lightsCount; lightIndex++)
-	{
-		mShadowRenderer->renderAdditiveShadow(camera, *mCurrentMesh, actor.transform, lights[lightIndex], renderer);
-	}
-	*/
+	mShader.setUniform(mDiffuseColorLocation, color);
 }
 
-Renderable::QueueType MeshRenderer::getRenderQueue() const 
+ShaderProgram& MeshRenderer::getShaderProgram()
 {
-	//	return mMaterial->getQueueType();
-	return Renderable::QueueType::Opaque;
+	return mShader;
 }
 
-void MeshRenderer::setMaterial(const Material & material)
+void MeshRenderer::usePhong()
 {
-	mMaterial = material;
+	mShader = mPhong;
 }
 
-const Material & MeshRenderer::getMaterial() const
+void MeshRenderer::useGouraudAD()
 {
-	return mMaterial;
+	mShader = mGouraudAD;
 }
 
-bool MeshRenderer::hasPrePassStep() const
+void MeshRenderer::useGouraudADS()
 {
-	return mShouldCastShadow;
+	mShader = mGouraudADS;
 }
 
-bool MeshRenderer::hasPostPassStep() const
-{
-	return mShouldReceiveShadow;
-}
 
-void MeshRenderer::prepare(const Renderer& renderer) const
+/// PRIVATE
+void MeshRenderer::prepare(const Renderer& renderer)
 {
-	mMaterial.use();
+	mShader.bind();
 	renderer.enableDepthTest();
-	//renderer.enableCullFace();
-	//renderer.cullBackFace();
+	renderer.setDepthMask();
+	renderer.enableCullFace();
+	renderer.cullBackFace();
 }
 
-void MeshRenderer::finishRendering(const Renderer& renderer) const
+void MeshRenderer::finishRendering(const Renderer& renderer)
 {
-	//renderer.disableCullFace();
-	//renderer.disableDepthTest();
+	renderer.disableCullFace();
+	renderer.disableDepthTest();
 }
