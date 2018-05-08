@@ -74,7 +74,8 @@ public:
 
 	virtual void onGUI()
 	{
-		ImGui::Begin(WindowName.c_str());
+		ImGui::Begin("Controls");
+		ImGui::Text("Render Engine: %s", RenderEngineName.c_str());
 		ImGui::Text("FPS: %d", FPS);
 
 		ImGui::Separator();
@@ -89,8 +90,8 @@ public:
 		ImGui::Text("Camera Settings:");
 		ImGui::DragFloat("Aspect Ratio", &AspectRatio, 0.01f, 0.01f, 5.0f);
 		ImGui::DragFloat("Field Of View", &FieldOfView, 0.001f, 30.0f, 120.0f);
-		ImGui::DragFloat("Near Plane", &NearPlane, 0.0001f, 0.0001f, 1.0f);
-		ImGui::DragFloat("Far Plane", &FarPlane, 0.0001f, 1.0f, 10000.0f);
+		ImGui::DragFloat("Near Plane", &NearPlane, 0.001f, 0.001f, 100.0f);
+		ImGui::DragFloat("Far Plane", &FarPlane, 1.0f, 1.0f, 10000.0f);
 		ImGui::Separator();
 
 		ImGui::Text("Cow Settings:");
@@ -119,17 +120,25 @@ public:
 		// UPDATE HEADER
 		if (CurrentRenderEngine == RenderEngine::OpenGL)
 		{
-			WindowName = "OpenGL";
+			RenderEngineName = "OpenGL";
+			if (wasClose2GLLastTime)
+			{
+				hasUploadedToOpenGLVerticesAgain = false;
+				wasClose2GLLastTime = false;
+			}
+
 			wasOpenGLLastTime = true;
 		}
 		else
 		{
-			WindowName = "Close2GL";
+			RenderEngineName = "Close2GL";
 			if (wasOpenGLLastTime)
 			{
 				hasUploadedToOpenGLVerticesAgain = false;
 				wasOpenGLLastTime = false;
 			}
+
+			wasClose2GLLastTime = true;
 		}
 
 		// UPDATE RENDER SETTINGS
@@ -161,35 +170,38 @@ public:
 
 	void updateCameraPosition(float dt)
 	{
-		double x, y;
-		Input::getMouseDelta(x, y);
-
-		if (Input::isMouseButtonPress(MouseLeftButton) || useCamera)
+		if (!ImGui::IsMouseHoveringAnyWindow())
 		{
-			useCamera = Input::isMouseButtonRelease(MouseLeftButton) ^ true;
+			double x, y;
+			Input::getMouseDelta(x, y);
 
-			float rotationDiff = (float)(5.0 * Time::getDeltaTime());
+			if (Input::isMouseButtonPress(MouseLeftButton) || useCamera)
+			{
+				useCamera = Input::isMouseButtonRelease(MouseLeftButton) ^ true;
 
-			if (x > 0 || x < 0) {
-				CameraXangle += Math::radians(x);
+				float rotationDiff = (float)(5.0 * Time::getDeltaTime());
 
-				//xAngle += Math::radians(x);
-				CameraPosition.x = Math::sin(CameraXangle) * distanceFromCow;
-				CameraPosition.z = -Math::cos(CameraXangle) * distanceFromCow;
+				if (x > 0 || x < 0) {
+					CameraXangle += Math::radians(x);
+
+					//xAngle += Math::radians(x);
+					CameraPosition.x = Math::sin(CameraXangle) * distanceFromCow;
+					CameraPosition.z = -Math::cos(CameraXangle) * distanceFromCow;
+				}
+
+				if (y > 0 || y < 0) {
+					//const float halfPi = Math::pi<float>() / 2.0f;
+					//float nextRotationOnX = rotation.x - y * rotationDiff;
+					//rotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
+					double tempYAngle = CameraYangle + Math::radians(y);
+					CameraYangle = Math::abs(tempYAngle) >= Math::pi<double>() / 2 ? CameraYangle : tempYAngle;
+					CameraPosition.y = Math::sin(CameraYangle) * distanceFromCow;
+				}
+
+				// UPDATE ORIENTATION
+				MainCamera.transform.setLocalPosition(CameraPosition);
+				MainCamera.transform.lookAt(CowTransform.getLocalPosition());
 			}
-
-			if (y > 0 || y < 0) {
-				//const float halfPi = Math::pi<float>() / 2.0f;
-				//float nextRotationOnX = rotation.x - y * rotationDiff;
-				//rotation.x = Math::clamp(nextRotationOnX, -halfPi, halfPi);
-				double tempYAngle = CameraYangle + Math::radians(y);
-				CameraYangle = Math::abs(tempYAngle) >= Math::pi<double>() / 2 ? CameraYangle : tempYAngle;
-				CameraPosition.y = Math::sin(CameraYangle) * distanceFromCow;
-			}
-
-			// UPDATE ORIENTATION
-			MainCamera.transform.setLocalPosition(CameraPosition);
-			MainCamera.transform.lookAt(CowTransform.getLocalPosition());
 		}
 	}
 
@@ -287,6 +299,13 @@ public:
 		CurrentShaderProgram.setUniform("DiffuseColor", CowColor);
 
 		renderer.setRenderMode(CurrentRenderMode);
+
+		if (!hasUploadedToOpenGLVerticesAgain)
+		{
+			Cow.getVertexArray().updateBuffer(0, Cow.getVertices().data(), Cow.getVertices().size() * sizeof(Vertex));
+			hasUploadedToOpenGLVerticesAgain = true;
+		}
+
 		if (CurrentRenderEngine == RenderEngine::OpenGL)
 		{
 			meshRenderer.setShader(CurrentShaderProgram);
@@ -294,18 +313,13 @@ public:
 		}
 		else if (CurrentRenderEngine == RenderEngine::Close2GL)
 		{
-			if (!hasUploadedToOpenGLVerticesAgain)
-			{
-				Cow.getVertexArray().updateBuffer(0, Cow.getVertices().data(), Cow.getVertices().size() * sizeof(Vertex));
-				hasUploadedToOpenGLVerticesAgain = true;
-			}
 			meshSoftwareRenderer.setShader(CurrentShaderProgram);
 			meshSoftwareRenderer.render(MainCamera, Cow, CowTransform, renderer);
 		}
 	}
 
 private:
-	std::string WindowName = "Controls";
+	std::string RenderEngineName = "Controls";
 	Renderer renderer;
 	Mesh Cow;
 	Transform CowTransform;
@@ -330,7 +344,7 @@ private:
 	uint FPS_Counter = 0;
 	double SecondsCount = 0;
 	bool hasUploadedToOpenGLVerticesAgain = false;
-	bool wasOpenGLLastTime = false;
+	bool wasOpenGLLastTime = false, wasClose2GLLastTime = false;
 	bool useCamera = false;
 	bool CullbackFaces;
 
@@ -345,60 +359,38 @@ private:
 
 	int SelectShadingTypeFromComboBox()
 	{
-		uint i = 0;
-		TypeEntry shadingType[3] = { { "Phong", false },{ "GouraudAD", false },{ "GouraudADS", false } };
-		static TypeEntry typeSelected = shadingType[0];
-		DrawComboSelectType("Shading", typeSelected, shadingType, 3, i);
-		return i;
+		const char* shadingTypes[] = { "Phong", "GouraudAD", "GouraudADS"};
+		static int selected = 0;		
+		ImGui::Combo("Shading", &selected, shadingTypes, IM_ARRAYSIZE(shadingTypes));
+		return selected;
 	}
 
 	int SelectRenderModeFromComboBox()
 	{
-		uint i = 0;
-		TypeEntry renderMode[3] = { { "Triangles", false },{ "Lines", false },{ "Points", false } };
-		static TypeEntry typeSelected = renderMode[0];
-		DrawComboSelectType("Mode", typeSelected, renderMode, 3, i);
-		if (i == 0) return 4;
-		else if (i == 1) return 1;
-		else if (i == 2) return 0;
-		return i;
+		const char* renderModes[] = { "Triangles", "Lines", "Points" };
+		static int selected = 0;
+		ImGui::Combo("Mode", &selected, renderModes, IM_ARRAYSIZE(renderModes));
+		if (selected == 0) return 4;
+		else if (selected == 1) return 1;
+		else if (selected == 2) return 0;
+		return selected;
 	}
 
 	int SelectRenderEngineFromComboBox()
 	{
-		uint i = 0;
-		TypeEntry renderEngine[2] = { { "OpenGL", false },{ "Close2GL", false } };
-		static TypeEntry typeSelected = renderEngine[0];
-		DrawComboSelectType("Engine", typeSelected, renderEngine, 2, i);
-		return i;
+		const char* renderEngines[] = { "OpenGL", "Close2GL" };
+		static int selected = 0;
+		ImGui::Combo("Engine", &selected, renderEngines, IM_ARRAYSIZE(renderEngines));
+		return selected;
 	}
+	
 
 	int SelectClockDrawOrientation()
 	{
-		uint i = 0;
-		TypeEntry clockOrientation[2] = { { "CounterClockwise", false },{ "Clockwise", false } };
-		static TypeEntry typeSelected = { "CounterClockwise", false };
-		DrawComboSelectType("Clock Orientation", typeSelected, clockOrientation, 2, i);
-		return i;
-	}
-
-	void DrawComboSelectType(const char* label, TypeEntry& typeSelected, TypeEntry selectType[], size_t entriesSize, size_t& selectedIndex)
-	{
-		if (ImGui::BeginCombo(label, typeSelected.name))
-		{
-			for (int i = 0; i < entriesSize; i++)
-			{
-				bool isSelected = strcmp(typeSelected.name, selectType[i].name) == 0;
-				if (ImGui::Selectable(selectType[i].name, isSelected))
-					typeSelected = selectType[i];
-				if (isSelected)
-				{
-					selectedIndex = i;
-					ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndCombo();
-		}
+		const char* clockOrientations[] = { "CounterClockwise", "Clockwise" };
+		static int selected = 0;
+		ImGui::Combo("Clock Orientation", &selected, clockOrientations, IM_ARRAYSIZE(clockOrientations));
+		return selected;
 	}
 };
 

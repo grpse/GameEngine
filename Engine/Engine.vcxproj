@@ -263,9 +263,6 @@
     <ResourceCompile Include="Engine.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dependencies\AntTweakBar\src\AntTweakBar.vcxproj">
-      <Project>{b99e1fa1-c30a-45f2-9d57-9e9c21b2df42}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\Dependencies\glfw\src\glfw.vcxproj">
       <Project>{1be114d2-d8ea-3ee3-a4b5-dc1508266e92}</Project>
     </ProjectReference>
