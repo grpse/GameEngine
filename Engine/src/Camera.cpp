@@ -26,14 +26,21 @@ void Camera::setFormat(const Camera::Format& format, const Camera::Type& type)
 			format.nearPlane,
 			format.farPlane
 		);
+
+
 	}
 	else {
-		mProjectionMatrix = Math::perspective(
-			format.fieldOfView,
-			format.aspectRatio,
-			format.nearPlane,
-			format.farPlane
-		);
+		#define ENGINE_USING_OPENGL_RIGHT_HANDED_PERPECTIVE_PROJECTION
+		//TODO: If some day use DirectX, should make some wrapper to LEFT_HANDED
+		float const tanHalfFovy = Math::tan(format.fieldOfView / 2.0f);
+
+		mProjectionMatrix = Matrix4(0);
+		mProjectionMatrix[0][0] = 1.0f / (format.aspectRatio * tanHalfFovy);
+		mProjectionMatrix[1][1] = 1.0f / (tanHalfFovy);
+		mProjectionMatrix[2][3] = -1.0f;
+
+		mProjectionMatrix[2][2] = -(format.farPlane + format.nearPlane) / (format.farPlane - format.nearPlane);
+		mProjectionMatrix[3][2] = -(2.0f * format.farPlane * format.nearPlane) / (format.farPlane - format.nearPlane);
 	}
 }
 

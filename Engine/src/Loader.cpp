@@ -45,9 +45,9 @@ Texture2D Loader::loadRGBATexture2D(const char* filepath)
 	textureLayout.type = GL_UNSIGNED_BYTE;
 
 	Texture2D texture;
-	texture.start();
+	texture.bind();
 	texture.loadData(imageData, textureLayout);
-	texture.stop();
+	texture.unbind();
 
 	SOIL_free_image_data(imageData);
 	//stbi_image_free(imageData);

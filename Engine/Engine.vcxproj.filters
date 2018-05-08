@@ -226,6 +226,12 @@
     <ClInclude Include="include\BillboardShader.h">
       <Filter>Source\renderables</Filter>
     </ClInclude>
+    <ClInclude Include="include\DefaultUniformsNames.h">
+      <Filter>Source\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SkyboxShaderSource.h">
+      <Filter>Source\renderables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\objloader\objloader.cpp">

@@ -19,9 +19,6 @@ public:
 	void pollEvents();
 	bool isOpen();
 	void setTitle(const std::string& title);
-	void toogleTweakBar();
-	void* createTweak(const char* title);
-
 	void GUIFrame();
 	inline bool isStarted() { return mIsStarted; }
 	

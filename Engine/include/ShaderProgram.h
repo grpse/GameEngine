@@ -5,19 +5,20 @@
 #include "Typedefs.h"
 #include <string>
 #include <map>
+#include "OSExport.h"
 
 #ifndef STRINGIFY
 	#define STRINGIFY(value) (#value)
 #endif
 
-class ShaderProgram {
+class ENGINE_API ShaderProgram {
 
 public:
 	ShaderProgram();
 	ShaderProgram(const ShaderProgram& other);
 	~ShaderProgram();
 
-	void setUniform(uint uniform, uint i);
+	//void setUniform(uint uniform, uint i);
 	void setUniform(uint uniform, float v);
 	void setUniform(uint uniform, const Color32& v);
 	void setUniform(uint uniform, const Vector3& v);
@@ -27,11 +28,14 @@ public:
 	void setUniform(uint uniform, const CubeMap& c);
 	void setInteger(uint uniform, int i);
 
-	void setUniform(const char* uniform, uint i);
+	//void setUniform(const char* uniform, uint i);
+	void setUniform(const char* uniform, float v);
 	void setUniform(const char* uniform, const Color32& v);
 	void setUniform(const char* uniform, const Vector3& v);
 	void setUniform(const char* uniform, const Vector2& v);
 	void setUniform(const char* uniform, const Matrix4& m);
+	void setUniform(const char* uniform, const Texture2D& t);
+	void setUniform(const char* uniform, const CubeMap& c);
 
 	void setWorldMatrix(const Matrix4& world);
 	void setViewMatrix(const Matrix4& view);
@@ -40,6 +44,7 @@ public:
 	void setWorldViewMatrix(const Matrix4& worldView);
 	void setProjectionMatrix(const Matrix4& projection);
 	void setWorldViewProjectionMatrix(const Matrix4& worldViewProjection);
+	void setCameraPosition(const Vector3& cameraPosition);
 
 	int getUniformLocation(const char* uniform);
 	int getAttributeLocation(const char* uniform);
@@ -57,6 +62,7 @@ public:
 		int WorldViewInverseTranspose = -1;
 		int Projection = -1;
 		int WorldViewProjection = -1;
+		int CameraPosition = -1;
 	};
 
 	struct AttributesUse {
@@ -86,6 +92,12 @@ private:
 
 	static UniformsUse mUniformsUse;
 	static AttributesUse mAttributesUse;
+
+	struct UniformLocation {
+		int location = -1;
+	};
+
+	static std::map<std::string, UniformLocation> mUniformLocations;
 
 	struct ProgramIndexLocation {
 		uint index;

@@ -4,10 +4,11 @@
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 #include <vector>
+#include "OSExport.h"
 
 class Renderer;
 
-class VertexArray {
+class ENGINE_API VertexArray {
 public:
     VertexArray();
 	VertexArray(const VertexArray& other);

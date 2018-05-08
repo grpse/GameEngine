@@ -86,7 +86,7 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 	Matrix4 depthMVPBias = biasMatrix * depthMVP;
 
 	// Bind depth texture
-	getShadowMap().start();
+	getShadowMap().bind();
 
 	// Bind light intentisity, depth wvp biased and shadow map depth texture
 	mShadowMapAdditiveShader.bind();
@@ -97,7 +97,7 @@ void ShadowRenderer::renderAdditiveShadow(const Camera& camera, const Mesh& mesh
 	renderer.render(mesh.getVertexArray(), mesh.getIndexBuffer());
 	mShadowMapAdditiveShader.unbind();
 
-	getShadowMap().stop();
+	getShadowMap().unbind();
 }
 
 FrameBuffer& ShadowRenderer::getShadowBuffer() 

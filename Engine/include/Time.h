@@ -1,8 +1,7 @@
 #pragma once
-#ifndef USE_GLFW
-	//#define USE_GLFW
-#endif
-class Time {
+#include "OSExport.h"
+
+class ENGINE_API Time {
 
 public:
 	static double getDeltaTime();

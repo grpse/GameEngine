@@ -173,6 +173,7 @@
     <ClInclude Include="include\BillboardShader.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\CubeMap.h" />
+    <ClInclude Include="include\DefaultUniformsNames.h" />
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\FrameBuffer.h" />
     <ClInclude Include="include\GameLoop.h" />
@@ -204,6 +205,7 @@
     <ClInclude Include="include\ShadowRenderer.h" />
     <ClInclude Include="include\ShadowShader.h" />
     <ClInclude Include="include\SkyboxRenderer.h" />
+    <ClInclude Include="include\SkyboxShaderSource.h" />
     <ClInclude Include="include\Texture2D.h" />
     <ClInclude Include="include\Time.h" />
     <ClInclude Include="include\Transform.h" />

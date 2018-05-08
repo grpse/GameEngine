@@ -17,12 +17,12 @@ ParticleSystem::ParticleSystem(float pps, float speed, float gravityComplient, f
 void ParticleSystem::loadTexture(const Texture2D& texture2d)
 {
 	mTexture = texture2d;
-	mTexture.start();
+	mTexture.bind();
 	mTexture.setParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	mTexture.setParameter(GL_TEXTURE_WRAP_T,  GL_CLAMP_TO_BORDER);
 	mTexture.setParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	mTexture.setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	mTexture.stop();
+	mTexture.unbind();
 }
 
 void ParticleSystem::update()

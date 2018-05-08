@@ -3,37 +3,8 @@
 #include "VertexBufferLayout.h"
 #include "SkyboxRenderer.h"
 #include "AttributesNamesDefines.h"
+#include "SkyboxShaderSource.h"
 
-const char SkyboxShader[] = R"(
-
-#queue Opaque
-
-#vertex vertProgram
-#fragment fragProgram
-
-#begin uniforms
-uniform vec3 CameraPosition;
-uniform samplerCube Skycube;
-#end uniforms
-
-#begin vertex_variables
-out vec3 texcoords;
-#end vertex_variables
-
-Vector4 vertProgram() {
-  texcoords = POSITION;
-  return WORLDVIEWPROJECTION * vec4(POSITION + CameraPosition, 1.0);
-}
-
-#begin fragment_variables
-in vec3 texcoords;
-#end fragment_variables
-
-Vector4 fragProgram() {
-	return texture(Skycube, texcoords);
-}
-
-)";
 
 float points[] = {
 	-10.0f,  10.0f, -10.0f,
@@ -81,39 +52,28 @@ float points[] = {
 
 SkyboxRenderer::SkyboxRenderer()
 {
-	mShader.addProgram(SkyboxShader);
-	
 	VertexBufferLayout layout;
 	layout.pushFloat(3, POSITION);
 
 	mVAO.createVertexBuffer<float>(points, sizeof(points)/sizeof(float), layout);
 }
 
-void SkyboxRenderer::setCubeMap(const CubeMap& cubeMap)
+SkyboxRenderer::SkyboxRenderer(const SkyboxRenderer & other)
 {
-	mCubeMap = cubeMap;
+	memcpy(this, &other, sizeof(SkyboxRenderer));
 }
 
-void SkyboxRenderer::setup()
+void SkyboxRenderer::setShader(const ShaderProgram & shader)
 {
-	mShader.bind();
-	mCubeMapLocation = mShader.getUniformLocation("Skycube");
-	mCameraPositionLocation = mShader.getUniformLocation("CameraPosition");
+	mShader = shader;
 }
 
-void SkyboxRenderer::render(const Camera& camera, const Renderer& renderer) const
+void SkyboxRenderer::render(const Camera& camera, const CubeMap& SkyMap, const Renderer& renderer) const
 {
-	renderer.setDepthMask();
-	renderer.disableDepthTest();
-	
 	Matrix4 WVP = camera.getProjectionMatrix() * camera.getViewMatrix() * Matrix4(10.0);
-
 	mShader.bind();
-	mShader.setUniform(mCubeMapLocation, mCubeMap);
-	mShader.setUniform(mCameraPositionLocation, camera.transform.getLocalPosition());
+	mShader.setUniform("Skycube", SkyMap);
+	mShader.setCameraPosition(camera.transform.getLocalPosition());
 	mShader.setWorldViewProjectionMatrix(WVP);
 	renderer.render(mVAO, 0, 36);
-	renderer.enableDepthTest();
-	renderer.unsetDepthMask();
-
 }

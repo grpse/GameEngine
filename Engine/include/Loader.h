@@ -5,8 +5,9 @@
 #include "Texture2D.h"
 #include "CubeMap.h"
 #include "Mesh.h"
+#include "OSExport.h"
 
-class Loader {
+class ENGINE_API Loader {
 
 public:
 	Loader();

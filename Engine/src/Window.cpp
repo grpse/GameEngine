@@ -3,7 +3,6 @@
 #include "Window.h"
 #include "Input.h"
 #include <GLFW/glfw3.h>
-#include <AntTweakBar.h>
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw_gl3.h>
 
@@ -54,10 +53,7 @@ void Window::start()
 	if (error != GLEW_OK) {
 		std::cout << "Glew Error: " << glewGetErrorString(error) << std::endl;
 	}
-
-	// Initialize AntTweakBar
-	TwInit(TW_OPENGL_CORE, NULL);
-
+	
 	setupInputEventCallers();
 
 	// Setup ImGui binding
@@ -79,10 +75,9 @@ void Window::GUIFrame()
 
 void Window::swapBuffers()
 {
-	{
-		ImGui::Render();
-		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-	}
+	ImGui::Render();
+	ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+
 	int width, height;
 	glfwGetWindowSize(mWindow, &width, &height);
 	mViewport.height = height;
@@ -90,7 +85,6 @@ void Window::swapBuffers()
 
 	setViewport(mViewport);
 
-	if (mShowTweak) TwDraw();
 	glfwSwapBuffers(mWindow);
 }
 
@@ -98,7 +92,6 @@ void Window::setViewport(Rect viewport)
 {
 	glViewport(viewport.x, viewport.y, viewport.width, viewport.height);
 	mViewport = viewport;
-	TwWindowSize(viewport.width, viewport.height);
 }
 
 Rect& Window::getViewport()
@@ -110,7 +103,6 @@ void Window::finish()
 {
 	ImGui_ImplGlfwGL3_Shutdown();
 	ImGui::DestroyContext();
-	TwTerminate();
 	glfwTerminate();
 }
 
@@ -131,93 +123,39 @@ void Window::setTitle(const std::string & title)
 	glfwSetWindowTitle(mWindow, titlePtr);
 }
 
-void Window::toogleTweakBar()
-{
-	mShowTweak = !mShowTweak;
-}
-
-void* Window::createTweak(const char* title)
-{
-	return (void*)TwNewBar(title);
-}
-
 void Window::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (mShowTweak)
-	{
-		TwEventKeyGLFW(key, action);
-	}
-	else 
-	{
-		if (action == GLFW_REPEAT)
-			Input::setPressedKeyRepeated(key);
-		else if (action == GLFW_PRESS)
-			Input::setPressedKey(key);
-		else if (action == GLFW_RELEASE)
-			Input::setReleasedKey(key);
-	}
+	if (action == GLFW_REPEAT)
+		Input::setPressedKeyRepeated(key);
+	else if (action == GLFW_PRESS)
+		Input::setPressedKey(key);
+	else if (action == GLFW_RELEASE)
+		Input::setReleasedKey(key);
 }
 
 void Window::MousePositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	if (mShowTweak)
-	{
-		if (!TwEventMousePosGLFW(xpos, ypos))
-		{
-			Input::setMousePosition(xpos, ypos);
-		}
-	}
-	else
-	{
-		Input::setMousePosition(xpos, ypos);
-	}
+	Input::setMousePosition(xpos, ypos);
 }
 
 void Window::MouseButtonCallback(GLFWwindow * window, int button, int action, int mods)
 {
-	if (mShowTweak)
-	{
-		if (!TwEventMouseButtonGLFW(button, action))
-		{
-
-		}
-	}
 	if (action == GLFW_REPEAT)
 		Input::setMouseButtonPressedRepeat(button);
 	else if (action == GLFW_PRESS)
 		Input::setMouseButtonPress(button);
 	else if (action == GLFW_RELEASE)
-		Input::setMouseButtonRelease(button);
-	
+		Input::setMouseButtonRelease(button);	
 }
 
 void Window::ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	if (mShowTweak)
-	{
-		if (!TwEventMouseWheelGLFW(xoffset))
-		{
-			Input::setScrollOffset(xoffset, yoffset);
-		}
-	}
-	else
-	{
-		Input::setScrollOffset(xoffset, yoffset);
-	}
+	Input::setScrollOffset(xoffset, yoffset);
 }
 
 void Window::CharCallback(GLFWwindow * window, uint codepoint, int mods)
 {
-	
-	if (mShowTweak)
-	{
-		TwEventCharGLFW(codepoint, 0);
-	}
-	else 
-	{
-		//TODO: something else
-	}
-
+	// TODO: implement	
 }
 
 void Window::setupInputEventCallers()

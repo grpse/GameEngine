@@ -11,11 +11,7 @@ std::vector<Vertex> mTempVertices;
 
 MeshSoftwareRenderer::MeshSoftwareRenderer()
 {
-	mPhong.addProgram(PhongSoftwareShading);
-	mGouraudAD.addProgram(GouraudSoftwareADShading);
-	mGouraudADS.addProgram(GouraudSoftwareADSShading);
 
-	mShader = mPhong;
 }
 
 MeshSoftwareRenderer::~MeshSoftwareRenderer()
@@ -23,20 +19,13 @@ MeshSoftwareRenderer::~MeshSoftwareRenderer()
 
 }
 
-void MeshSoftwareRenderer::setup()
+void MeshSoftwareRenderer::setShader(const ShaderProgram& shader)
 {
-	mShader.bind();
-	mLightUniforms.position = mShader.getUniformLocation("light.position");
-	mLightUniforms.direction = mShader.getUniformLocation("light.direction");
-	mLightUniforms.color = mShader.getUniformLocation("light.color");
-	mLightUniforms.intensity = mShader.getUniformLocation("light.intensity");
-	mDiffuseColorLocation = mShader.getUniformLocation("DiffuseColor");
+	mShader = shader;
 }
 
-void MeshSoftwareRenderer::render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Light& directional, const Renderer& renderer)
+void MeshSoftwareRenderer::render(const Camera& camera, const Mesh& mesh, const Transform& transform, const Renderer& renderer) const
 {
-	prepare(renderer);
-
 	const Matrix4& NormalMatrix = transform.getWorldInverseTranspose();
 	const Matrix4& World = transform.getWorldMatrix();
 	const Matrix4& View = camera.getViewMatrix();
@@ -44,16 +33,12 @@ void MeshSoftwareRenderer::render(const Camera& camera, const Mesh& mesh, const 
 	const Matrix4 WorldView = View * World;
 	const Matrix4 WorldViewProjection = Projection * WorldView;
 
+	mShader.bind();
 	mShader.setWorldMatrix(World);
 	mShader.setViewMatrix(View);
 	mShader.setWorldViewMatrix(WorldView);
 	mShader.setWorldViewProjectionMatrix(WorldViewProjection);
 	mShader.setWorldInverseTranspose(NormalMatrix);
-
-	mShader.setUniform(mLightUniforms.position, directional.position);
-	mShader.setUniform(mLightUniforms.direction, directional.direction);
-	mShader.setUniform(mLightUniforms.color, directional.color);
-	mShader.setUniform(mLightUniforms.intensity, directional.intensity);
 
 	mTempVertices.resize(mesh.getVertices().size());
 
@@ -68,46 +53,4 @@ void MeshSoftwareRenderer::render(const Camera& camera, const Mesh& mesh, const 
 
 	mesh.getVertexArray().updateBuffer(0, mTempVertices.data(), mTempVertices.size() * sizeof(Vertex));
 	renderer.render(mesh);
-
-	finishRendering(renderer);
-}
-
-void MeshSoftwareRenderer::setDiffuseColor(Color32 color)
-{
-	mShader.setUniform(mDiffuseColorLocation, color);
-}
-
-void MeshSoftwareRenderer::usePhong()
-{
-	mShader = mPhong;
-}
-
-void MeshSoftwareRenderer::useGouraudAD()
-{
-	mShader = mGouraudAD;
-}
-
-void MeshSoftwareRenderer::useGouraudADS()
-{
-	mShader = mGouraudADS;
-}
-
-ShaderProgram& MeshSoftwareRenderer::getShaderProgram()
-{
-	return mShader;
-}
-
-void MeshSoftwareRenderer::prepare(const Renderer& renderer)
-{
-	mShader.bind();
-	renderer.enableDepthTest();
-	renderer.setDepthMask();
-	renderer.enableCullFace();
-	renderer.cullBackFace();
-}
-
-void MeshSoftwareRenderer::finishRendering(const Renderer& renderer)
-{
-	renderer.disableCullFace();
-	renderer.disableDepthTest();
 }

@@ -9,6 +9,7 @@ class ENGINE_API Transform {
 
 public:
     Transform();
+	Transform(const Transform& other);
     ~Transform();
 
     void setLocalPosition(Vector3 localPosition);

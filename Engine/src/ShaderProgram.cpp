@@ -16,7 +16,7 @@ ShaderProgram::UniformsUse ShaderProgram::mUniformsUse = { -1, -1, -1, -1, -1, -
 ShaderProgram::AttributesUse ShaderProgram::mAttributesUse = { -1, -1, -1, -1, -1, -1, -1 };
 std::map<std::string, ShaderProgram::ProgramIndexLocation > ShaderProgram::mVertProgramName_ID;
 std::map<std::string, ShaderProgram::ProgramIndexLocation > ShaderProgram::mFragProgramName_ID;
-
+std::map<std::string, ShaderProgram::UniformLocation> ShaderProgram::mUniformLocations;
 
 ShaderProgram::ShaderProgram() 
 {
@@ -41,11 +41,6 @@ ShaderProgram::~ShaderProgram()
 		mShaderProgram = -1;
 	}
 	*/
-}
-
-void ShaderProgram::setUniform(uint uniform, uint i)
-{
-	GLCall(glUniform1i(uniform, i));
 }
 
 void ShaderProgram::setUniform(uint uniform, float v)
@@ -76,6 +71,7 @@ void ShaderProgram::setUniform(uint uniform, const Matrix4& m)
 void ShaderProgram::setUniform(uint uniform, const Texture2D& t)
 {
 	// TODO: This can only bind one texture to current shader program
+	t.bind();
 	GLCall(glUniform1i(uniform, t.getIndex()));
 }
 
@@ -90,10 +86,10 @@ void ShaderProgram::setInteger(uint uniform, int i)
 	GLCall(glUniform1i(uniform, i));
 }
 
-void ShaderProgram::setUniform(const char * uniform, uint i)
+void ShaderProgram::setUniform(const char * uniform, float v)
 {
 	uint uniformLocation = getUniformLocation(uniform);
-	setUniform(uniformLocation, i);
+	setUniform(uniformLocation, v);
 }
 
 void ShaderProgram::setUniform(const char * uniform, const Color32 & v)
@@ -118,6 +114,18 @@ void ShaderProgram::setUniform(const char * uniform, const Matrix4& m)
 {
 	uint uniformLocation = getUniformLocation(uniform);
 	setUniform(uniformLocation, m);
+}
+
+void ShaderProgram::setUniform(const char * uniform, const Texture2D & t)
+{
+	uint uniformLocation = getUniformLocation(uniform);
+	setUniform(uniformLocation, t);
+}
+
+void ShaderProgram::setUniform(const char * uniform, const CubeMap & c)
+{
+	uint uniformLocation = getUniformLocation(uniform);
+	setUniform(uniformLocation, c);
 }
 
 void ShaderProgram::setProjectionMatrix(const Matrix4& projection)
@@ -176,11 +184,28 @@ void ShaderProgram::setWorldViewProjectionMatrix(const Matrix4& worldViewProject
 	setUniform(mUniformsUse.WorldViewProjection, worldViewProjection);
 }
 
+void ShaderProgram::setCameraPosition(const Vector3 & cameraPosition)
+{
+	if (mUniformsUse.CameraPosition < 0)
+		mUniformsUse.CameraPosition = getUniformLocation(CAMERAPOSITION);
+
+	setUniform(mUniformsUse.CameraPosition, cameraPosition);
+}
+
 int ShaderProgram::getUniformLocation(const char* uniform)
 {
-	GLCall(uint uniformLocation = glGetUniformLocation(mShaderProgram, uniform));
+	//return mUniformLocations[uniform];
+	//TODO: Checking way to do this, but unperformant, should study more on this
+	int location = mUniformLocations[uniform].location;
+	if (location < 0)
+	{
+		GLCall(location = glGetUniformLocation(mShaderProgram, uniform));
+		mUniformLocations[uniform].location = location;
+	}
+
 	//std::cout << "Uniform location: " << uniform << " " << uniformLocation << std::endl;
-	return uniformLocation;
+	return location;
+	
 }
 
 int ShaderProgram::getAttributeLocation(const char* uniform)
@@ -228,6 +253,25 @@ void ShaderProgram::build()
 		const char* fragProgramNamePtr = keyPair.first.c_str();
 		GLCall(keyPair.second.index = glGetSubroutineIndex(mShaderProgram, GL_FRAGMENT_SHADER, fragProgramNamePtr));
 	}
+
+	/*
+
+	int i, count, bufSize = 256, length, size;
+	GLenum type;
+	char name[256];
+	GLCall(glGetProgramiv(mShaderProgram, GL_DEACT, &count));
+	printf("Active Uniforms: %d\n", count);
+
+	for (i = 0; i < count; i++)
+	{
+		GLCall(glGetActiveUniform(mShaderProgram, (GLuint)i, bufSize, &length, &size, &type, name));
+
+		printf("Uniform #%d Type: %u Name: %s\n", i, type, name);
+
+		GLCall(uint uniformLocation = glGetUniformLocation(mShaderProgram, name));
+		mUniformLocations[name] = uniformLocation;
+	}
+	*/
 }
 
 void ShaderProgram::addProgram(std::string shaderSource)

@@ -13,7 +13,13 @@ Transform::Transform() {
 	mChildren = new Transform*[mMaxChildren];
 }
 
-Transform::~Transform() {
+Transform::Transform(const Transform& other)
+{
+	memcpy(this, &other, sizeof(Transform));
+}
+
+Transform::~Transform() 
+{
 
 }
 

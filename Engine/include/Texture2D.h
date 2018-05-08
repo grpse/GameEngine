@@ -44,8 +44,8 @@ public:
     void setParameter(uint name, uint value);
     void loadData(const void* data, const Texture2DLayout& layout);
     void generateMipMaps();
-    void start() const;
-    void stop() const;
+    void bind() const;
+    void unbind() const;
     uint getWidth() const;
     uint getHeight() const;
 	uint getId() const;

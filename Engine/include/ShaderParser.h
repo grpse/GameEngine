@@ -10,6 +10,7 @@
 #include "LinearMath.h"
 #include "MatricesNamesDefines.h"
 #include "AttributesNamesDefines.h"
+#include "DefaultUniformsNames.h"
 
 // trim from start (in place)
 static inline void ltrim(std::string &s) {
@@ -215,6 +216,7 @@ uniform mat4 VIEWTRANSPOSE;
 uniform mat4 VIEWINVERSE;
 uniform mat4 VIEWINVERSETRANSPOSE;
 uniform mat4 PROJECTION;
+uniform vec3 CAMERAPOSITION;
 
 uniform vec4 AmbientColor = vec4(0.3, 0.3, 0.3, 0.3);
 uniform vec4 SpecularColor = vec4(1, 1, 1, 1);
@@ -271,6 +273,7 @@ uniform mat4 VIEWTRANSPOSE;
 uniform mat4 VIEWINVERSE;
 uniform mat4 VIEWINVERSETRANSPOSE;
 uniform mat4 PROJECTION;
+uniform vec3 CameraPosition;
 
 uniform vec4 AmbientColor = vec4(0.3, 0.3, 0.3, 0.3);
 uniform vec4 SpecularColor = vec4(1, 1, 1, 1);

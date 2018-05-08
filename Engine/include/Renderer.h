@@ -3,18 +3,19 @@
 #include "IndexBuffer.h"
 #include "Rect.h"
 #include "LinearMath.h"
+#include "OSExport.h"
 
 class Mesh;
 
-class Renderer {
+class ENGINE_API Renderer {
 
 public:
 
 	enum class Mode {
-		Quads = 0x0007, //GL_QUADS,
-		Triangles = 0x0004, //GL_TRIANGLES,
+		Points = 0x0000, //GL_POINTS
 		Lines = 0x0001, //GL_LINES,
-		Points = 0x0000 //GL_POINTS
+		Triangles = 0x0004, //GL_TRIANGLES,
+		Quads = 0x0007, //GL_QUADS,
 	};
 
 	Renderer();
@@ -26,6 +27,7 @@ public:
 	virtual void render(const VertexArray& vao, const IndexBuffer& ibo) const;
 	virtual void render(const VertexArray& vao, uint startIndex, uint count) const;
 	virtual void render(const Mesh& mesh) const;
+	virtual bool shouldCullbackFace() const;
 	virtual void cullBackFace() const;
 	virtual void cullFrontFace() const;
 	virtual void enableCullFace() const;
@@ -42,4 +44,5 @@ public:
 
 private:
 	Mode mMode;
+	mutable bool mCullbackFace = false;
 };

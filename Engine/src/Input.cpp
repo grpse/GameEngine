@@ -1,5 +1,6 @@
 #include "Input.h"
 #include <string.h>
+#include <GLFW/glfw3.h>
 
 #define NUMBER_OF_MOUSE_BUTTONS (GLFW_MOUSE_BUTTON_LAST + 1)
 

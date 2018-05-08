@@ -56,10 +56,10 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 	
 	mShader.setProjectionMatrix(camera.getProjectionMatrix());
 
-	texture2d.start();
+	texture2d.bind();
 
 	while(particleCount--) {
-		mShader.setUniform(mTextureUniformLocation, (uint)0);
+		mShader.setUniform(mTextureUniformLocation, texture2d);
 
 		Vector3 position = particles[particleCount].getPosition();
 		float rotation = particles[particleCount].getRotation();
@@ -69,7 +69,7 @@ void ParticleRenderer::render(const ParticleSystem& particleSystem, const Camera
 		renderer.render(mVertexArray, 0, 4);
 	}
 	
-	texture2d.stop();
+	texture2d.unbind();
 	finishRendering(renderer);
 }
 

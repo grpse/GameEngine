@@ -36,7 +36,7 @@ Texture2D FrameBuffer::createTextureAttachment(const Texture2DLayout& layout, ui
 {
 	bind();
 	Texture2D frameTexture;
-	frameTexture.start();
+	frameTexture.bind();
 	frameTexture.loadData(NULL, layout);
 
 	frameTexture.setParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -49,7 +49,7 @@ Texture2D FrameBuffer::createTextureAttachment(const Texture2DLayout& layout, ui
 		0
 	));
 
-	frameTexture.stop();
+	frameTexture.unbind();
 	unbind();
 
 	return frameTexture;
@@ -59,7 +59,7 @@ Texture2D FrameBuffer::createDepthTextureAttachment(const Texture2DLayout& layou
 {
 	bind();
 	Texture2D depthTexture;
-	depthTexture.start();
+	depthTexture.bind();
 	depthTexture.loadData(NULL, layout);
 
 	depthTexture.setParameter(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -77,7 +77,7 @@ Texture2D FrameBuffer::createDepthTextureAttachment(const Texture2DLayout& layou
 		0
 	));
 
-	depthTexture.stop();
+	depthTexture.unbind();
 	unbind();
 
 	return depthTexture;

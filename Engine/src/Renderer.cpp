@@ -63,9 +63,15 @@ void Renderer::render(const Mesh& mesh) const
 	}
 }
 
+bool Renderer::shouldCullbackFace() const
+{
+	return mCullbackFace;
+}
+
 void Renderer::cullBackFace() const
 {
 	GLCall(glCullFace(GL_BACK));
+	mCullbackFace = true;
 }
 
 void Renderer::cullFrontFace() const
@@ -82,6 +88,7 @@ void Renderer::enableCullFace() const
 void Renderer::disableCullFace() const
 {
 	GLCall(glDisable(GL_CULL_FACE));
+	mCullbackFace = false;
 }
 
 void Renderer::enableDepthTest() const

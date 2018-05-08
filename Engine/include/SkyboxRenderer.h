@@ -5,20 +5,18 @@
 #include "Camera.h"
 #include "ShaderProgram.h"
 #include "VertexArray.h"
+#include "OSExport.h"
 
-class SkyboxRenderer 
+class ENGINE_API SkyboxRenderer 
 {
 
 public:
 	SkyboxRenderer();
-	void setCubeMap(const CubeMap& cubeMap);
-	void setup();
-	void render(const Camera& camera, const Renderer& renderer) const;
+	SkyboxRenderer(const SkyboxRenderer& other);
+	void setShader(const ShaderProgram& shader);
+	void render(const Camera& camera, const CubeMap& SkyMap, const Renderer& renderer) const;
 
 private:
-	CubeMap mCubeMap;
 	mutable ShaderProgram mShader;
-	uint mCubeMapLocation;
-	uint mCameraPositionLocation;
 	VertexArray mVAO;
 };
